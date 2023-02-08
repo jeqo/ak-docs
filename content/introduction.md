@@ -1,4 +1,6 @@
-#### [](#intro_streaming){#intro_streaming .anchor-link} [What is event streaming?](#intro_streaming) {#what-is-event-streaming .anchor-heading}
+# Introduction
+
+## What is event streaming? {#intro_streaming}
 
 Event streaming is the digital equivalent of the human body\'s central
 nervous system. It is the technological foundation for the \'always-on\'
@@ -15,7 +17,7 @@ destination technologies as needed. Event streaming thus ensures a
 continuous flow and interpretation of data so that the right information
 is at the right place, at the right time.
 
-#### [](#intro_usage){#intro_usage .anchor-link} [What can I use event streaming for?](#intro_usage) {#what-can-i-use-event-streaming-for .anchor-heading}
+## What can I use event streaming for? {#intro_usage .anchor-link}
 
 Event streaming is applied to a [wide variety of use cases](/powered-by)
 across a plethora of industries and organizations. Its many examples
@@ -37,7 +39,7 @@ include:
 -   To serve as the foundation for data platforms, event-driven
     architectures, and microservices.
 
-#### [](#intro_platform){#intro_platform .anchor-link} [Apache Kafka® is an event streaming platform. What does that mean?](#intro_platform) {#apache-kafka-is-an-event-streaming-platform.-what-does-that-mean .anchor-heading}
+## Apache Kafka® is an event streaming platform. What does that mean?{#intro_platform .anchor-link}
 
 Kafka combines three key capabilities so you can implement [your use
 cases](/powered-by) for event streaming end-to-end with a single
@@ -57,7 +59,7 @@ on-premises as well as in the cloud. You can choose between
 self-managing your Kafka environments and using fully managed services
 offered by a variety of vendors.
 
-#### [](#intro_nutshell){#intro_nutshell .anchor-link} [How does Kafka work in a nutshell?](#intro_nutshell) {#how-does-kafka-work-in-a-nutshell .anchor-heading}
+## How does Kafka work in a nutshell? {#intro_nutshell .anchor-link}
 
 Kafka is a distributed system consisting of **servers** and **clients**
 that communicate via a high-performance [TCP network
@@ -87,7 +89,7 @@ Scala including the higher-level [Kafka
 Streams](/documentation/streams/) library, for Go, Python, C/C++, and
 many other programming languages as well as REST APIs.
 
-#### [](#intro_concepts_and_terms){#intro_concepts_and_terms .anchor-link} [Main Concepts and Terminology](#intro_concepts_and_terms) {#main-concepts-and-terminology .anchor-heading}
+## Main Concepts and Terminology {#intro_concepts_and_terms .anchor-link}
 
 An **event** records the fact that \"something happened\" in the world
 or in your business. It is also called record or message in the
@@ -138,7 +140,7 @@ events to the topic by writing events over the network to the topic\'s
 partitions. Events with the same key (denoted by their color in the
 figure) are written to the same partition. Note that both producers can
 write to the same partition if
-appropriate.](/images/streams-and-tables-p1_p4.png){.figure-image}
+appropriate.](/documentation/images/streams-and-tables-p1_p4.png)
 
 To make your data fault-tolerant and highly-available, every topic can
 be **replicated**, even across geo-regions or datacenters, so that there
@@ -152,7 +154,7 @@ This primer should be sufficient for an introduction. The
 [Design](/documentation/#design) section of the documentation explains
 Kafka\'s various concepts in full detail, if you are interested.
 
-#### [](#intro_apis){#intro_apis .anchor-link} [Kafka APIs](#intro_apis) {#kafka-apis .anchor-heading}
+## Kafka APIs {#intro_apis .anchor-link}
 
 In addition to command line tooling for management and administration
 tasks, Kafka has five core APIs for Java and Scala:
@@ -180,7 +182,7 @@ tasks, Kafka has five core APIs for Java and Scala:
     don\'t need to implement your own connectors because the Kafka
     community already provides hundreds of ready-to-use connectors.
 
-#### [](#intro_more){#intro_more .anchor-link} [Where to go from here](#intro_more) {#where-to-go-from-here .anchor-heading}
+## Where to go from here {#intro_more .anchor-link}
 
 -   To get hands-on experience with Kafka, follow the
     [Quickstart](/quickstart).
@@ -193,5 +195,3 @@ tasks, Kafka has five core APIs for Java and Scala:
     Kafka Summit](https://kafka-summit.org/past-events/), the main
     conference of the Kafka community.
 
-::: p-introduction
-:::
