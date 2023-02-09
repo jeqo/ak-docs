@@ -1,5 +1,3 @@
-::: content
-::: right
 # Kafka protocol guide
 
 This document covers the wire protocol implemented in Kafka. It is meant
@@ -19,22 +17,21 @@ design and terminology described
     -   [SASL Authentication Sequence](#sasl_handshake)
 -   [The Protocol](#protocol_details)
     -   [Protocol Primitive Types](#protocol_types)
-    -   [Notes on reading the request format
-        grammars](#protocol_grammar)
+    -   [Notes on reading the request format grammars](#protocol_grammar)
     -   [Common Request and Response Structure](#protocol_common)
     -   [Record Batch](#protocol_recordbatch)
--   [Evolving the Protocol](#protocol_evolution)
-    -   [The Request Header](#protocol_versioning)
-    -   [Versioning](#protocol_versioning)
+-   [Evolving the Protocol](#protocol_evolution) //TODO: broken link
+    -   [The Request Header](#protocol_versioning) //TODO: broken link
+    -   [Versioning](#protocol_versioning) //TODO: broken link
 -   [Constants](#protocol_constants)
     -   [Error Codes](#protocol_error_codes)
     -   [Api Keys](#protocol_api_keys)
 -   [The Messages](#protocol_messages)
 -   [Some Common Philosophical Questions](#protocol_philosophy)
 
-#### []{#protocol_preliminaries .anchor-link}[Preliminaries](#protocol_preliminaries) {#preliminaries .anchor-heading}
+#### Preliminaries {#protocol_preliminaries .anchor-link}
 
-##### []{#protocol_network .anchor-link}[Network](#protocol_network) {#network .anchor-heading}
+##### Network {#protocol_network .anchor-link}
 
 Kafka uses a binary protocol over TCP. The protocol defines all APIs as
 request response message pairs. All messages are size delimited and are
@@ -69,7 +66,7 @@ The server has a configurable maximum limit on request size and any
 request that exceeds this limit will result in the socket being
 disconnected.
 
-##### []{#protocol_partitioning .anchor-link}[Partitioning and bootstrapping](#protocol_partitioning) {#partitioning-and-bootstrapping .anchor-heading}
+##### Partitioning and bootstrapping {#protocol_partitioning .anchor-link}
 
 Kafka is a partitioned system so not all servers have the complete data
 set. Instead recall that topics are split into a pre-defined number of
@@ -124,7 +121,7 @@ hosts the partition for which data was requested.
     broker based on the topic/partitions they send to or fetch from.
 3.  If we get an appropriate error, refresh the metadata and try again.
 
-##### []{#protocol_partitioning_strategies .anchor-link}[Partitioning Strategies](#protocol_partitioning_strategies) {#partitioning-strategies .anchor-heading}
+##### Partitioning Strategies {#protocol_partitioning_strategies .anchor-link}
 
 As mentioned above the assignment of messages to partitions is something
 the producing client controls. That said, how should this functionality
@@ -154,7 +151,7 @@ accomplish this the client can take a key associated with the message
 and use some hash of this key to choose the partition to which to
 deliver the message.
 
-##### []{#protocol_batching .anchor-link}[Batching](#protocol_batching) {#batching .anchor-heading}
+##### Batching {#protocol_batching .anchor-link}
 
 Our APIs encourage batching small things together for efficiency. We
 have found this is a very significant performance win. Both our API to
@@ -170,7 +167,7 @@ partitions all at once.
 The client implementer can choose to ignore this and send everything one
 at a time if they like.
 
-##### []{#protocol_compatibility .anchor-link}[Compatibility](#protocol_compatibility) {#compatibility .anchor-heading}
+##### Compatibility {#protocol_compatibility .anchor-link}
 
 Kafka has a \"bidirectional\" client compatibility policy. In other
 words, new clients can talk to old servers, and old clients can talk to
@@ -198,8 +195,7 @@ server (with the older clients not making use of them) and then as newer
 clients are deployed these new features would gradually be taken
 advantage of.
 
-Note that [KIP-482 tagged
-fields](https://cwiki.apache.org/confluence/display/KAFKA/KIP-482%3A+The+Kafka+Protocol+should+Support+Optional+Tagged+Fields)
+Note that [KIP-482 tagged fields](https://cwiki.apache.org/confluence/display/KAFKA/KIP-482%3A+The+Kafka+Protocol+should+Support+Optional+Tagged+Fields)
 can be added to a request without incrementing the version number. This
 offers an additional way of evolving the message schema without breaking
 compatibility. Tagged fields do not take up any space when the field is
@@ -209,7 +205,7 @@ tagged fields are ignored by recipients that don\'t know about them,
 which could pose a challenge if this is not the behavior that the sender
 wants. In such cases, a version bump may be more appropriate.
 
-##### []{#api_versions .anchor-link}[Retrieving Supported API versions](#api_versions) {#retrieving-supported-api-versions .anchor-heading}
+##### Retrieving Supported API versions {#api_versions .anchor-link}
 
 In order to work against multiple broker versions, clients need to know
 what versions of various APIs a broker supports. The broker exposes this
@@ -247,7 +243,7 @@ versions from a broker.
     broker again, as the broker might have been upgraded/downgraded in
     the mean time.
 
-##### []{#sasl_handshake .anchor-link}[SASL Authentication Sequence](#sasl_handshake) {#sasl-authentication-sequence .anchor-heading}
+##### SASL Authentication Sequence {#sasl_handshake .anchor-link}
 
 The following sequence is used for SASL authentication:
 
@@ -276,13 +272,13 @@ the server is handled as a SASL/GSSAPI client token if it is not a valid
 Kafka request. SASL/GSSAPI authentication is performed starting with
 this packet, skipping the first two steps above.
 
-#### []{#protocol_details .anchor-link}[The Protocol](#protocol_details) {#the-protocol .anchor-heading}
+#### The Protocol {#protocol_details .anchor-link}
 
-##### []{#protocol_types .anchor-link}[Protocol Primitive Types](#protocol_types) {#protocol-primitive-types .anchor-heading}
+##### Protocol Primitive Types {#protocol_types .anchor-link}
 
 The protocol is built out of the following primitive types.
 
-##### []{#protocol_grammar .anchor-link}[Notes on reading the request format grammars](#protocol_grammar) {#notes-on-reading-the-request-format-grammars .anchor-heading}
+##### Notes on reading the request format grammars {#protocol_grammar .anchor-link}
 
 The [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)s below
 give an exact context free grammar for the request and response binary
@@ -293,7 +289,7 @@ these are separated with \'\|\' and may be enclosed in parenthesis for
 grouping. The top-level definition is always given first and subsequent
 sub-parts are indented.
 
-##### []{#protocol_common .anchor-link}[Common Request and Response Structure](#protocol_common) {#common-request-and-response-structure .anchor-heading}
+##### Common Request and Response Structure {#protocol_common .anchor-link}
 
 All requests and responses originate from the following grammar which
 will be incrementally describe through the rest of this document:
@@ -303,36 +299,36 @@ RequestOrResponse => Size (RequestMessage | ResponseMessage)
   Size => int32
 ```
 
-  -------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Field          Description
-  message_size   The message_size field gives the size of the subsequent request or response message in bytes. The client can read requests by first reading this 4 byte size as an integer N, and then reading and parsing the subsequent N bytes of the request.
-  -------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Field        | Description 
+---|---
+message_size | The message_size field gives the size of the subsequent request or response message in bytes. The client can read requests by first reading this 4 byte size as an integer N, and then reading and parsing the subsequent N bytes of the request.
 
-##### []{#protocol_recordbatch .anchor-link}[Record Batch](#protocol_recordbatch) {#record-batch .anchor-heading}
+
+##### Record Batch {#protocol_recordbatch .anchor-link}
 
 A description of the record batch format can be found
 [here](/documentation/#recordbatch).
 
-#### []{#protocol_constants .anchor-link}[Constants](#protocol_constants) {#constants .anchor-heading}
+#### Constants {#protocol_constants .anchor-link}
 
-##### []{#protocol_error_codes .anchor-link}[Error Codes](#protocol_error_codes) {#error-codes .anchor-heading}
+##### Error Codes {#protocol_error_codes .anchor-link}
 
 We use numeric codes to indicate what problem occurred on the server.
 These can be translated by the client into exceptions or whatever the
 appropriate error handling mechanism in the client language. Here is a
 table of the error codes currently in use:
 
-##### []{#protocol_api_keys .anchor-link}[Api Keys](#protocol_api_keys) {#api-keys .anchor-heading}
+##### Api Keys {#protocol_api_keys .anchor-link}
 
 The following are the numeric codes that the ApiKey in the request can
 take for each of the below request types.
 
-#### []{#protocol_messages .anchor-link}[The Messages](#protocol_messages) {#the-messages .anchor-heading}
+#### The Messages {#protocol_messages .anchor-link}
 
 This section gives details on each of the individual API Messages, their
 usage, their binary format, and the meaning of their fields.
 
-#### []{#protocol_philosophy .anchor-link}[Some Common Philosophical Questions](#protocol_philosophy) {#some-common-philosophical-questions .anchor-heading}
+#### Some Common Philosophical Questions {#protocol_philosophy .anchor-link}
 
 Some people have asked why we don\'t use HTTP. There are a number of
 reasons, the best is that client implementors can make use of some of
@@ -365,5 +361,3 @@ format and wire protocol is something we manage somewhat carefully and
 this would not be possible with these systems. Finally we prefer the
 style of versioning APIs explicitly and checking this to inferring new
 values as nulls as it allows more nuanced control of compatibility.
-:::
-:::
