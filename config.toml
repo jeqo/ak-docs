@@ -2,3 +2,12 @@ baseURL = 'http://kafka.apache.org/documentation'
 languageCode = 'en-us'
 title = 'Apache Kafka documentation'
 theme = 'book'
+pygmentsUseClasses = true
+
+[params]
+ak_version = '3.4'
+
+[markup]
+[markup.goldmark]
+[markup.goldmark.renderer]
+unsafe = true

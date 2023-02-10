@@ -278,6 +278,8 @@ this packet, skipping the first two steps above.
 
 The protocol is built out of the following primitive types.
 
+<!--#include virtual="generated/protocol_types.html" -->
+
 ##### Notes on reading the request format grammars {#protocol_grammar .anchor-link}
 
 The [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)s below
@@ -299,10 +301,9 @@ RequestOrResponse => Size (RequestMessage | ResponseMessage)
   Size => int32
 ```
 
-Field        | Description 
----|---
-message_size | The message_size field gives the size of the subsequent request or response message in bytes. The client can read requests by first reading this 4 byte size as an integer N, and then reading and parsing the subsequent N bytes of the request.
-
+| Field        | Description                                                                                                                                                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| message_size | The message_size field gives the size of the subsequent request or response message in bytes. The client can read requests by first reading this 4 byte size as an integer N, and then reading and parsing the subsequent N bytes of the request. |
 
 ##### Record Batch {#protocol_recordbatch .anchor-link}
 
@@ -318,15 +319,21 @@ These can be translated by the client into exceptions or whatever the
 appropriate error handling mechanism in the client language. Here is a
 table of the error codes currently in use:
 
+<!--#include virtual="generated/protocol_errors.html" -->
+
 ##### Api Keys {#protocol_api_keys .anchor-link}
 
 The following are the numeric codes that the ApiKey in the request can
 take for each of the below request types.
 
+<!--#include virtual="generated/protocol_api_keys.html" -->
+
 #### The Messages {#protocol_messages .anchor-link}
 
 This section gives details on each of the individual API Messages, their
 usage, their binary format, and the meaning of their fields.
+
+<!--#include virtual="generated/protocol_messages.html" -->
 
 #### Some Common Philosophical Questions {#protocol_philosophy .anchor-link}
 
