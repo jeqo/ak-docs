@@ -15,7 +15,7 @@
  limitations under the License.
 -->
 
-<script id="implementation-template" type="text/x-handlebars-template">
+<!--<script id="implementation-template" type="text/x-handlebars-template">-->
     <h3 class="anchor-heading"><a id="networklayer" class="anchor-link"></a><a href="#networklayer">5.1 Network Layer</a></h3>
     <p>
     The network layer is a fairly straight-forward NIO server, and will not be described in great detail. The sendfile implementation is done by giving the <code>TransferableRecords</code> interface a <code>writeTo</code> method. This allows the file-backed message set to use the more efficient <code>transferTo</code> implementation instead of an in-process buffered write. The threading model is a single acceptor thread and <i>N</i> processor threads which handle a fixed number of connections each. This design has been pretty thoroughly tested <a href="https://web.archive.org/web/20120619234320/http://sna-projects.com/blog/2009/08/introducing-the-nio-socketserver-implementation/">elsewhere</a> and found to be simple to implement and fast. The protocol is kept quite simple to allow for future implementation of clients in other languages.
@@ -292,6 +292,6 @@ messageSetSend n</code></pre>
     <p>
     The broker nodes are basically independent, so they only publish information about what they have. When a broker joins, it registers itself under the broker node registry directory and writes information about its host name and port. The broker also register the list of existing topics and their logical partitions in the broker topic registry. New topics are registered dynamically when they are created on the broker.
     </p>
-</script>
+<!--</script>-->
 
-<div class="p-implementation"></div>
+<!--<div class="p-implementation"></div>-->
