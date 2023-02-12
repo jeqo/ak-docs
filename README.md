@@ -6,6 +6,7 @@
 - [ ] Fix cross-references
 - [ ] Fix versioned links
 - [ ] Integration with Kafka-site
+- [ ] Code highlighting
 
 ## Convert HTML to Markdown
 
