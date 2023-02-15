@@ -8,6 +8,12 @@
 - [ ] Integration with Kafka-site
 - [ ] Code highlighting
 
+## How to run
+
+```shell
+hugo serve -b http://localhost:1313/documentation
+```
+
 ## Convert HTML to Markdown
 
 ```shell
