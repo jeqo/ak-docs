@@ -140,7 +140,7 @@ events to the topic by writing events over the network to the topic\'s
 partitions. Events with the same key (denoted by their color in the
 figure) are written to the same partition. Note that both producers can
 write to the same partition if
-appropriate.](/documentation/images/streams-and-tables-p1_p4.png)
+appropriate.](images/streams-and-tables-p1_p4.png)
 
 To make your data fault-tolerant and highly-available, every topic can
 be **replicated**, even across geo-regions or datacenters, so that there

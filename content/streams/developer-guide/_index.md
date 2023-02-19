@@ -3,18 +3,18 @@
 This developer guide describes how to write, configure, and execute a
 Kafka Streams application.
 
--   [Writing a Streams Application](write-streams.html){.reference .internal}
--   [Configuring a Streams Application](config-streams.html){.reference .internal}
--   [Streams DSL](dsl-api.html){.reference .internal}
--   [Processor API](processor-api.html){.reference .internal}
--   [Naming Operators in a Streams DSL application](dsl-topology-naming.html){.reference .internal}
--   [Data Types and Serialization](datatypes.html){.reference .internal}
--   [Testing a Streams Application](testing.html){.reference .internal}
--   [Interactive Queries](interactive-queries.html){.reference .internal}
--   [Memory Management](memory-mgmt.html){.reference .internal}
--   [Running Streams Applications](running-app.html){.reference .internal}
--   [Managing Streams Application Topics](manage-topics.html){.reference .internal}
--   [Streams Security](security.html){.reference .internal}
--   [Application Reset Tool](app-reset-tool.html){.reference .internal}
+-   [Writing a Streams Application](streams/developer-guide/write-streams)
+-   [Configuring a Streams Application](streams/developer-guide/config-streams)
+-   [Streams DSL](streams/developer-guide/dsl-api)
+-   [Processor API](streams/developer-guide/processor-api)
+-   [Naming Operators in a Streams DSL application](streams/developer-guide/dsl-topology-naming)
+-   [Data Types and Serialization](streams/developer-guide/datatypes)
+-   [Testing a Streams Application](streams/developer-guide/testing)
+-   [Interactive Queries](streams/developer-guide/interactive-queries)
+-   [Memory Management](streams/developer-guide/memory-mgmt)
+-   [Running Streams Applications](streams/developer-guide/running-app)
+-   [Managing Streams Application Topics](streams/developer-guide/manage-topics)
+-   [Streams Security](streams/developer-guide/security)
+-   [Application Reset Tool](streams/developer-guide/app-reset-tool)
 
 //TODO move to main menu
