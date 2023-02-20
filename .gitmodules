@@ -1,0 +1,3 @@
+[submodule "kafka-site"]
+	path = kafka-site
+	url = https://github.com/apache/kafka-site
