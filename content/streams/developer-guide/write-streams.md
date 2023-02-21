@@ -47,14 +47,14 @@ Streams applications.
 --------------------------------------------------------------------------------------------------------------------------------------------
 Group ID                        Artifact ID                        Version                           Description
 ------------------------------- ---------------------------------- --------------------------------- ---------------------------------------
-[`org.apache.kafka`{.docutils   [`kafka-streams`{.docutils         [`{{fullDotVersion}}`{.docutils   (Required) Base library for Kafka
+[`org.apache.kafka`{.docutils   [`kafka-streams`{.docutils         [`{{< param akFullDotVersion >}}`{.docutils   (Required) Base library for Kafka
 .literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  Streams.
 
-[`org.apache.kafka`{.docutils   [`kafka-clients`{.docutils         [`{{fullDotVersion}}`{.docutils   (Required) Kafka client library.
+[`org.apache.kafka`{.docutils   [`kafka-clients`{.docutils         [`{{< param akFullDotVersion >}}`{.docutils   (Required) Kafka client library.
 .literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  Contains built-in
                                                                                                      serializers/deserializers.
 
-[`org.apache.kafka`{.docutils   [`kafka-streams-scala`{.docutils   [`{{fullDotVersion}}`{.docutils   (Optional) Kafka Streams DSL for Scala
+[`org.apache.kafka`{.docutils   [`kafka-streams-scala`{.docutils   [`{{< param akFullDotVersion >}}`{.docutils   (Optional) Kafka Streams DSL for Scala
 .literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  library to write Scala Kafka Streams
                                                                                                      applications. When not using SBT you
                                                                                                      will need to suffix the artifact ID
@@ -78,18 +78,18 @@ Example `pom.xml` snippet when using Maven:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 <!-- Optionally include Kafka Streams DSL for Scala for Scala {{scalaVersion}} -->
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams-scala_{{scalaVersion}}</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 

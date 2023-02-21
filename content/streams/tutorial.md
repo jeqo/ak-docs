@@ -16,7 +16,7 @@ Streams project structure with the following commands:
 mvn archetype:generate \
     -DarchetypeGroupId=org.apache.kafka \
     -DarchetypeArtifactId=streams-quickstart-java \
-    -DarchetypeVersion={{fullDotVersion}} \
+    -DarchetypeVersion={{< param akFullDotVersion >}} \
     -DgroupId=streams.examples \
     -DartifactId=streams.examples \
     -Dversion=0.1 \

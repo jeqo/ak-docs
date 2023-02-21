@@ -1,6 +1,6 @@
 # Upgrade Guide and API Changes
 
-Upgrading from any older version to {{fullDotVersion}} is possible: if
+Upgrading from any older version to {{< param akFullDotVersion >}} is possible: if
 upgrading from 3.2 or below, you will need to do two rolling bounces,
 where during the first rolling bounce phase you set the config
 `upgrade.from="older version"` (possible values are `"0.10.0" - "3.2"`)
@@ -18,20 +18,20 @@ details please refer to
     sure that config `upgrade.from` is set to the version from which it
     is being upgrade.
 -   bounce each instance of your application once
--   prepare your newly deployed {{fullDotVersion}} application instances
+-   prepare your newly deployed {{< param akFullDotVersion >}} application instances
     for a second round of rolling bounces; make sure to remove the value
     for config `upgrade.from`
 -   bounce each instance of your application once more to complete the
     upgrade
 
 As an alternative, an offline upgrade is also possible. Upgrading from
-any versions as old as 0.10.0.x to {{fullDotVersion}} in offline mode
+any versions as old as 0.10.0.x to {{< param akFullDotVersion >}} in offline mode
 require the following steps:
 
 -   stop all old (e.g., 0.10.0.x) application instances
 -   update your code and swap old code and jar file with new code and
     new jar file
--   restart all new ({{fullDotVersion}}) application instances
+-   restart all new ({{< param akFullDotVersion >}}) application instances
 
 Note: The cooperative rebalancing protocol has been the default since
 2.4, but we have continued to support the eager rebalancing protocol to
@@ -117,7 +117,7 @@ config value to `StreamsConfig#OPTIMIZE` to continue reusing the source
 topic; if you are upgrading from 1.0 or 1.1 where you are already using
 `StreamsBuilder` and hence have already created a separate changelog
 topic, you should set this config value to
-`StreamsConfig#NO_OPTIMIZATION` when upgrading to {{fullDotVersion}} in
+`StreamsConfig#NO_OPTIMIZATION` when upgrading to {{< param akFullDotVersion >}} in
 order to use that changelog topic for restoring the state store. More
 details about the new config `StreamsConfig#TOPOLOGY_OPTIMIZATION` can
 be found in

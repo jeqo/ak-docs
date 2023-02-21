@@ -5,7 +5,8 @@ theme = 'book'
 pygmentsUseClasses = true
 
 [params]
-akVersion = '3.4'
+akVersion = '34'
+akDotVersion = '3.4'
 akFullDotVersion = '3.4.0'
 scalaVersion = '2.13'
 

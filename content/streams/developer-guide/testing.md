@@ -16,7 +16,7 @@ Example `pom.xml` snippet when using Maven:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams-test-utils</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
     <scope>test</scope>
 </dependency>
 ```

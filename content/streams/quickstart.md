@@ -63,13 +63,13 @@ will subsequently be processed by a Kafka Streams application.
 ## Step 1: Download the code {#quickstart_streams_download}
 
 [Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/%7B%7BfullDotVersion%7D%7D/kafka_%7B%7BscalaVersion%7D%7D-%7B%7BfullDotVersion%7D%7D.tgz "Kafka downloads")
-the {{fullDotVersion}} release and un-tar it. Note that there are
+the {{< param akFullDotVersion >}} release and un-tar it. Note that there are
 multiple downloadable Scala versions and we choose to use the
 recommended version ({{scalaVersion}}) here:
 
 ``` line-numbers
-> tar -xzf kafka_{{scalaVersion}}-{{fullDotVersion}}.tgz
-> cd kafka_{{scalaVersion}}-{{fullDotVersion}}
+> tar -xzf kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}.tgz
+> cd kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}
 ```
 
 ## Step 2: Start the Kafka server {#quickstart_streams_startserver}

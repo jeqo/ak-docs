@@ -1,7 +1,5 @@
 # APIs
 
-// TODO: fix version variables
-
 Kafka includes five core apis:
 
 1.  The [Producer](#producerapi) API allows applications to send streams
@@ -29,7 +27,7 @@ The Producer API allows applications to send streams of data to topics
 in the Kafka cluster.
 
 Examples showing how to use the producer are given in the
-[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html "Kafka {{dotVersion}} Javadoc").
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html "Kafka {{< param akDotVersion >}} Javadoc").
 
 To use the producer, you can use the following maven dependency:
 
@@ -37,7 +35,7 @@ To use the producer, you can use the following maven dependency:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
@@ -47,7 +45,7 @@ The Consumer API allows applications to read streams of data from topics
 in the Kafka cluster.
 
 Examples showing how to use the consumer are given in the
-[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html "Kafka {{dotVersion}} Javadoc").
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html "Kafka {{< param akDotVersion >}} Javadoc").
 
 To use the consumer, you can use the following maven dependency:
 
@@ -55,7 +53,7 @@ To use the consumer, you can use the following maven dependency:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
@@ -65,10 +63,9 @@ The [Streams](#streamsapi) API allows transforming streams of data from
 input topics to output topics.
 
 Examples showing how to use this library are given in the
-[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html "Kafka {{dotVersion}} Javadoc")
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html "Kafka {{< param akDotVersion >}} Javadoc")
 
-Additional documentation on using the Streams API is available
-[here](/{{< param akVersion >}}../streams).
+Additional documentation on using the Streams API is available [here](../streams).
 
 To use Kafka Streams you can use the following maven dependency:
 
@@ -76,23 +73,22 @@ To use Kafka Streams you can use the following maven dependency:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
 When using Scala you may optionally include the `kafka-streams-scala`
 library. Additional documentation on using the Kafka Streams DSL for
-Scala is available [in the developer
-guide](/{{< param akVersion >}}/documentation/streams/developer-guide/dsl-api.html#scala-dsl).
+Scala is available [in the developer guide](../streams/developer-guide/dsl-api#scala-dsl).
 
-To use Kafka Streams DSL for Scala for Scala {{scalaVersion}} you can
+To use Kafka Streams DSL for Scala {{< param scalaVersion >}} you can
 use the following maven dependency:
 
 ``` line-numbers
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams-scala_{{scalaVersion}}</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
@@ -104,11 +100,10 @@ sink data system.
 
 Many users of Connect won\'t need to use this API directly, though, they
 can use pre-built connectors without needing to write any code.
-Additional information on using Connect is available
-[here](/documentation.html#connect).
+Additional information on using Connect is available [here](../connect).
 
 Those who want to implement custom connectors can see the
-[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/connect "Kafka {{dotVersion}} Javadoc").
+[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/connect "Kafka {{< param akDotVersion >}} Javadoc").
 
 ## 2.5 Admin API {#adminapi .anchor-link}
 
@@ -121,10 +116,9 @@ To use the Admin API, add the following Maven dependency:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
-    <version>{{fullDotVersion}}</version>
+    <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
 For more information about the Admin APIs, see the
-[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/admin/Admin.html "Kafka {{dotVersion}} Javadoc").
-
+[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/admin/Admin.html "Kafka {{< param akDotVersion >}} Javadoc").

@@ -165,7 +165,7 @@ add or change the `plugin.path` configuration property match the
 following, and save the file:
 
 ```shell {.brush: .bash;}
-> echo "plugin.path=libs/connect-file-{{fullDotVersion}}.jar"
+> echo "plugin.path=libs/connect-file-{{< param akFullDotVersion >}}.jar"
 ```
 
 Then, start by creating some seed data to test with:

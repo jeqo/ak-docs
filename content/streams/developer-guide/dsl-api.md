@@ -4668,7 +4668,7 @@ your maven `pom.xml` add the following:
 <dependency>
   <groupId>org.apache.kafka</groupId>
   <artifactId>kafka-streams-scala_{{scalaVersion}}</artifactId>
-  <version>{{fullDotVersion}}</version>
+  <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
 
@@ -4680,7 +4680,7 @@ When using SBT then you can reference the correct library using the
 following:
 
 ``` line-numbers
-libraryDependencies += "org.apache.kafka" %% "kafka-streams-scala" % "{{fullDotVersion}}"
+libraryDependencies += "org.apache.kafka" %% "kafka-streams-scala" % "{{< param akFullDotVersion >}}"
 ```
 
 ### Sample Usage {#scala-dsl-sample-usage}
