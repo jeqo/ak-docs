@@ -29,7 +29,7 @@ The Producer API allows applications to send streams of data to topics
 in the Kafka cluster.
 
 Examples showing how to use the producer are given in the
-[javadocs](/%7B%7Bversion%7D%7D/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html "Kafka {{dotVersion}} Javadoc").
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html "Kafka {{dotVersion}} Javadoc").
 
 To use the producer, you can use the following maven dependency:
 
@@ -47,7 +47,7 @@ The Consumer API allows applications to read streams of data from topics
 in the Kafka cluster.
 
 Examples showing how to use the consumer are given in the
-[javadocs](/%7B%7Bversion%7D%7D/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html "Kafka {{dotVersion}} Javadoc").
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html "Kafka {{dotVersion}} Javadoc").
 
 To use the consumer, you can use the following maven dependency:
 
@@ -65,10 +65,10 @@ The [Streams](#streamsapi) API allows transforming streams of data from
 input topics to output topics.
 
 Examples showing how to use this library are given in the
-[javadocs](/%7B%7Bversion%7D%7D/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html "Kafka {{dotVersion}} Javadoc")
+[javadocs](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html "Kafka {{dotVersion}} Javadoc")
 
 Additional documentation on using the Streams API is available
-[here](/%7B%7Bversion%7D%7D/documentation/streams).
+[here](/{{< param akVersion >}}../streams).
 
 To use Kafka Streams you can use the following maven dependency:
 
@@ -83,7 +83,7 @@ To use Kafka Streams you can use the following maven dependency:
 When using Scala you may optionally include the `kafka-streams-scala`
 library. Additional documentation on using the Kafka Streams DSL for
 Scala is available [in the developer
-guide](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html#scala-dsl).
+guide](/{{< param akVersion >}}/documentation/streams/developer-guide/dsl-api.html#scala-dsl).
 
 To use Kafka Streams DSL for Scala for Scala {{scalaVersion}} you can
 use the following maven dependency:
@@ -108,7 +108,7 @@ Additional information on using Connect is available
 [here](/documentation.html#connect).
 
 Those who want to implement custom connectors can see the
-[javadoc](/%7B%7Bversion%7D%7D/javadoc/index.html?org/apache/kafka/connect "Kafka {{dotVersion}} Javadoc").
+[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/connect "Kafka {{dotVersion}} Javadoc").
 
 ## 2.5 Admin API {#adminapi .anchor-link}
 
@@ -126,5 +126,5 @@ To use the Admin API, add the following Maven dependency:
 ```
 
 For more information about the Admin APIs, see the
-[javadoc](/%7B%7Bversion%7D%7D/javadoc/index.html?org/apache/kafka/clients/admin/Admin.html "Kafka {{dotVersion}} Javadoc").
+[javadoc](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/admin/Admin.html "Kafka {{dotVersion}} Javadoc").
 

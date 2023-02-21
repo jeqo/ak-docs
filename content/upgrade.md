@@ -1,5 +1,5 @@
 # Upgrade
-// TODO fix links with variables
+
 ## Upgrading to 3.4.0 from any version 0.8.x through 3.3.x {#upgrade_3_4_0}
 
 **If you are upgrading from a version prior to 2.1.x, please see the
@@ -21,8 +21,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `3.3`,
         `3.2`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -67,7 +66,7 @@ version, it will not be possible to downgrade to a version prior to
     behavior and performance meets expectations.
 2.  Once the cluster\'s behavior and performance has been verified, bump
     the metadata.version by running
-    ` ./bin/kafka-features.sh upgrade --metadata 3.4 `
+    `./bin/kafka-features.sh upgrade --metadata 3.4`
 3.  Note that the cluster metadata version cannot be downgraded to a
     pre-production 3.0.x, 3.1.x, or 3.2.x version once it has been
     upgraded. However, it is possible to downgrade to production
@@ -91,11 +90,10 @@ to 2.1.**
     Alternatively, if you are upgrading from a version prior to
     0.11.0.x, then CURRENT_MESSAGE_FORMAT_VERSION should be set to match
     CURRENT_KAFKA_VERSION.
-    -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `3.2`,
-        `3.1`, etc.)
+    -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `3.2`, `3.1`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
-        this configuration does.)
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) 
+        for the details on what this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
     not overridden the message format, then you only need to override
@@ -223,9 +221,10 @@ to 2.1.**
 -   Idempotence for the producer is enabled by default if no conflicting
     configurations are set. When producing to brokers older than 2.8.0,
     the `IDEMPOTENT_WRITE` permission is required. Check the
-    compatibility section of [KIP-679\</\> for details. In 3.0.0 and
-    3.1.0, a bug prevented this default from being applied, which meant that idempotence remained disabled unless the user had explicitly set `enable.idempotence` to true
-    (See](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan)
+    compatibility section of 
+    [KIP-679](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan)
+    for details. In 3.0.0 and 3.1.0, a bug prevented this default from being applied, which meant that idempotence remained disabled unless the user had explicitly set `enable.idempotence` to true
+    (See
     [KAFKA-13598](https://issues.apache.org/jira/browse/KAFKA-13598) for
     more details). This issue was fixed and the default is properly
     applied in 3.0.1, 3.1.1, and 3.2.0.
@@ -273,9 +272,8 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `3.0`,
         `2.8`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
-        this configuration does.)
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) 
+        for the details on what this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
     not overridden the message format, then you only need to override
@@ -301,8 +299,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 3.1.1 {#upgrade_311_notable}
@@ -310,11 +307,11 @@ to 2.1.**
 -   Idempotence for the producer is enabled by default if no conflicting
     configurations are set. When producing to brokers older than 2.8.0,
     the `IDEMPOTENT_WRITE` permission is required. Check the
-    compatibility section of [KIP-679\</\> for details. A bug prevented
+    compatibility section of [KIP-679](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan) for details. A bug prevented
     the producer idempotence default from being applied which meant that
     it remained disabled unless the user had explicitly set
     `enable.idempotence` to true.
-    See](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan)
+    See
     [KAFKA-13598](https://issues.apache.org/jira/browse/KAFKA-13598) for
     more details. This issue was fixed and the default is properly
     applied.
@@ -369,8 +366,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `2.8`,
         `2.7`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -405,11 +401,11 @@ to 2.1.**
 -   Idempotence for the producer is enabled by default if no conflicting
     configurations are set. When producing to brokers older than 2.8.0,
     the `IDEMPOTENT_WRITE` permission is required. Check the
-    compatibility section of [KIP-679\</\> for details. A bug prevented
+    compatibility section of [KIP-679](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan) for details. A bug prevented
     the producer idempotence default from being applied which meant that
     it remained disabled unless the user had explicitly set
     `enable.idempotence` to true.
-    See](https://cwiki.apache.org/confluence/display/KAFKA/KIP-679%3A+Producer+will+enable+the+strongest+delivery+guarantee+by+default#KIP679:Producerwillenablethestrongestdeliveryguaranteebydefault-Compatibility,Deprecation,andMigrationPlan)
+    Se quandoo.55xco@simplelogin.com e
     [KAFKA-13598](https://issues.apache.org/jira/browse/KAFKA-13598) for
     more details. This issue was fixed and the default is properly
     applied.
@@ -487,7 +483,7 @@ to 2.1.**
 -   A number of deprecated classes, methods and tools have been removed
     from the `clients`, `connect`, `core` and `tools` modules:
 
--   -   The Scala `Authorizer`, `SimpleAclAuthorizer` and related
+    -   The Scala `Authorizer`, `SimpleAclAuthorizer` and related
         classes have been removed. Please use the Java `Authorizer` and
         `AclAuthorizer` instead.
     -   The `Metric#value()` method was removed
@@ -511,9 +507,9 @@ to 2.1.**
         `--bootstrap-server` instead.
     -   In the `kafka-configs` command line tool, the `--zookeeper`
         option is only supported for updating [SCRAM Credentials
-        configuration](#security_sasl_scram_credentials) and
+        configuration](../security#security_sasl_scram_credentials) and
         [describing/updating dynamic broker configs when brokers are not
-        running](#dynamicbrokerconfigs). Please use `--bootstrap-server`
+        running](../configuration#dynamicbrokerconfigs). Please use `--bootstrap-server`
         for other configuration operations.
     -   The `ConfigEntry` constructor was removed
         ([KAFKA-12577](https://issues.apache.org/jira/browse/KAFKA-12577)).
@@ -612,8 +608,7 @@ to 2.1.**
 
 -   The original MirrorMaker (MM1) and related classes have been
     deprecated. Please use the Connect-based MirrorMaker (MM2), as
-    described in the [Geo-Replication
-    section](/%7B%7Bversion%7D%7D/documentation/#georeplication).
+    described in the [Geo-Replication section](../operations#georeplication).
 
 ## Upgrading to 2.8.1 from any version 0.8.x through 2.7.x {#upgrade_2_8_1}
 
@@ -636,8 +631,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `2.7`,
         `2.6`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -664,8 +658,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 2.8.0 {#upgrade_280_notable}
@@ -709,8 +702,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `2.6`,
         `2.5`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -737,8 +729,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 2.7.0 {#upgrade_270_notable}
@@ -823,8 +814,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `2.5`,
         `2.4`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -851,8 +841,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 2.6.0 {#upgrade_260_notable .anchor-link}
@@ -901,8 +890,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. `2.4`,
         `2.3`, etc.)
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -929,8 +917,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 6.  There are several notable changes to the reassignment tool
     `kafka-reassign-partitions.sh` following the completion of
@@ -1030,8 +1017,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g.
         0.10.0, 0.11.0, 1.0, 2.0, 2.2).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from version 0.11.0.x or above, and you have
@@ -1058,8 +1044,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 **Additional Upgrade Notes:**
@@ -1250,8 +1235,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. 0.8.2,
         0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 1.0, 1.1).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from 0.11.0.x, 1.0.x, 1.1.x, 2.0.x, or 2.1.x,
@@ -1278,15 +1262,13 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 2.3.0 {#upgrade_230_notable}
 
 -   We are introducing a new rebalancing protocol for Kafka Connect
-    based on [incremental cooperative
-    rebalancing](https://cwiki.apache.org/confluence/display/KAFKA/KIP-415%3A+Incremental+Cooperative+Rebalancing+in+Kafka+Connect).
+    based on [incremental cooperative rebalancing](https://cwiki.apache.org/confluence/display/KAFKA/KIP-415%3A+Incremental+Cooperative+Rebalancing+in+Kafka+Connect).
     The new protocol does not require stopping all the tasks during a
     rebalancing phase between Connect workers. Instead, only the tasks
     that need to be exchanged between workers are stopped and they are
@@ -1294,16 +1276,15 @@ to 2.1.**
     enabled by default beginning with 2.3.0. For more details on how it
     works and how to enable the old behavior of eager rebalancing,
     checkout [incremental cooperative rebalancing
-    design](/%7B%7Bversion%7D%7D/documentation/#connect_administration).
+    design](/{{< param akVersion >}}../connect_administration).
 -   We are introducing static membership towards consumer user. This
     feature reduces unnecessary rebalances during normal application
     upgrades or rolling bounces. For more details on how to use it,
     checkout [static membership
-    design](/%7B%7Bversion%7D%7D/documentation/#static_membership).
+    design](/{{< param akVersion >}}/documentation/#static_membership).
 -   Kafka Streams DSL switches its used store types. While this change
     is mainly transparent to users, there are some corner cases that may
-    require code changes. See the [Kafka Streams upgrade
-    section](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_230)
+    require code changes. See the [Kafka Streams upgrade section](../streams/upgrade-guide#streams_api_changes_230)
     for more details.
 -   Kafka Streams 2.3.0 requires 0.11 message format or higher and does
     not work with older message format.
@@ -1329,8 +1310,7 @@ to 2.1.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. 0.8.2,
         0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 1.0, 1.1).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from 0.11.0.x, 1.0.x, 1.1.x, or 2.0.x and you
@@ -1357,8 +1337,7 @@ to 2.1.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 ### Notable changes in 2.2.1 {#upgrade_221_notable}
@@ -1404,8 +1383,7 @@ for more detail.**
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. 0.8.2,
         0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 1.0, 1.1).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from 0.11.0.x, 1.0.x, 1.1.x, or 2.0.x and you
@@ -1432,8 +1410,7 @@ for more detail.**
     broker and restart them one by one. Note that the older Scala
     clients, which are no longer maintained, do not support the message
     format introduced in 0.11, so to avoid conversion costs (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     clients must be used.
 
 **Additional Upgrade Notes:**
@@ -1517,8 +1494,7 @@ the upgrade. However, please review the [notable changes in
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. 0.8.2,
         0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 1.0, 1.1).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from 0.11.0.x, 1.0.x, or 1.1.x and you have not
@@ -1539,8 +1515,7 @@ the upgrade. However, please review the [notable changes in
     broker and restart them one by one. Note that the older Scala
     consumer does not support the new message format introduced in 0.11,
     so to avoid the performance cost of down-conversion (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     consumer must be used.
 
 **Additional Upgrade Notes:**
@@ -1642,13 +1617,11 @@ the upgrade. However, please review the [notable changes in
 
 -   Updated `ProcessorStateManager` APIs in Kafka Streams for
     registering state stores to the processor topology. For more details
-    please read the Streams [Upgrade
-    Guide](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_200).
+    please read the Streams [Upgrade Guide](../streams/upgrade-guide#streams_api_changes_200).
 
 -   In earlier releases, Connect\'s worker configuration required the
     `internal.key.converter` and `internal.value.converter` properties.
-    In 2.0, these are [no longer
-    required](https://cwiki.apache.org/confluence/x/AZQ7B) and default
+    In 2.0, these are [no longer required](https://cwiki.apache.org/confluence/x/AZQ7B) and default
     to the JSON converter. You may safely remove these properties from
     your Connect standalone and distributed worker configurations:\
     `internal.key.converter=org.apache.kafka.connect.json.JsonConverter`
@@ -1744,7 +1717,7 @@ the upgrade. However, please review the [notable changes in
 -   Note that in 2.0 we have removed the public APIs that are deprecated
     prior to 1.0; users leveraging on those deprecated APIs need to make
     code changes accordingly. See [Streams API changes in
-    2.0.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_200)
+    2.0.0](../streams/upgrade-guide#streams_api_changes_200)
     for more details.
 
 ## Upgrading from 0.8.x, 0.9.x, 0.10.0.x, 0.10.1.x, 0.10.2.x, 0.11.0.x, or 1.0.x to 1.1.x {#upgrade_1_1_0}
@@ -1767,8 +1740,7 @@ the upgrade. However, please review the [notable changes in
     -   inter.broker.protocol.version=CURRENT_KAFKA_VERSION (e.g. 0.8.2,
         0.9.0, 0.10.0, 0.10.1, 0.10.2, 0.11.0, 1.0).
     -   log.message.format.version=CURRENT_MESSAGE_FORMAT_VERSION (See
-        [potential performance impact following the
-        upgrade](#upgrade_10_performance_impact) for the details on what
+        [potential performance impact following the upgrade](#upgrade_10_performance_impact) for the details on what
         this configuration does.)
 
     If you are upgrading from 0.11.0.x or 1.0.x and you have not
@@ -1789,8 +1761,7 @@ the upgrade. However, please review the [notable changes in
     broker and restart them one by one. Note that the older Scala
     consumer does not support the new message format introduced in 0.11,
     so to avoid the performance cost of down-conversion (or to take
-    advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the newer Java
+    advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the newer Java
     consumer must be used.
 
 **Additional Upgrade Notes:**
@@ -1809,7 +1780,7 @@ the upgrade. However, please review the [notable changes in
 
 -   New Kafka Streams configuration parameter `upgrade.from` added that
     allows rolling bounce upgrade from version 0.10.0.x
--   See the [**Kafka Streams upgrade guide**](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide.html)
+-   See the [**Kafka Streams upgrade guide**](../streams/upgrade-guide.html)
     for details about this new config.
 
 ### Notable changes in 1.1.0 {#upgrade_110_notable}
@@ -1829,7 +1800,7 @@ the upgrade. However, please review the [notable changes in
     Kafka Streams tries to self-heal and reconnect to the cluster. Using
     the new `AdminClient` you have better control of how often Kafka
     Streams retries and can
-    [configure](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/config-streams)
+    [configure](/{{< param akVersion >}}/documentation/streams/developer-guide/config-streams)
     fine-grained timeouts (instead of hard coded retries as in older
     version).
 -   Kafka Streams rebalance time was reduced further making Kafka
@@ -1858,7 +1829,7 @@ the upgrade. However, please review the [notable changes in
     1.0, 0.11.0, 0.10.2 and 0.10.1 brokers (it is not possible to
     connect to 0.10.0 brokers though).
 -   See [Streams API changes in
-    1.1.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_110)
+    1.1.0](../streams/upgrade-guide#streams_api_changes_110)
     for more details.
 
 ## Upgrading from 0.8.x, 0.9.x, 0.10.0.x, 0.10.1.x, 0.10.2.x or 0.11.0.x to 1.0.0 {#upgrade_1_0_0}
@@ -1919,7 +1890,7 @@ the upgrade. However, please review the [notable changes in 1.0.0](#upgrade_100_
 
 -   New Kafka Streams configuration parameter `upgrade.from` added that
     allows rolling bounce upgrade from version 0.10.0.x
--   See the [**Kafka Streams upgrade guide**](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide.html)
+-   See the [**Kafka Streams upgrade guide**](../streams/upgrade-guide.html)
     for details about this new config.
 
 ### Notable changes in 1.0.1 {#upgrade_101_notable}
@@ -2045,8 +2016,7 @@ the upgrade. However, please review the [notable changes in 1.0.0](#upgrade_100_
     being deprecated by new APIs. We recommend making corresponding code
     changes, which should be very minor since the new APIs look quite
     similar, when you upgrade.
--   See [Streams API changes in
-    1.0.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_100)
+-   See [Streams API changes in 1.0.0](../streams/upgrade-guide#streams_api_changes_100)
     for more details.
 
 ### Upgrading a 0.10.2 Kafka Streams Application {#upgrade_100_streams_from_0102}
@@ -2066,8 +2036,7 @@ the upgrade. However, please review the [notable changes in 1.0.0](#upgrade_100_
 -   If you specify customized `key.serde`, `value.serde` and
     `timestamp.extractor` in configs, it is recommended to use their
     replaced configure parameter as these configs are deprecated.
--   See [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0110)
+-   See [Streams API changes in 0.11.0](../streams/upgrade-guide#streams_api_changes_0110)
     for more details.
 
 ### Upgrading a 0.10.1 Kafka Streams Application {#upgrade_100_streams_from_0101}
@@ -2094,12 +2063,9 @@ the upgrade. However, please review the [notable changes in 1.0.0](#upgrade_100_
     interface was changed.
 -   If you register custom metrics, you will need to update this code,
     because the `StreamsMetric` interface was changed.
--   See [Streams API changes in
-    1.0.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_100),
-    [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0110)
-    and [Streams API changes in
-    0.10.2](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0102)
+-   See [Streams API changes in 1.0.0](../streams/upgrade-guide#streams_api_changes_100),
+    [Streams API changes in 0.11.0](../streams/upgrade-guide#streams_api_changes_0110)
+    and [Streams API changes in 0.10.2](../streams/upgrade-guide#streams_api_changes_0102)
     for more details.
 
 ### Upgrading a 0.10.0 Kafka Streams Application {#upgrade_100_streams_from_0100}
@@ -2109,14 +2075,13 @@ the upgrade. However, please review the [notable changes in 1.0.0](#upgrade_100_
     application can only connect to 0.1, 0.11.0, 0.10.2, or 0.10.1
     brokers.
 -   There are couple of API changes, that are not backward compatible
-    (cf. [Streams API changes in
-    1.0.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_100),
+    (cf. [Streams API changes in 1.0.0](../streams/upgrade-guide#streams_api_changes_100),
     [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0110),
+    0.11.0](/{{< param akVersion >}}/documentation/streams#streams_api_changes_0110),
     [Streams API changes in
-    0.10.2](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0102),
+    0.10.2](/{{< param akVersion >}}/documentation/streams#streams_api_changes_0102),
     and [Streams API changes in
-    0.10.1](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0101)
+    0.10.1](/{{< param akVersion >}}/documentation/streams#streams_api_changes_0101)
     for more details). Thus, you need to update and recompile your code.
     Just swapping the Kafka Streams library jar file will not work and
     will break your application.
@@ -2179,8 +2144,7 @@ support 0.8.x and newer clients.
     then change log.message.format.version to 0.11.0 on each broker and
     restart them one by one. Note that the older Scala consumer does not
     support the new message format, so to avoid the performance cost of
-    down-conversion (or to take advantage of [exactly once
-    semantics](#upgrade_11_exactly_once_semantics)), the new Java
+    down-conversion (or to take advantage of [exactly once semantics](#upgrade_11_exactly_once_semantics)), the new Java
     consumer must be used.
 
 **Additional Upgrade Notes:**
@@ -2207,8 +2171,7 @@ support 0.8.x and newer clients.
 -   If you specify customized `key.serde`, `value.serde` and
     `timestamp.extractor` in configs, it is recommended to use their
     replaced configure parameter as these configs are deprecated.
--   See [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0110)
+-   See [Streams API changes in 0.11.0](../streams/upgrade-guide#streams_api_changes_0110)
     for more details.
 
 ### Upgrading a 0.10.1 Kafka Streams Application {#upgrade_1100_streams_from_0101}
@@ -2227,10 +2190,8 @@ support 0.8.x and newer clients.
     interface was changed.
 -   If you register custom metrics, you will need to update this code,
     because the `StreamsMetric` interface was changed.
--   See [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0110)
-    and [Streams API changes in
-    0.10.2](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0102)
+-   See [Streams API changes in 0.11.0](../streams/upgrade-guide#streams_api_changes_0110)
+    and [Streams API changes in 0.10.2](../streams/upgrade-guide#streams_api_changes_0102)
     for more details.
 
 ### Upgrading a 0.10.0 Kafka Streams Application {#upgrade_1100_streams_from_0100}
@@ -2240,12 +2201,9 @@ support 0.8.x and newer clients.
     0.11.0 application can only connect to 0.11.0, 0.10.2, or 0.10.1
     brokers.
 -   There are couple of API changes, that are not backward compatible
-    (cf. [Streams API changes in
-    0.11.0](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0110),
-    [Streams API changes in
-    0.10.2](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0102),
-    and [Streams API changes in
-    0.10.1](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0101)
+    (cf. [Streams API changes in 0.11.0](../streams/upgrade-guide#streams_api_changes_0110),
+    [Streams API changes in 0.10.2](../streams/upgrade-guide#streams_api_changes_0102),
+    and [Streams API changes in 0.10.1](../streams/upgrade-guide#streams_api_changes_0101)
     for more details). Thus, you need to update and recompile your code.
     Just swapping the Kafka Streams library jar file will not work and
     will break your application.
@@ -2274,8 +2232,7 @@ support 0.8.x and newer clients.
 
 -   New Kafka Streams configuration parameter `upgrade.from` added that
     allows rolling bounce upgrade from version 0.10.0.x
--   See the [**Kafka Streams upgrade
-    guide**](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide.html)
+-   See the [**Kafka Streams upgrade guide**](../streams/upgrade-guide)
     for details about this new config.
 
 ### Notable changes in 0.11.0.0 {#upgrade_1100_notable}
@@ -2508,7 +2465,7 @@ after.
     interface was changed.
 -   If you register custom metrics, you will need to update this code,
     because the `StreamsMetric` interface was changed.
--   See [Streams API changes in 0.10.2](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0102)
+-   See [Streams API changes in 0.10.2](../streams/upgrade-guide#streams_api_changes_0102)
     for more details.
 
 ### Upgrading a 0.10.0 Kafka Streams Application {#upgrade_1020_streams_from_0100}
@@ -2518,7 +2475,7 @@ after.
     0.10.2 application can only connect to 0.10.2 or 0.10.1 brokers.
 -   There are couple of API changes, that are not backward compatible
     (cf. [Streams API changes in
-    0.10.2](/%7B%7Bversion%7D%7D/documentation/streams#streams_api_changes_0102)
+    0.10.2](/{{< param akVersion >}}/documentation/streams#streams_api_changes_0102)
     for more details). Thus, you need to update and recompile your code.
     Just swapping the Kafka Streams library jar file will not work and
     will break your application.
@@ -2589,7 +2546,7 @@ after.
     \"connections.max.idle.ms\", \"retry.backoff.ms\",
     \"reconnect.backoff.ms\" and \"request.timeout.ms\" were added to
     StreamsConfig class. User should pay attention to the default values
-    and set these if needed. For more details please refer to [3.5 Kafka Streams Configs](/%7B%7Bversion%7D%7D/documentation/#streamsconfigs).
+    and set these if needed. For more details please refer to [3.5 Kafka Streams Configs](/{{< param akVersion >}}/documentation/#streamsconfigs).
 
 ### New Protocol Versions {#upgrade_1020_new_protocols}
 
@@ -2682,7 +2639,7 @@ after.
     0.10.1 application can only connect to 0.10.1 brokers.
 -   There are couple of API changes, that are not backward compatible
     (cf. [Streams API changes in
-    0.10.1](/%7B%7Bversion%7D%7D/documentation/streams/upgrade-guide#streams_api_changes_0101)
+    0.10.1](../streams/upgrade-guide#streams_api_changes_0101)
     for more details). Thus, you need to update and recompile your code.
     Just swapping the Kafka Streams library jar file will not work and
     will break your application.
@@ -2933,8 +2890,7 @@ Kafka release.
     Streams** is available for stream processing on data stored in Kafka
     topics. This new client library only works with 0.10.x and upward
     versioned brokers due to message format changes mentioned above. For
-    more information please read [Streams
-    documentation](/%7B%7Bversion%7D%7D/documentation/streams).
+    more information please read [Streams documentation](../streams).
 -   The default value of the configuration parameter
     `receive.buffer.bytes` is now 64K for the new consumer.
 -   The new consumer now exposes the configuration parameter
@@ -3073,6 +3029,6 @@ it.
 Release 0.7 is incompatible with newer releases. Major changes were made
 to the API, ZooKeeper data structures, and protocol, and configuration
 in order to add replication (Which was missing in 0.7). The upgrade from
-0.7 to later versions requires a [special
-tool](https://cwiki.apache.org/confluence/display/KAFKA/Migrating+from+0.7+to+0.8)
+0.7 to later versions requires a 
+[special tool](https://cwiki.apache.org/confluence/display/KAFKA/Migrating+from+0.7+to+0.8)
 for migration. This migration can be done without downtime.

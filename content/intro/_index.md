@@ -19,7 +19,7 @@ is at the right place, at the right time.
 
 ## What can I use event streaming for? {#intro_usage .anchor-link}
 
-Event streaming is applied to a [wide variety of use cases](/powered-by.html)
+Event streaming is applied to a [wide variety of use cases](/powered-by.html.html)
 across a plethora of industries and organizations. Its many examples
 include:
 
@@ -41,7 +41,7 @@ include:
 
 ## Apache Kafka® is an event streaming platform. What does that mean?{#intro_platform .anchor-link}
 
-Kafka combines three key capabilities so you can implement [your use cases](/powered-by.html) 
+Kafka combines three key capabilities so you can implement [your use cases](/powered-by.html.html) 
 for event streaming end-to-end with a single battle-tested solution:
 
 1.  To **publish** (write) and **subscribe to** (read) streams of
@@ -185,7 +185,7 @@ tasks, Kafka has five core APIs for Java and Scala:
 -   To get hands-on experience with Kafka, follow the [Quickstart](../quickstart).
 -   To understand Kafka in more detail, read the [Documentation](../index.html). 
     You also have your choice of [Kafka books and academic papers](/books-and-papers.html).
--   Browse through the [Use Cases](/powered-by.html) to learn how other users
+-   Browse through the [Use Cases](/powered-by.html.html) to learn how other users
     in our world-wide community are getting value out of Kafka.
 -   Join a [local Kafka meetup group](/events.html) and 
     [watch talks from Kafka Summit](https://kafka-summit.org/past-events/), 

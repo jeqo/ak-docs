@@ -5,7 +5,9 @@ theme = 'book'
 pygmentsUseClasses = true
 
 [params]
-ak_version = '3.4'
+akVersion = '3.4'
+akFullDotVersion = '3.4.0'
+scalaVersion = '2.13'
 
 [markup]
 [markup.goldmark]

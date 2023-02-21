@@ -2,12 +2,12 @@
 
 ## Step 1: Get Kafka {#quickstart_download .anchor-link}
 
-[Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/%7B%7BfullDotVersion%7D%7D/kafka_%7B%7BscalaVersion%7D%7D-%7B%7BfullDotVersion%7D%7D.tgz)
+[Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/{{< param akFullDotVersion >}}/kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}.tgz)
 the latest Kafka release and extract it:
 
-``` line-numbers
-$ tar -xzf kafka_{{scalaVersion}}-{{fullDotVersion}}.tgz
-$ cd kafka_{{scalaVersion}}-{{fullDotVersion}}
+```shell line-numbers
+$ tar -xzf kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}.tgz
+$ cd kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}
 ```
 
 ## Step 2: Start the Kafka environment {#quickstart_startserver .anchor-link}
@@ -22,14 +22,14 @@ with either configuration follow one the sections below but not both.
 Run the following commands in order to start all services in the correct
 order:
 
-``` line-numbers
+```shell line-numbers
 # Start the ZooKeeper service
 $ bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 Open another terminal session and run:
 
-``` line-numbers
+```shell line-numbers
 # Start the Kafka broker service
 $ bin/kafka-server-start.sh config/server.properties
 ```
@@ -41,19 +41,19 @@ Kafka environment running and ready to use.
 
 Generate a Cluster UUID
 
-``` line-numbers
+```shell line-numbers
 $ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
 ```
 
 Format Log Directories
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
 ```
 
 Start the Kafka Server
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-server-start.sh config/kraft/server.properties
 ```
 
@@ -63,31 +63,29 @@ Kafka environment running and ready to use.
 ## Step 3: Create a topic to store your events {#quickstart_createtopic .anchor-link}
 
 Kafka is a distributed *event streaming platform* that lets you read,
-write, store, and process [*events*](/documentation/#messages) (also
-called *records* or *messages* in the documentation) across many
-machines.
+write, store, and process [*events*](../implementation/#messages) 
+(also called *records* or *messages* in the documentation) across many machines.
 
 Example events are payment transactions, geolocation updates from mobile
 phones, shipping orders, sensor measurements from IoT devices or medical
 equipment, and much more. These events are organized and stored in
-[*topics*](/documentation/#intro_concepts_and_terms). Very simplified, a
+[*topics*](../intro#intro_concepts_and_terms). Very simplified, a
 topic is similar to a folder in a filesystem, and the events are the
 files in that folder.
 
 So before you can write your first events, you must create a topic. Open
 another terminal session and run:
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
 ```
 
 All of Kafka\'s command line tools have additional options: run the
 `kafka-topics.sh` command without any arguments to display usage
-information. For example, it can also show you [details such as the
-partition count](/documentation/#intro_concepts_and_terms) of the new
-topic:
+information. For example, it can also show you 
+[details such as the partition count](../intro#intro_concepts_and_terms) of the new topic:
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
 Topic: quickstart-events        TopicId: NPmZHyhbR9y00wMglMH2sg PartitionCount: 1       ReplicationFactor: 1    Configs:
     Topic: quickstart-events Partition: 0    Leader: 0   Replicas: 0 Isr: 0
@@ -98,13 +96,13 @@ Topic: quickstart-events        TopicId: NPmZHyhbR9y00wMglMH2sg PartitionCount: 
 A Kafka client communicates with the Kafka brokers via the network for
 writing (or reading) events. Once received, the brokers will store the
 events in a durable and fault-tolerant manner for as long as you
-need---even forever.
+need—even forever.
 
 Run the console producer client to write a few events into your topic.
 By default, each line you enter will result in a separate event being
 written to the topic.
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
 This is my first event
 This is my second event
@@ -117,7 +115,7 @@ You can stop the producer client with `Ctrl-C` at any time.
 Open another terminal session and run the console consumer client to
 read the events you just created:
 
-``` line-numbers
+```shell line-numbers
 $ bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
 This is my first event
 This is my second event
@@ -138,7 +136,7 @@ command again.
 
 You probably have lots of data in existing systems like relational
 databases or traditional messaging systems, along with many applications
-that already use these systems. [Kafka Connect](/documentation/#connect)
+that already use these systems. [Kafka Connect](../connect)
 allows you to continuously ingest data from external systems into Kafka,
 and vice versa. It is an extensible tool that runs *connectors*, which
 implement the custom logic for interacting with an external system. It
@@ -151,33 +149,34 @@ connectors that import data from a file to a Kafka topic and export data
 from a Kafka topic to a file.
 
 First, make sure to add
-`connect-file-{{fullDotVersion}}.jar`{.language-bash} to the
+`connect-file-{{< param akFullDotVersion >}}.jar` to the
 `plugin.path` property in the Connect worker\'s configuration. For the
 purpose of this quickstart we\'ll use a relative path and consider the
 connectors\' package as an uber jar, which works when the quickstart
 commands are run from the installation directory. However, it\'s worth
 noting that for production deployments using absolute paths is always
 preferable. See
-[plugin.path](/documentation/#connectconfigs_plugin.path) for a detailed
+//TODO fix config link
+[plugin.path](../connectconfigs_plugin.path) for a detailed
 description of how to set this config.
 
-Edit the `config/connect-standalone.properties`{.language-bash} file,
+Edit the `config/connect-standalone.properties` file,
 add or change the `plugin.path` configuration property match the
 following, and save the file:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > echo "plugin.path=libs/connect-file-{{fullDotVersion}}.jar"
 ```
 
 Then, start by creating some seed data to test with:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > echo -e "foo\nbar" > test.txt
 ```
 
 Or on Windows:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > echo foo> test.txt
 > echo bar>> test.txt
 ```
@@ -191,7 +190,7 @@ The remaining configuration files each specify a connector to create.
 These files include a unique connector name, the connector class to
 instantiate, and any other configuration required by the connector.
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties config/connect-file-sink.properties
 ```
 
@@ -211,7 +210,7 @@ and the sink connector should start reading messages from the topic
 the data has been delivered through the entire pipeline by examining the
 contents of the output file:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > more test.sink.txt
 foo
 bar
@@ -221,7 +220,7 @@ Note that the data is being stored in the Kafka topic `connect-test`, so
 we can also run a console consumer to see the data in the topic (or use
 custom consumer code to process it):
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic connect-test --from-beginning
 {"schema":{"type":"string","optional":false},"payload":"foo"}
 {"schema":{"type":"string","optional":false},"payload":"bar"}
@@ -231,7 +230,7 @@ custom consumer code to process it):
 The connectors continue to process data, so we can add data to the file
 and see it move through the pipeline:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > echo Another line>> test.txt
 ```
 
@@ -241,7 +240,7 @@ sink file.
 ## Step 7: Process your events with Kafka Streams {#quickstart_kafkastreams .anchor-link}
 
 Once your data is stored in Kafka as events, you can process the data
-with the [Kafka Streams](/documentation/streams) client library for
+with the [Kafka Streams](../streams) client library for
 Java/Scala. It allows you to implement mission-critical real-time
 applications and microservices, where the input and/or output data is
 stored in Kafka topics. Kafka Streams combines the simplicity of writing
@@ -255,7 +254,7 @@ event-time, and much more.
 To give you a first taste, here\'s how one would implement the popular
 `WordCount` algorithm:
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> textLines = builder.stream("quickstart-events");
 
 KTable<String, Long> wordCounts = textLines
@@ -266,8 +265,7 @@ KTable<String, Long> wordCounts = textLines
 wordCounts.toStream().to("output-topic", Produced.with(Serdes.String(), Serdes.Long()));
 ```
 
-The [Kafka Streams demo](/documentation/streams/quickstart) and the 
-[app development tutorial](/%7B%7Bversion%7D%7D/documentation/streams/tutorial)
+The [Kafka Streams demo](../streams/quickstart) and the [app development tutorial](../streams/tutorial)
 demonstrate how to code and run such a streaming application from start
 to finish.
 
@@ -285,7 +283,7 @@ the Kafka environment---or continue playing around.
 If you also want to delete any data of your local Kafka environment
 including any events you have created along the way, run the command:
 
-``` line-numbers
+```shell line-numbers
 $ rm -rf /tmp/kafka-logs /tmp/zookeeper /tmp/kraft-combined-logs
 ```
 
@@ -295,13 +293,13 @@ You have successfully finished the Apache Kafka quickstart.
 
 To learn more, we suggest the following next steps:
 
--   Read through the brief [Introduction](/intro) to learn how Kafka
+-   Read through the brief [Introduction](../intro) to learn how Kafka
     works at a high level, its main concepts, and how it compares to
     other technologies. To understand Kafka in more detail, head over to
-    the [Documentation](/documentation/).
--   Browse through the [Use Cases](/powered-by) to learn how other users
+    the [Documentation](../index.html).
+-   Browse through the [Use Cases](/powered-by.html) to learn how other users
     in our world-wide community are getting value out of Kafka.
--   Join a [local Kafka meetup group](/events) and [watch talks from
-    Kafka Summit](https://kafka-summit.org/past-events/), the main
+-   Join a [local Kafka meetup group](/events.html) and 
+    [watch talks from Kafka Summit](https://kafka-summit.org/past-events/), the main
     conference of the Kafka community.
 

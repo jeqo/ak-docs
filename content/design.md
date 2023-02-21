@@ -562,7 +562,7 @@ generally by letting the consumer store its offset in the same place as
 its output. This is better because many of the output systems a consumer
 might want to write to will not support a two-phase commit. As an
 example of this, consider a 
-[Kafka Connect](https://kafka.apache.org/documentation/#connect) connector
+[Kafka Connect](https://kafka.apache.org../connect) connector
 which populates data in HDFS along with the offsets of the data it reads
 so that it is guaranteed that either data and offsets are both updated
 or neither is. We follow similar patterns for many other data systems
@@ -576,7 +576,7 @@ exactly-once delivery when transferring and processing data between
 Kafka topics. Exactly-once delivery for other destination systems
 generally requires cooperation with such systems, but Kafka provides the
 offset which makes implementing this feasible (see also 
-[Kafka Connect](https://kafka.apache.org/documentation/#connect)). Otherwise,
+[Kafka Connect](https://kafka.apache.org../connect)). Otherwise,
 Kafka guarantees at-least-once delivery by default, and allows the user
 to implement at-most-once delivery by disabling retries on the producer
 and committing offsets in the consumer prior to processing a batch of
@@ -1001,7 +1001,7 @@ the upstream data source would not otherwise be replayable.
 Here is a high-level picture that shows the logical structure of a Kafka
 log with the offset for each message.
 
-![](/%7B%7Bversion%7D%7D/images/log_cleaner_anatomy.png){.centered}
+![](/{{< param akVersion >}}/images/log_cleaner_anatomy.png){.centered}
 
 The head of the log is identical to a traditional Kafka log. It has
 dense, sequential offsets and retains all messages. Log compaction adds
@@ -1031,7 +1031,7 @@ more than a configurable amount of I/O throughput to avoid impacting
 producers and consumers. The actual process of compacting a log segment
 looks something like this:
 
-![](/%7B%7Bversion%7D%7D/images/log_compaction.png){.centered}
+![](/{{< param akVersion >}}/images/log_compaction.png){.centered}
 
 ### What guarantees does log compaction provide {#design_compactionguarantees .anchor-link}
 

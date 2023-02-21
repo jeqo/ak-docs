@@ -526,7 +526,7 @@ endpoint:
     cluster ID that is connected to.
 
 For the complete specification of the REST API, see the [OpenAPI
-documentation](/%7B%7Bversion%7D%7D/generated/connect_rest.yaml)
+documentation](/{{< param akVersion >}}/generated/connect_rest.yaml)
 
 ### Error Reporting in Connect {#connect_errorreporting}
 

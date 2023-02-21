@@ -253,7 +253,7 @@ configs with the listener prefix `listener.name.{listenerName}.`. If the
 new listener uses SASL, the JAAS configuration of the listener must be
 provided using the JAAS configuration property `sasl.jaas.config` with
 the listener and mechanism prefix. See [JAAS configuration for Kafka
-brokers](#security_jaas_broker) for details.
+brokers](../security#security_jaas_broker) for details.
 
 In Kafka version 1.1.x, the listener used by the inter-broker listener
 may not be updated dynamically. To update the inter-broker listener to a

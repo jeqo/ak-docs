@@ -1572,7 +1572,7 @@ configuration settings).
 
 To enforce a topic naming structure, several options are available:
 
--   Use [prefix ACLs](#security_authz) (cf.
+-   Use [prefix ACLs](../security#security_authz) (cf.
     [KIP-290](https://cwiki.apache.org/confluence/display/KAFKA/KIP-290%3A+Support+for+Prefixed+ACLs))
     to enforce a common prefix for topic names. For example, team A may
     only be permitted to create topics whose names start with
@@ -1636,7 +1636,7 @@ When securing a multi-tenant Kafka environment, the most common
 administrative task is the third category (authorization), i.e.,
 managing the user/client permissions that grant or deny access to
 certain topics and thus to the data stored by users within a cluster.
-This task is performed predominantly through the [setting of access control lists (ACLs)](#security_authz). 
+This task is performed predominantly through the [setting of access control lists (ACLs)](../security#security_authz). 
 Here, administrators of multi-tenant environments in particular benefit from putting a
 hierarchical topic naming structure in place as described in a previous
 section, because they can conveniently control access to topics through

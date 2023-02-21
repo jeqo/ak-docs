@@ -32,4 +32,4 @@ though including Markdown pages into a single one is not supported out-of-the-bo
 Because of this, 
 and as the single page is getting quite long and harder to navigate,
 I'm migrating sections into its own page.
-So, instead of `documentation#intro`, Introduction section will be located at `documentation/introduction`.
+So, instead of `documentation#intro`, Introduction section will be located at `documentation/intro`.

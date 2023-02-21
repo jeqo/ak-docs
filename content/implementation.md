@@ -268,7 +268,7 @@ Since the offset is hidden from the consumer API this decision is
 ultimately an implementation detail and we went with the more efficient
 approach.
 
-![](/%7B%7Bversion%7D%7D/images/kafka_log.png){.centered}
+![](/{{< param akVersion >}}/images/kafka_log.png){.centered}
 
 ### Writes {#impl_writes .anchor-link}
 
