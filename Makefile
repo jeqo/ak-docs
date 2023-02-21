@@ -14,3 +14,7 @@ site: build
 
 run:
 	docker run -it -p 8080:80 ak-docs
+
+# example
+convert:
+	pandoc -f html content/configuration.html -t markdown > content/configuration.md

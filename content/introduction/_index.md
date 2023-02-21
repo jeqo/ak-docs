@@ -19,7 +19,7 @@ is at the right place, at the right time.
 
 ## What can I use event streaming for? {#intro_usage .anchor-link}
 
-Event streaming is applied to a [wide variety of use cases](/powered-by)
+Event streaming is applied to a [wide variety of use cases](/powered-by.html)
 across a plethora of industries and organizations. Its many examples
 include:
 
@@ -41,9 +41,8 @@ include:
 
 ## Apache Kafka® is an event streaming platform. What does that mean?{#intro_platform .anchor-link}
 
-Kafka combines three key capabilities so you can implement [your use
-cases](/powered-by) for event streaming end-to-end with a single
-battle-tested solution:
+Kafka combines three key capabilities so you can implement [your use cases](/powered-by.html) 
+for event streaming end-to-end with a single battle-tested solution:
 
 1.  To **publish** (write) and **subscribe to** (read) streams of
     events, including continuous import/export of your data from other
@@ -62,15 +61,15 @@ offered by a variety of vendors.
 ## How does Kafka work in a nutshell? {#intro_nutshell .anchor-link}
 
 Kafka is a distributed system consisting of **servers** and **clients**
-that communicate via a high-performance [TCP network
-protocol](/protocol.html). It can be deployed on bare-metal hardware,
+that communicate via a high-performance [TCP network protocol](../protocol). 
+It can be deployed on bare-metal hardware,
 virtual machines, and containers in on-premise as well as cloud
 environments.
 
 **Servers**: Kafka is run as a cluster of one or more servers that can
 span multiple datacenters or cloud regions. Some of these servers form
-the storage layer, called the brokers. Other servers run [Kafka
-Connect](/documentation/#connect) to continuously import and export data
+the storage layer, called the brokers. Other servers run 
+[Kafka Connect](../connect) to continuously import and export data
 as event streams to integrate Kafka with your existing systems such as
 relational databases as well as other Kafka clusters. To let you
 implement mission-critical use cases, a Kafka cluster is highly scalable
@@ -82,11 +81,10 @@ loss.
 microservices that read, write, and process streams of events in
 parallel, at scale, and in a fault-tolerant manner even in the case of
 network problems or machine failures. Kafka ships with some such clients
-included, which are augmented by [dozens of
-clients](https://cwiki.apache.org/confluence/display/KAFKA/Clients)
-provided by the Kafka community: clients are available for Java and
-Scala including the higher-level [Kafka
-Streams](/documentation/streams/) library, for Go, Python, C/C++, and
+included, which are augmented by 
+[dozens of clients](https://cwiki.apache.org/confluence/display/KAFKA/Clients)
+provided by the Kafka community: clients are available for Java and Scala including the higher-level 
+[Kafka Streams](../streams) library, for Go, Python, C/C++, and
 many other programming languages as well as REST APIs.
 
 ## Main Concepts and Terminology {#intro_concepts_and_terms .anchor-link}
@@ -107,7 +105,7 @@ process) these events. In Kafka, producers and consumers are fully
 decoupled and agnostic of each other, which is a key design element to
 achieve the high scalability that Kafka is known for. For example,
 producers never need to wait for consumers. Kafka provides various
-[guarantees](/documentation/#semantics) such as the ability to process
+[guarantees](../design#semantics) such as the ability to process
 events exactly-once.
 
 Events are organized and durably stored in **topics**. Very simplified,
@@ -116,7 +114,7 @@ files in that folder. An example topic name could be \"payments\".
 Topics in Kafka are always multi-producer and multi-subscriber: a topic
 can have zero, one, or many producers that write events to it, as well
 as zero, one, or many consumers that subscribe to these events. Events
-in a topic can be read as often as needed---unlike traditional messaging
+in a topic can be read as often as needed — unlike traditional messaging
 systems, events are not deleted after consumption. Instead, you define
 for how long Kafka should retain your events through a per-topic
 configuration setting, after which old events will be discarded.
@@ -130,7 +128,7 @@ allows client applications to both read and write the data from/to many
 brokers at the same time. When a new event is published to a topic, it
 is actually appended to one of the topic\'s partitions. Events with the
 same event key (e.g., a customer or vehicle ID) are written to the same
-partition, and Kafka [guarantees](/documentation/#semantics) that any
+partition, and Kafka [guarantees](../design#semantics) that any
 consumer of a given topic-partition will always read that partition\'s
 events in exactly the same order as they were written.
 
