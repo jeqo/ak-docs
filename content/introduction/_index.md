@@ -138,7 +138,7 @@ events to the topic by writing events over the network to the topic\'s
 partitions. Events with the same key (denoted by their color in the
 figure) are written to the same partition. Note that both producers can
 write to the same partition if
-appropriate.](images/streams-and-tables-p1_p4.png)
+appropriate.](streams-and-tables-p1_p4.png)
 
 To make your data fault-tolerant and highly-available, every topic can
 be **replicated**, even across geo-regions or datacenters, so that there
@@ -149,7 +149,7 @@ always be three copies of your data. This replication is performed at
 the level of topic-partitions.
 
 This primer should be sufficient for an introduction. The
-[Design](/documentation/#design) section of the documentation explains
+[Design](../design) section of the documentation explains
 Kafka\'s various concepts in full detail, if you are interested.
 
 ## Kafka APIs {#intro_apis .anchor-link}
@@ -157,21 +157,21 @@ Kafka\'s various concepts in full detail, if you are interested.
 In addition to command line tooling for management and administration
 tasks, Kafka has five core APIs for Java and Scala:
 
--   The [Admin API](/documentation.html#adminapi) to manage and inspect
+-   The [Admin API](../api#adminapi) to manage and inspect
     topics, brokers, and other Kafka objects.
--   The [Producer API](/documentation.html#producerapi) to publish
+-   The [Producer API](../api#producerapi) to publish
     (write) a stream of events to one or more Kafka topics.
--   The [Consumer API](/documentation.html#consumerapi) to subscribe to
+-   The [Consumer API](../api#consumerapi) to subscribe to
     (read) one or more topics and to process the stream of events
     produced to them.
--   The [Kafka Streams API](/documentation/streams) to implement stream
+-   The [Kafka Streams API](../streams) to implement stream
     processing applications and microservices. It provides higher-level
     functions to process event streams, including transformations,
     stateful operations like aggregations and joins, windowing,
     processing based on event-time, and more. Input is read from one or
     more topics in order to generate output to one or more topics,
     effectively transforming the input streams to output streams.
--   The [Kafka Connect API](/documentation.html#connect) to build and
+-   The [Kafka Connect API](../connect) to build and
     run reusable data import/export connectors that consume (read) or
     produce (write) streams of events from and to external systems and
     applications so they can integrate with Kafka. For example, a
@@ -182,14 +182,12 @@ tasks, Kafka has five core APIs for Java and Scala:
 
 ## Where to go from here {#intro_more .anchor-link}
 
--   To get hands-on experience with Kafka, follow the
-    [Quickstart](/quickstart).
--   To understand Kafka in more detail, read the
-    [Documentation](/documentation/). You also have your choice of
-    [Kafka books and academic papers](/books-and-papers).
--   Browse through the [Use Cases](/powered-by) to learn how other users
+-   To get hands-on experience with Kafka, follow the [Quickstart](../quickstart).
+-   To understand Kafka in more detail, read the [Documentation](../index.html). 
+    You also have your choice of [Kafka books and academic papers](/books-and-papers.html).
+-   Browse through the [Use Cases](/powered-by.html) to learn how other users
     in our world-wide community are getting value out of Kafka.
--   Join a [local Kafka meetup group](/events) and [watch talks from
-    Kafka Summit](https://kafka-summit.org/past-events/), the main
-    conference of the Kafka community.
+-   Join a [local Kafka meetup group](/events.html) and 
+    [watch talks from Kafka Summit](https://kafka-summit.org/past-events/), 
+    the main conference of the Kafka community.
 

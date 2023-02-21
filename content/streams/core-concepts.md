@@ -350,7 +350,7 @@ Kafka as the source / sink, their applications cannot actually guarantee
 that no duplicates will be generated throughout the pipeline.\
 Since the 0.11.0.0 release, Kafka has added support to allow its
 producers to send messages to different topic partitions in a
-[transactional and idempotent manner](https://kafka.apache.org/documentation/#semantics), and Kafka
+[transactional and idempotent manner](../design#semantics), and Kafka
 Streams has hence added the end-to-end exactly-once processing semantics
 by leveraging these features. More specifically, it guarantees that for
 any record read from the source Kafka topics, its processing results
