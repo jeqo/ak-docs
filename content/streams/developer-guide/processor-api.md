@@ -425,7 +425,7 @@ can be fully restored from its changelog. You can [enable or disable
 this backup feature](#streams-developer-guide-state-store-enable-disable-fault-tolerance) for a state store.
 
 Fault-tolerant state stores are backed by a
-[compacted](https://kafka.apache.org/documentation.html#compaction) changelog topic. 
+[compacted](../design#compaction) changelog topic. 
 The purpose of compacting this topic is to
 prevent the topic from growing indefinitely, to reduce the storage
 consumed in the associated Kafka cluster, and to minimize recovery time

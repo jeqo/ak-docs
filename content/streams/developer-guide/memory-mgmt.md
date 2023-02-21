@@ -78,7 +78,7 @@ other keyed record `R2 = <K1, V2>` with the same key
 `K1` that is processed on that node during
 that time will overwrite `<K1, V1>`, this is referred to as
 "being compacted". This has the same effect as [Kafka's log
-compaction](https://kafka.apache.org/documentation.html#compaction), 
+compaction](../design#compaction), 
 but happens earlier, while the records are still in memory,
 and within your client-side application, rather than on the server-side
 (i.e. the Kafka broker). After flushing, `R2` is forwarded to the next processing node and then

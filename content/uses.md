@@ -1,7 +1,8 @@
 # Use Cases
 
 Here is a description of a few of the popular use cases for Apache
-Kafka®. For an overview of a number of these areas in action, see [this blog post](https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying/).
+Kafka®. For an overview of a number of these areas in action, see 
+[this blog post](https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying/).
 
 ## Messaging {#uses_messaging .anchor-link}
 
@@ -65,11 +66,10 @@ article content to a new topic; a final processing stage might attempt
 to recommend this content to users. Such processing pipelines create
 graphs of real-time data flows based on the individual topics. Starting
 in 0.10.0.0, a light-weight but powerful stream processing library
-called [Kafka Streams](/documentation/streams) is available in Apache
+called [Kafka Streams](../streams) is available in Apache
 Kafka to perform such data processing as described above. Apart from
 Kafka Streams, alternative open source stream processing tools include
-[Apache Storm](https://storm.apache.org/) and [Apache
-Samza](http://samza.apache.org/).
+[Apache Storm](https://storm.apache.org/) and [Apache Samza](http://samza.apache.org/).
 
 ## Event Sourcing {#uses_eventsourcing .anchor-link}
 
@@ -83,5 +83,6 @@ style.
 
 Kafka can serve as a kind of external commit-log for a distributed
 system. The log helps replicate data between nodes and acts as a
-re-syncing mechanism for failed nodes to restore their data. The [log compaction](/documentation.html#compaction) feature in Kafka helps
-support this usage. In this usage Kafka is similar to [Apache BookKeeper](https://bookkeeper.apache.org/) project.
+re-syncing mechanism for failed nodes to restore their data. 
+The [log compaction](../design#compaction) feature in Kafka helps support this usage. 
+In this usage Kafka is similar to [Apache BookKeeper](https://bookkeeper.apache.org/) project.

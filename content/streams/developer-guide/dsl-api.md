@@ -137,7 +137,7 @@ would be considered an update of the previous record.
 **Effects of Kafka\'s log compaction:** Another way of thinking about
 KStream and KTable is as follows: If you were to store a KTable into a
 Kafka topic, you\'d probably want to enable Kafka\'s [log
-compaction](http://kafka.apache.org/documentation.html#compaction)
+compaction](../design#compaction)
 feature, e.g. to save storage space.
 
 However, it would not be safe to enable log compaction in the case of a
