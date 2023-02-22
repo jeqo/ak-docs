@@ -268,7 +268,7 @@ Since the offset is hidden from the consumer API this decision is
 ultimately an implementation detail and we went with the more efficient
 approach.
 
-![](/{{< param akVersion >}}/images/kafka_log.png){.centered}
+![](kafka_log.png)
 
 ### Writes {#impl_writes .anchor-link}
 
@@ -387,7 +387,7 @@ need to rediscover the coordinator. Offset commits can be done
 automatically or manually by consumer instance.
 
 When the group coordinator receives an OffsetCommitRequest, it appends
-the request to a special [compacted](#compaction) Kafka topic named
+the request to a special [compacted](../design#compaction) Kafka topic named
 *\_\_consumer_offsets*. The broker sends a successful offset commit
 response to the consumer only after all the replicas of the offsets
 topic receive the offsets. In case the offsets fail to replicate within
