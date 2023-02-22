@@ -3,7 +3,7 @@
 ## 4.1 Motivation {#majordesignelements .anchor-link}
 
 We designed Kafka to be able to act as a unified platform for handling
-all the real-time data feeds [a large company might have](../introduction). 
+all the real-time data feeds [a large company might have](../intro). 
 To do this we had to think through a fairly broad set of use cases.
 
 It would have to have high-throughput to support high volume event
@@ -164,7 +164,7 @@ in the server\'s own persistent operations.
 To avoid this, our protocol is built around a \"message set\"
 abstraction that naturally groups messages together. This allows network
 requests to group messages together and amortize the overhead of the
-network roundtrip rather than sending a single message at a time. The
+network round-trip rather than sending a single message at a time. The
 server in turn appends chunks of messages to its log in one go, and the
 consumer fetches large linear chunks at a time.
 
@@ -284,7 +284,7 @@ servers. This buffering is configurable and gives a mechanism to trade
 off a small amount of additional latency for better throughput.
 
 Details on [configuration](../configuration#producerconfigs) and the
-[api](http://kafka.apache.org/082/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html)
+[api](/{{< param akVersion >}}/javadoc/index.html?org/apache/kafka/clients/producer/KafkaProducer.html)
 for the producer can be found elsewhere in the documentation.
 
 ## 4.5 The Consumer {#theconsumer .anchor-link}
@@ -539,7 +539,7 @@ position.
 
 So what about exactly once semantics (i.e. the thing you actually want)?
 When consuming from a Kafka topic and producing to another topic (as in
-a [Kafka Streams](https://kafka.apache.org/documentation/streams)
+a [Kafka Streams](../streams)
 application), we can leverage the new transactional producer
 capabilities in 0.11.0.0 that were mentioned above. The consumer\'s
 position is stored as a message in a topic, so we can write the offset
@@ -562,7 +562,7 @@ generally by letting the consumer store its offset in the same place as
 its output. This is better because many of the output systems a consumer
 might want to write to will not support a two-phase commit. As an
 example of this, consider a 
-[Kafka Connect](https://kafka.apache.org../connect) connector
+[Kafka Connect](../connect) connector
 which populates data in HDFS along with the offsets of the data it reads
 so that it is guaranteed that either data and offsets are both updated
 or neither is. We follow similar patterns for many other data systems
@@ -570,13 +570,13 @@ which require these stronger semantics and for which the messages do not
 have a primary key to allow for deduplication.
 
 So effectively Kafka supports exactly-once delivery in 
-[Kafka Streams](https://kafka.apache.org/documentation/streams), and the
+[Kafka Streams](../streams), and the
 transactional producer/consumer can be used generally to provide
 exactly-once delivery when transferring and processing data between
 Kafka topics. Exactly-once delivery for other destination systems
 generally requires cooperation with such systems, but Kafka provides the
 offset which makes implementing this feasible (see also 
-[Kafka Connect](https://kafka.apache.org../connect)). Otherwise,
+[Kafka Connect](../connect)). Otherwise,
 Kafka guarantees at-least-once delivery by default, and allows the user
 to implement at-most-once delivery by disabling retries on the producer
 and committing offsets in the consumer prior to processing a batch of
@@ -879,7 +879,7 @@ It is also important to optimize the leadership election process as that
 is the critical window of unavailability. A naive implementation of
 leader election would end up running an election per partition for all
 partitions a node hosted when that node failed. As discussed above in
-the section on [replication](#replication), Kafka clusters have a
+the section on [replication](../design#replication), Kafka clusters have a
 special role known as the \"controller\" which is responsible for
 managing the registration of brokers. If the controller detects the
 failure of a broker, it is responsible for electing one of the remaining
@@ -1001,7 +1001,7 @@ the upstream data source would not otherwise be replayable.
 Here is a high-level picture that shows the logical structure of a Kafka
 log with the offset for each message.
 
-![](/{{< param akVersion >}}/images/log_cleaner_anatomy.png){.centered}
+![](log_cleaner_anatomy.png)
 
 The head of the log is identical to a traditional Kafka log. It has
 dense, sequential offsets and retains all messages. Log compaction adds
@@ -1031,7 +1031,7 @@ more than a configurable amount of I/O throughput to avoid impacting
 producers and consumers. The actual process of compacting a log segment
 looks something like this:
 
-![](/{{< param akVersion >}}/images/log_compaction.png){.centered}
+![](log_compaction.png)
 
 ### What guarantees does log compaction provide {#design_compactionguarantees .anchor-link}
 
@@ -1122,7 +1122,7 @@ uncleanable-partitions-count, max-clean-time-secs and
 max-compaction-delay-secs metrics.
 
 Further cleaner configurations are described
-[here](/configuration#brokerconfigs).
+[here](../configuration#brokerconfigs).
 
 ## 4.9 Quotas {#design_quotas .anchor-link}
 
@@ -1174,7 +1174,7 @@ mechanism is similar to the per-topic log config overrides. User and
 ***/config/users*** and client-id quota overrides are written under
 ***/config/clients***. These overrides are read by all brokers and are
 effective immediately. This lets us change quotas without having to do a
-rolling restart of the entire cluster. See [here](#quotas) for details.
+rolling restart of the entire cluster. See [here](../operations#quotas) for details.
 Default quotas for each group may also be updated dynamically using the
 same mechanism.
 
