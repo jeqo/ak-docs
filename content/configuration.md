@@ -14,7 +14,7 @@ The essential configurations are the following:
 Topic-level configurations and defaults are discussed in more detail
 [below](#topicconfigs).
 
-<!--#include virtual="generated/kafka_config.html" -->
+{{< config config="kafka_config" prefix=brokerconfigs >}}
 
 More details about broker configuration can be found in the scala class
 `kafka.server.KafkaConfig`.
@@ -311,46 +311,46 @@ configuration for this property is given under the Server Default
 Property heading. A given server default config value only applies to a
 topic if it does not have an explicit topic config override.
   
-<!--#include virtual="generated/topic_config.html" -->
+{{< config config="topic_config" prefix=topicconfigs >}}
 
 ## 3.3 Producer Configs {#producerconfigs .anchor-link}
 
 Below is the configuration of the producer:
 
-<!--#include virtual="generated/producer_config.html" -->
+{{< config config="producer_config" prefix=producerconfigs >}}
 
 ## 3.4 Consumer Configs {#consumerconfigs .anchor-link}
 
 Below is the configuration for the consumer:
 
-<!--#include virtual="generated/consumer_config.html" -->
+{{< config config="consumer_config" prefix=consumerconfigs >}}
 
 ## 3.5 Kafka Connect Configs {#connectconfigs .anchor-link}
 
 Below is the configuration of the Kafka Connect framework.
-  
-<!--#include virtual="generated/connect_config.html" -->
+
+{{< config config="connect_config" prefix=connectconfigs >}}
 
 ### 3.5.1 Source Connector Configs {#sourceconnectconfigs .anchor-link}
 
 Below is the configuration of a source connector.
   
-<!--#include virtual="generated/source_connector_config.html" -->
+{{< config config="source_connector_config" prefix=sourceconnectconfigs >}}
 
 ### 3.5.2 Sink Connector Configs {#sinkconnectconfigs .anchor-link}
 
 Below is the configuration of a sink connector.
   
-<!--#include virtual="generated/sink_connector_config.html" -->
+{{< config config="sink_connector_config" prefix=sinkconnectconfigs >}}
 
 ## 3.6 Kafka Streams Configs {#streamsconfigs .anchor-link}
 
 Below is the configuration of the Kafka Streams client library.
   
-<!--#include virtual="generated/streams_config.html" -->
+{{< config config="streams_config" prefix=streamsconfigs >}}
 
 ## 3.7 Admin Configs {#adminclientconfigs .anchor-link}
 
 Below is the configuration of the Kafka Admin client library.
-  
-<!--#include virtual="generated/admin_client_config.html" -->
+
+{{< config config="admin_client_config" prefix=adminclientconfigs >}}

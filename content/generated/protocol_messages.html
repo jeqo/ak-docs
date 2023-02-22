@@ -1417,6 +1417,80 @@
 <td>_tagged_fields</td><td>The tagged fields</td></tr>
 </tbody></table>
 </div>
+<div><pre>Fetch Request (Version: 14) => replica_id max_wait_ms min_bytes max_bytes isolation_level session_id session_epoch [topics] [forgotten_topics_data] rack_id TAG_BUFFER 
+  replica_id => INT32
+  max_wait_ms => INT32
+  min_bytes => INT32
+  max_bytes => INT32
+  isolation_level => INT8
+  session_id => INT32
+  session_epoch => INT32
+  topics => topic_id [partitions] TAG_BUFFER 
+    topic_id => UUID
+    partitions => partition current_leader_epoch fetch_offset last_fetched_epoch log_start_offset partition_max_bytes TAG_BUFFER 
+      partition => INT32
+      current_leader_epoch => INT32
+      fetch_offset => INT64
+      last_fetched_epoch => INT32
+      log_start_offset => INT64
+      partition_max_bytes => INT32
+  forgotten_topics_data => topic_id [partitions] TAG_BUFFER 
+    topic_id => UUID
+    partitions => INT32
+  rack_id => COMPACT_STRING
+</pre><table class="data-table"><tbody>
+<tr><th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>replica_id</td><td>The broker ID of the follower, of -1 if this request is from a consumer.</td></tr>
+<tr>
+<td>max_wait_ms</td><td>The maximum time in milliseconds to wait for the response.</td></tr>
+<tr>
+<td>min_bytes</td><td>The minimum bytes to accumulate in the response.</td></tr>
+<tr>
+<td>max_bytes</td><td>The maximum bytes to fetch.  See KIP-74 for cases where this limit may not be honored.</td></tr>
+<tr>
+<td>isolation_level</td><td>This setting controls the visibility of transactional records. Using READ_UNCOMMITTED (isolation_level = 0) makes all records visible. With READ_COMMITTED (isolation_level = 1), non-transactional and COMMITTED transactional records are visible. To be more concrete, READ_COMMITTED returns all data from offsets smaller than the current LSO (last stable offset), and enables the inclusion of the list of aborted transactions in the result, which allows consumers to discard ABORTED transactional records</td></tr>
+<tr>
+<td>session_id</td><td>The fetch session ID.</td></tr>
+<tr>
+<td>session_epoch</td><td>The fetch session epoch, which is used for ordering requests in a session.</td></tr>
+<tr>
+<td>topics</td><td>The topics to fetch.</td></tr>
+<tr>
+<td>topic_id</td><td>The unique topic ID</td></tr>
+<tr>
+<td>partitions</td><td>The partitions to fetch.</td></tr>
+<tr>
+<td>partition</td><td>The partition index.</td></tr>
+<tr>
+<td>current_leader_epoch</td><td>The current leader epoch of the partition.</td></tr>
+<tr>
+<td>fetch_offset</td><td>The message offset.</td></tr>
+<tr>
+<td>last_fetched_epoch</td><td>The epoch of the last fetched record or -1 if there is none</td></tr>
+<tr>
+<td>log_start_offset</td><td>The earliest available offset of the follower replica.  The field is only used when the request is sent by the follower.</td></tr>
+<tr>
+<td>partition_max_bytes</td><td>The maximum bytes to fetch from this partition.  See KIP-74 for cases where this limit may not be honored.</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>forgotten_topics_data</td><td>In an incremental fetch request, the partitions to remove.</td></tr>
+<tr>
+<td>topic_id</td><td>The unique topic ID</td></tr>
+<tr>
+<td>partitions</td><td>The partitions indexes to forget.</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>rack_id</td><td>Rack ID of the consumer making this request</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+</tbody></table>
+</div>
 <b>Responses:</b><br>
 <div><pre>Fetch Response (Version: 0) => [responses] 
   responses => topic [partitions] 
@@ -2049,6 +2123,68 @@
 <td>_tagged_fields</td><td>The tagged fields</td></tr>
 </tbody></table>
 </div>
+<div><pre>Fetch Response (Version: 14) => throttle_time_ms error_code session_id [responses] TAG_BUFFER 
+  throttle_time_ms => INT32
+  error_code => INT16
+  session_id => INT32
+  responses => topic_id [partitions] TAG_BUFFER 
+    topic_id => UUID
+    partitions => partition_index error_code high_watermark last_stable_offset log_start_offset [aborted_transactions] preferred_read_replica records TAG_BUFFER 
+      partition_index => INT32
+      error_code => INT16
+      high_watermark => INT64
+      last_stable_offset => INT64
+      log_start_offset => INT64
+      aborted_transactions => producer_id first_offset TAG_BUFFER 
+        producer_id => INT64
+        first_offset => INT64
+      preferred_read_replica => INT32
+      records => COMPACT_RECORDS
+</pre><table class="data-table"><tbody>
+<tr><th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>throttle_time_ms</td><td>The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.</td></tr>
+<tr>
+<td>error_code</td><td>The top level response error code.</td></tr>
+<tr>
+<td>session_id</td><td>The fetch session ID, or 0 if this is not part of a fetch session.</td></tr>
+<tr>
+<td>responses</td><td>The response topics.</td></tr>
+<tr>
+<td>topic_id</td><td>The unique topic ID</td></tr>
+<tr>
+<td>partitions</td><td>The topic partitions.</td></tr>
+<tr>
+<td>partition_index</td><td>The partition index.</td></tr>
+<tr>
+<td>error_code</td><td>The error code, or 0 if there was no fetch error.</td></tr>
+<tr>
+<td>high_watermark</td><td>The current high water mark.</td></tr>
+<tr>
+<td>last_stable_offset</td><td>The last stable offset (or LSO) of the partition. This is the last offset such that the state of all transactional records prior to this offset have been decided (ABORTED or COMMITTED)</td></tr>
+<tr>
+<td>log_start_offset</td><td>The current log start offset.</td></tr>
+<tr>
+<td>aborted_transactions</td><td>The aborted transactions.</td></tr>
+<tr>
+<td>producer_id</td><td>The producer id associated with the aborted transaction.</td></tr>
+<tr>
+<td>first_offset</td><td>The first offset in the aborted transaction.</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>preferred_read_replica</td><td>The preferred read replica for the consumer to use on its next fetch request</td></tr>
+<tr>
+<td>records</td><td>The record data.</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+</tbody></table>
+</div>
 <h5><a name="The_Messages_ListOffsets">ListOffsets API (Key: 2):</a></h5>
 
 <b>Requests:</b><br>
@@ -2254,6 +2390,42 @@
 </tbody></table>
 </div>
 <div><pre>ListOffsets Request (Version: 7) => replica_id isolation_level [topics] TAG_BUFFER 
+  replica_id => INT32
+  isolation_level => INT8
+  topics => name [partitions] TAG_BUFFER 
+    name => COMPACT_STRING
+    partitions => partition_index current_leader_epoch timestamp TAG_BUFFER 
+      partition_index => INT32
+      current_leader_epoch => INT32
+      timestamp => INT64
+</pre><table class="data-table"><tbody>
+<tr><th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>replica_id</td><td>The broker ID of the requestor, or -1 if this request is being made by a normal consumer.</td></tr>
+<tr>
+<td>isolation_level</td><td>This setting controls the visibility of transactional records. Using READ_UNCOMMITTED (isolation_level = 0) makes all records visible. With READ_COMMITTED (isolation_level = 1), non-transactional and COMMITTED transactional records are visible. To be more concrete, READ_COMMITTED returns all data from offsets smaller than the current LSO (last stable offset), and enables the inclusion of the list of aborted transactions in the result, which allows consumers to discard ABORTED transactional records</td></tr>
+<tr>
+<td>topics</td><td>Each topic in the request.</td></tr>
+<tr>
+<td>name</td><td>The topic name.</td></tr>
+<tr>
+<td>partitions</td><td>Each partition in the request.</td></tr>
+<tr>
+<td>partition_index</td><td>The partition index.</td></tr>
+<tr>
+<td>current_leader_epoch</td><td>The current leader epoch.</td></tr>
+<tr>
+<td>timestamp</td><td>The current timestamp.</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+</tbody></table>
+</div>
+<div><pre>ListOffsets Request (Version: 8) => replica_id isolation_level [topics] TAG_BUFFER 
   replica_id => INT32
   isolation_level => INT8
   topics => name [partitions] TAG_BUFFER 
@@ -2507,6 +2679,45 @@
 </tbody></table>
 </div>
 <div><pre>ListOffsets Response (Version: 7) => throttle_time_ms [topics] TAG_BUFFER 
+  throttle_time_ms => INT32
+  topics => name [partitions] TAG_BUFFER 
+    name => COMPACT_STRING
+    partitions => partition_index error_code timestamp offset leader_epoch TAG_BUFFER 
+      partition_index => INT32
+      error_code => INT16
+      timestamp => INT64
+      offset => INT64
+      leader_epoch => INT32
+</pre><table class="data-table"><tbody>
+<tr><th>Field</th>
+<th>Description</th>
+</tr><tr>
+<td>throttle_time_ms</td><td>The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota.</td></tr>
+<tr>
+<td>topics</td><td>Each topic in the response.</td></tr>
+<tr>
+<td>name</td><td>The topic name</td></tr>
+<tr>
+<td>partitions</td><td>Each partition in the response.</td></tr>
+<tr>
+<td>partition_index</td><td>The partition index.</td></tr>
+<tr>
+<td>error_code</td><td>The partition error code, or 0 if there was no error.</td></tr>
+<tr>
+<td>timestamp</td><td>The timestamp associated with the returned offset.</td></tr>
+<tr>
+<td>offset</td><td>The returned offset.</td></tr>
+<tr>
+<td>leader_epoch</td><td></td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+<tr>
+<td>_tagged_fields</td><td>The tagged fields</td></tr>
+</tbody></table>
+</div>
+<div><pre>ListOffsets Response (Version: 8) => throttle_time_ms [topics] TAG_BUFFER 
   throttle_time_ms => INT32
   topics => name [partitions] TAG_BUFFER 
     name => COMPACT_STRING
