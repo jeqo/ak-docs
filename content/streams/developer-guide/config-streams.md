@@ -8,7 +8,7 @@ in a `java.util.Properties` instance.
 
 2.  Set the [parameters](#streams-developer-guide-required-configs). For example:
 
-    ``` line-numbers
+    ```java line-numbers
     import java.util.Properties;
     import org.apache.kafka.streams.StreamsConfig;
 
@@ -24,7 +24,7 @@ in a `java.util.Properties` instance.
 
 This section contains the most common Streams configuration parameters.
 For a full reference, see the
-[Streams](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/StreamsConfig.html) Javadocs.
+[Streams](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/StreamsConfig.html) Javadocs.
 
 -   [Required configuration parameters](#required-configuration-parameters)
     -   [application.id](#application-id)
@@ -169,7 +169,7 @@ streamsSettings.put(StreamsConfig.NUM_STANDBY_REPLICAS_CONFIG), 1);
 ### Optional configuration parameters {#optional-configuration-parameters}
 
 Here are the optional
-[Streams](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/StreamsConfig.html)
+[Streams](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/StreamsConfig.html)
 javadocs, sorted by level of importance:
 
 -   High: These parameters can have a significant impact on
@@ -560,13 +560,13 @@ types. The implemented exception handler needs to return a `FAIL` or
 signal that Streams should ignore the issue and continue processing.
 The following library built-in exception handlers are available:
 
--   [LogAndContinueExceptionHandler](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/errors/LogAndContinueExceptionHandler.html): 
+-   [LogAndContinueExceptionHandler](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/errors/LogAndContinueExceptionHandler.html): 
     This handler logs the deserialization exception and
     then signals the processing pipeline to continue processing more
     records. This log-and-skip strategy allows Kafka Streams to make
     progress instead of failing if there are records that fail to
     deserialize.
--   [LogAndFailExceptionHandler](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/errors/LogAndFailExceptionHandler.html). 
+-   [LogAndFailExceptionHandler](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/errors/LogAndFailExceptionHandler.html). 
     This handler logs the deserialization exception and
     then signals the processing pipeline to stop processing more
     records.
@@ -618,7 +618,7 @@ The default production exception handler allows you to manage
 exceptions triggered when trying to interact with a broker such as
 attempting to produce a record that is too large. By default, Kafka
 provides and uses the
-[DefaultProductionExceptionHandler](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/errors/DefaultProductionExceptionHandler.html) that always fails when these exceptions occur.
+[DefaultProductionExceptionHandler](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/errors/DefaultProductionExceptionHandler.html) that always fails when these exceptions occur.
 
 Each exception handler can return a `FAIL` or `CONTINUE` depending on
 the record and the exception thrown. Returning `FAIL` will signal that
@@ -658,11 +658,11 @@ settings.put(StreamsConfig.DEFAULT_PRODUCTION_EXCEPTION_HANDLER_CLASS_CONFIG,
 #### default.timestamp.extractor {#timestamp-extractor}
 
 A timestamp extractor pulls a timestamp from an instance of
-[ConsumerRecord](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/clients/consumer/ConsumerRecord.html). 
+[ConsumerRecord](/{{< param akVersion >}}/javadoc/org/apache/kafka/clients/consumer/ConsumerRecord.html). 
 Timestamps are used to control the progress of streams.
 
 The default extractor is
-[FailOnInvalidTimestamp](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/processor/FailOnInvalidTimestamp.html). 
+[FailOnInvalidTimestamp](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/processor/FailOnInvalidTimestamp.html). 
 This extractor retrieves built-in timestamps that are
 automatically embedded into Kafka messages by the Kafka producer
 client since [Kafka version
@@ -701,13 +701,13 @@ If you have data with invalid timestamps and want to process it, then
 there are two alternative extractors available. Both work on built-in
 timestamps, but handle invalid timestamps differently.
 
--   [LogAndSkipOnInvalidTimestamp](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/processor/LogAndSkipOnInvalidTimestamp.html): 
+-   [LogAndSkipOnInvalidTimestamp](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/processor/LogAndSkipOnInvalidTimestamp.html): 
     This extractor logs a warn message and returns the
     invalid timestamp to Kafka Streams, which will not process but
     silently drop the record. This log-and-skip strategy allows Kafka
     Streams to make progress instead of failing if there are records
     with an invalid built-in timestamp in your input data.
--   [UsePartitionTimeOnInvalidTimestamp](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/processor/UsePartitionTimeOnInvalidTimestamp.html). 
+-   [UsePartitionTimeOnInvalidTimestamp](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/processor/UsePartitionTimeOnInvalidTimestamp.html). 
     This extractor returns the record's built-in timestamp
     if it is valid (i.e. not negative). If the record does not have a
     valid built-in timestamps, the extractor returns the previously
@@ -716,7 +716,7 @@ timestamps, but handle invalid timestamps differently.
     that no timestamp can be estimated, it throws an exception.
 
 Another built-in extractor is
-[WallclockTimestampExtractor](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/processor/WallclockTimestampExtractor.html). 
+[WallclockTimestampExtractor](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/processor/WallclockTimestampExtractor.html). 
 This extractor does not actually "extract" a timestamp
 from the consumed record but rather returns the current time in
 milliseconds from the system clock (think:
@@ -961,7 +961,7 @@ thread. For more information about Kafka Streams threading model, see
 from the partitions of source topics, where each created task is
 assigned with a group of source topic partitions. The default
 implementation provided by Kafka Streams is
-[DefaultPartitionGrouper](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/processor/DefaultPartitionGrouper.html). 
+[DefaultPartitionGrouper](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/processor/DefaultPartitionGrouper.html). 
 It assigns each task with one partition for each of the
 source topic partitions. The generated number of tasks equals the
 largest number of partitions among the input topics. Usually an
@@ -1031,7 +1031,7 @@ The RocksDB configuration. Kafka Streams uses RocksDB as the default
 storage engine for persistent stores. To change the default
 configuration for RocksDB, you can implement
 `RocksDBConfigSetter` and provide your custom class via
-[rocksdb.config.setter](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/state/RocksDBConfigSetter.html).
+[rocksdb.config.setter](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/state/RocksDBConfigSetter.html).
 
 Here is an example that adjusts the memory size consumed by RocksDB.
 
@@ -1136,14 +1136,14 @@ than 2.4.
 ### Kafka consumers, producer and admin client configuration parameters](#id16){#kafka-consumers-and-producer-configuration-parameters}
 
 You can specify parameters for the Kafka
-[consumers](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/clients/consumer/package-summary.html),
-[producers](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/clients/producer/package-summary.html), and [admin
-client](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/kafka/clients/admin/package-summary.html) that are used internally. The consumer, producer and admin
+[consumers](/{{< param akVersion >}}/javadoc/org/apache/kafka/clients/consumer/package-summary.html),
+[producers](/{{< param akVersion >}}/javadoc/org/apache/kafka/clients/producer/package-summary.html), and [admin
+client](/{{< param akVersion >}}/javadoc/org/apache/kafka/kafka/clients/admin/package-summary.html) that are used internally. The consumer, producer and admin
 client settings are defined by specifying parameters in a
 `StreamsConfig` instance.
 
 In this example, the Kafka 
-[consumer session timeout](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html#SESSION_TIMEOUT_MS_CONFIG) is configured to be 60000 milliseconds in the Streams
+[consumer session timeout](/{{< param akVersion >}}/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html#SESSION_TIMEOUT_MS_CONFIG) is configured to be 60000 milliseconds in the Streams
 settings:
 
 ``` line-numbers
