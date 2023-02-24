@@ -14,11 +14,10 @@ distributed, and much more.
 
 This quickstart example will demonstrate how to run a streaming
 application coded in this library. Here is the gist of the
-[`WordCountDemo`](https://github.com/apache/kafka/blob/%7B%7BdotVersion%7D%7D/streams/examples/src/main/java/org/apache/kafka/streams/examples/wordcount/WordCountDemo.java)
-example code (converted to use Java 8 lambda expressions for easy
-reading).
+[`WordCountDemo`](https://github.com/apache/kafka/blob/{{< param akDotVersion >}}/streams/examples/src/main/java/org/apache/kafka/streams/examples/wordcount/WordCountDemo.java)
+example code (converted to use Java 8 lambda expressions for easy reading).
 
-``` line-numbers
+```java line-numbers
 // Serializers/deserializers (serde) for String and Long types
 final Serde<String> stringSerde = Serdes.String();
 final Serde<Long> longSerde = Serdes.Long();
@@ -62,12 +61,12 @@ will subsequently be processed by a Kafka Streams application.
 
 ## Step 1: Download the code {#quickstart_streams_download}
 
-[Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/%7B%7BfullDotVersion%7D%7D/kafka_%7B%7BscalaVersion%7D%7D-%7B%7BfullDotVersion%7D%7D.tgz "Kafka downloads")
+[Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/{{<param akFullDotVersion>}}/kafka_{{<param scalaVersion>}}-{{<param akFullDotVersion>}}.tgz "Kafka downloads")
 the {{< param akFullDotVersion >}} release and un-tar it. Note that there are
 multiple downloadable Scala versions and we choose to use the
 recommended version ({{scalaVersion}}) here:
 
-``` line-numbers
+```shell line-numbers
 > tar -xzf kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}.tgz
 > cd kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}
 ```
@@ -82,13 +81,13 @@ with either configuration follow one of the sections below but not both.
 Run the following commands in order to start all services in the correct
 order:
 
-``` line-numbers
+```shell line-numbers
 > bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 Open another terminal session and run:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-server-start.sh config/server.properties
 ```
 
@@ -96,19 +95,19 @@ Open another terminal session and run:
 
 Generate a Cluster UUID
 
-``` line-numbers
+```shell line-numbers
 > KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
 ```
 
 Format Log Directories
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
 ```
 
 Start the Kafka Server
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-server-start.sh config/kraft/server.properties
 ```
 
@@ -117,7 +116,7 @@ Start the Kafka Server
 Next, we create the input topic named **streams-plaintext-input** and
 the output topic named **streams-wordcount-output**:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-topics.sh --create \
     --bootstrap-server localhost:9092 \
     --replication-factor 1 \
@@ -129,7 +128,7 @@ Created topic "streams-plaintext-input".
 Note: we create the output topic with compaction enabled because the
 output stream is a changelog stream (cf. [explanation of application output](#anchor-changelog-output) below).
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-topics.sh --create \
     --bootstrap-server localhost:9092 \
     --replication-factor 1 \
@@ -141,7 +140,7 @@ Created topic "streams-wordcount-output".
 
 The created topic can be described with the same **kafka-topics** tool:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe
 
 Topic:streams-wordcount-output  PartitionCount:1    ReplicationFactor:1 Configs:cleanup.policy=compact,segment.bytes=1073741824
@@ -154,7 +153,7 @@ Topic:streams-plaintext-input   PartitionCount:1    ReplicationFactor:1 Configs:
 
 The following command starts the WordCount demo application:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-run-class.sh org.apache.kafka.streams.examples.wordcount.WordCountDemo
 ```
 
@@ -168,14 +167,14 @@ written back into in Kafka.
 Now we can start the console producer in a separate terminal to write
 some input data to this topic:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
 ```
 
 and inspect the output of the WordCount demo application by reading from
 its output topic with the console consumer in a separate terminal:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
     --topic streams-wordcount-output \
     --from-beginning \
@@ -196,7 +195,7 @@ encoded text line that you just entered (in practice, input data for
 applications will typically be streaming continuously into Kafka, rather
 than being manually entered as we do in this quickstart):
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
 all streams lead to kafka
 ```
@@ -205,7 +204,7 @@ This message will be processed by the Wordcount application and the
 following output data will be written to the
 **streams-wordcount-output** topic and printed by the console consumer:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
     --topic streams-wordcount-output \
     --from-beginning \
@@ -232,7 +231,7 @@ into the input topic **streams-plaintext-input**. Enter the text line
 \"hello kafka streams\" and hit \<RETURN\>. Your terminal should look as
 follows:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
 all streams lead to kafka
 hello kafka streams
@@ -241,7 +240,7 @@ hello kafka streams
 In your other terminal in which the console consumer is running, you
 will observe that the WordCount application wrote new output data:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
     --topic streams-wordcount-output \
     --from-beginning \
@@ -271,7 +270,7 @@ final input text line \"join kafka summit\" and hit \<RETURN\> in the
 console producer to the input topic **streams-plaintext-input** before
 we wrap up this quickstart:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
 all streams lead to kafka
 hello kafka streams
@@ -282,7 +281,7 @@ join kafka summit
 subsequently show the corresponding updated word counts (see last three
 lines):
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
     --topic streams-wordcount-output \
     --from-beginning \
@@ -318,8 +317,8 @@ the `KTable<String, Long>` that is counting word occurrences for
 state updates to the KTable and that are being sent to the output Kafka
 topic **streams-wordcount-output**.
 
-![](/%7B%7Bversion%7D%7D/images/streams-table-updates-02.png){style="float: right; width: 25%;"}
-![](/%7B%7Bversion%7D%7D/images/streams-table-updates-01.png){style="float: right; width: 25%;"}
+![](streams-table-updates-02.png)
+![](streams-table-updates-01.png)
 
 First the text line \"all streams lead to kafka\" is being processed.
 The `KTable` is being built up as each new word results in a new table
