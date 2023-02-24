@@ -2106,7 +2106,7 @@ described below.
 In the below table we\'ll list the valid operations on resources that
 are executed by the Kafka API protocols.
 
-{{< protocol-op-resource-table kafka-acl-protocol-op-resource >}}
+{{< security-acl-resource-table >}}
 
 ## 7.6 Incorporating Security Features in a Running Cluster {#security_rolling_upgrade .anchor-link}
 

@@ -50,7 +50,7 @@ files), but it does not benefit from some of the features of Kafka
 Connect such as fault tolerance. You can start a standalone process with
 the following command:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > bin/connect-standalone.sh config/connect-standalone.properties [connector1.properties connector2.properties ...]
 ```
 
@@ -121,7 +121,7 @@ scale up (or down) dynamically, and offers fault tolerance both in the
 active tasks and for configuration and offset commit data. Execution is
 very similar to standalone mode:
 
-``` {.brush: .bash;}
+```shell {.brush: .bash;}
 > bin/connect-distributed.sh config/connect-distributed.properties
 ```
 
@@ -237,7 +237,7 @@ event. To do this, we use two transformations:
 After adding the transformations, `connect-file-source.properties` file
 looks as following:
 
-``` {.brush: .text;}
+```properties {.brush: .text;}
 name=local-file-source
 connector.class=FileStreamSource
 tasks.max=1
@@ -285,7 +285,7 @@ You can see that the lines we\'ve read are now part of a JSON map, and
 there is an extra field with the static value we specified. This is just
 one example of what you can do with transformations.
 
-#### [Included transformations](#connect_included_transformation){#connect_included_transformation}
+#### Included transformations {#connect_included_transformation}
 
 Several widely-applicable data and routing transformations are included
 with Kafka Connect:
@@ -355,7 +355,7 @@ expression. TopicNameMatches\'s only configuration property is `pattern`
 which is a Java regular expression for matching against the topic name.
 The configuration would look like this:
 
-``` {.brush: .text;}
+```properties {.brush: .text;}
 transforms=Filter
 transforms.Filter.type=org.apache.kafka.connect.transforms.Filter
 transforms.Filter.predicate=IsFoo
@@ -373,7 +373,7 @@ topic names which do *not* match. The transformation\'s implicit
 a predicate matches. Adding the configuration for this to the previous
 example we arrive at:
 
-``` {.brush: .text;}
+```properties {.brush: .text;}
 transforms=Filter,Extract
 transforms.Filter.type=org.apache.kafka.connect.transforms.Filter
 transforms.Filter.predicate=IsFoo
@@ -393,12 +393,9 @@ predicates.IsBar.pattern=bar
 
 Kafka Connect includes the following predicates:
 
--   `TopicNameMatches` - matches records in a topic with a name matching
-    a particular Java regular expression.
--   `HasHeaderKey` - matches records which have a header with the given
-    key.
--   `RecordIsTombstone` - matches tombstone records, that is records
-    with a null value.
+-   `TopicNameMatches` - matches records in a topic with a name matching a particular Java regular expression.
+-   `HasHeaderKey` - matches records which have a header with the given key.
+-   `RecordIsTombstone` - matches tombstone records, that is records with a null value.
 
 Details on how to configure each predicate are listed below:
 
@@ -412,7 +409,7 @@ list of listeners in the following format:
 `protocol://host:port,protocol2://host2:port2`. Currently supported
 protocols are `http` and `https`. For example:
 
-``` {.brush: .text;}
+```shell {.brush: .text;}
 listeners=http://localhost:8080,https://localhost:8443
 ```
 
@@ -525,8 +522,8 @@ endpoint:
     request (including git commit ID of the source code) and the Kafka
     cluster ID that is connected to.
 
-For the complete specification of the REST API, see the [OpenAPI
-documentation](/{{< param akVersion >}}/generated/connect_rest.yaml)
+For the complete specification of the REST API, see the 
+[OpenAPI documentation](connect_rest.yaml)
 
 ### Error Reporting in Connect {#connect_errorreporting}
 
@@ -559,7 +556,7 @@ error or exception. This is equivalent to adding the following
 configuration properties with their defaults to a connector
 configuration:
 
-``` {.brush: .text;}
+```properties {.brush: .text;}
 # disable retries on failure
 errors.retry.timeout=0
 
@@ -580,7 +577,7 @@ setup error handling with multiple retries, logging to the application
 logs and the `my-connector-errors` Kafka topic, and tolerating all
 errors by reporting them rather than failing the connector task:
 
-``` {.brush: .text;}
+```properties {.brush: .text;}
 # retry for at most 10 minutes times waiting up to 30 seconds between consecutive failures
 errors.retry.timeout=600000
 errors.retry.delay.max.ms=30000
@@ -614,13 +611,13 @@ exactly-once at the Connect worker level, you must ensure its consumer
 group is configured to ignore records in aborted transactions. You can
 do this by setting the worker property `consumer.isolation.level` to
 `read_committed` or, if running a version of Kafka Connect that supports
-it, using a [connector client config override
-policy](#connectconfigs_connector.client.config.override.policy) that
+it, using a 
+[connector client config override policy](#connectconfigs_connector.client.config.override.policy) that
 allows the `consumer.override.isolation.level` property to be set to
 `read_committed` in individual connector configs. There are no
 additional ACL requirements.
 
-#### [Source connectors](connect_exactlyoncesource){#connect_exactlyoncesource}
+#### Source connectors {#connect_exactlyoncesource}
 
 If a source connector supports exactly-once semantics, you must
 configure your Connect cluster to enable framework-level support for
@@ -642,24 +639,12 @@ upgrade, the `exactly.once.source.support` property should be set to
 With exactly-once source support enabled, the principal for each Connect
 worker will require the following ACLs:
 
-  Operation         Resource Type     Resource Name                                                                       Note
-  ----------------- ----------------- ----------------------------------------------------------------------------------- -----------------------------------------------------------------------------------------------------------------------------------------
-  Write             TransactionalId   `connect-cluster-${groupId}`, where `${groupId}` is the `group.id` of the cluster   
-  Describe          TransactionalId   `connect-cluster-${groupId}`, where `${groupId}` is the `group.id` of the cluster   
-  IdempotentWrite   Cluster           ID of the Kafka cluster that hosts the worker\'s config topic                       The IdempotentWrite ACL has been deprecated as of 2.8 and will only be necessary for Connect clusters running on pre-2.8 Kafka clusters
+{{< connect-acl-resource-table acl-worker >}}
 
 And the principal for each individual connector will require the
 following ACLs:
 
-  Operation         Resource Type     Resource Name                                                                                                                                                                                                                                             Note
-  ----------------- ----------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Write             TransactionalId   `${groupId}-${connector}-${taskId}`, for each task that the connector will create, where `${groupId}` is the `group.id` of the Connect cluster, `${connector}` is the name of the connector, and `${taskId}` is the ID of the task (starting from zero)   A wildcard prefix of `${groupId}-${connector}*` can be used for convenience if there is no risk of conflict with other transactional IDs or if conflicts are acceptable to the user.
-  Describe          TransactionalId   `${groupId}-${connector}-${taskId}`, for each task that the connector will create, where `${groupId}` is the `group.id` of the Connect cluster, `${connector}` is the name of the connector, and `${taskId}` is the ID of the task (starting from zero)   A wildcard prefix of `${groupId}-${connector}*` can be used for convenience if there is no risk of conflict with other transactional IDs or if conflicts are acceptable to the user.
-  Write             Topic             Offsets topic used by the connector, which is either the value of the `offsets.storage.topic` property in the connector's configuration if provided, or the value of the `offsets.storage.topic` property in the worker's configuration if not.           
-  Read              Topic             Offsets topic used by the connector, which is either the value of the `offsets.storage.topic` property in the connector's configuration if provided, or the value of the `offsets.storage.topic` property in the worker's configuration if not.           
-  Describe          Topic             Offsets topic used by the connector, which is either the value of the `offsets.storage.topic` property in the connector's configuration if provided, or the value of the `offsets.storage.topic` property in the worker's configuration if not.           
-  Create            Topic             Offsets topic used by the connector, which is either the value of the `offsets.storage.topic` property in the connector's configuration if provided, or the value of the `offsets.storage.topic` property in the worker's configuration if not.           Only necessary if the offsets topic for the connector does not exist yet
-  IdempotentWrite   Cluster           ID of the Kafka cluster that the source connector writes to                                                                                                                                                                                               The IdempotentWrite ACL has been deprecated as of 2.8 and will only be necessary for Connect clusters running on pre-2.8 Kafka clusters
+{{< connect-acl-resource-table acl-connector >}}
 
 ## 8.3 Connector Development Guide {#connect_development}
 
@@ -748,7 +733,7 @@ configuration information to be propagated to the task(s) (the topic to
 send data to, and optionally - the filename to read from and the maximum
 batch size):
 
-``` {.brush: .java;}
+```java
 public class FileStreamSourceConnector extends SourceConnector {
     private Map<String, String> props;
 ```
@@ -757,7 +742,7 @@ The easiest method to fill in is `taskClass()`, which defines the class
 that should be instantiated in worker processes to actually read the
 data:
 
-``` {.brush: .java;}
+```java
 @Override
 public Class<? extends Task> taskClass() {
     return FileStreamSourceTask.class;
@@ -767,7 +752,7 @@ public Class<? extends Task> taskClass() {
 We will define the `FileStreamSourceTask` class below. Next, we add some
 standard lifecycle methods, `start()` and `stop()`:
 
-``` {.brush: .java;}
+```java
 @Override
 public void start(Map<String, String> props) {
     // Initialization logic and setting up of resources can take place in this method.
@@ -791,7 +776,7 @@ this case we are only handling a single file, so even though we may be
 permitted to generate more tasks as per the `maxTasks` argument, we
 return a list with only one entry:
 
-``` {.brush: .java;}
+```java
 @Override
 public List<Map<String, String>> taskConfigs(int maxTasks) {
     // Note that the task configs could contain configs additional to or different from the connector configs if needed. For instance,
@@ -826,7 +811,7 @@ Just as with the connector, we need to create a class inheriting from
 the appropriate base `Task` class. It also has some standard lifecycle
 methods:
 
-``` {.brush: .java;}
+```java
 public class FileStreamSourceTask extends SourceTask {
     private String filename;
     private InputStream stream;
@@ -861,7 +846,7 @@ Next, we implement the main functionality of the task, the `poll()`
 method which gets events from the input system and returns a
 `List<SourceRecord>`:
 
-``` {.brush: .java;}
+```java
 @Override
 public List<SourceRecord> poll() throws InterruptedException {
     try {
@@ -932,7 +917,7 @@ pull interface and `SinkTask` uses a push interface. Both share the
 common lifecycle methods, but the `SinkTask` interface is quite
 different:
 
-``` {.brush: .java;}
+```java
 public abstract class SinkTask implements Task {
     public void initialize(SinkTaskContext context) {
         this.context = context;
@@ -977,7 +962,7 @@ use the `ErrantRecordReporter`, safely handling a null reporter when the
 DLQ is not enabled or when the connector is installed in an older
 Connect runtime that doesn\'t have this reporter feature:
 
-``` {.brush: .java;}
+```java
 private ErrantRecordReporter reporter;
 
 @Override
@@ -1028,7 +1013,7 @@ passed into its `initialize()` method to access the offset data. In
 `initialize()`, we would add a bit more code to read the offset (if it
 exists) and seek to that position:
 
-``` {.brush: .java;}
+```java
 stream = new FileInputStream(filename);
 Map<String, Object> offset = context.offsetStorageReader().offset(Collections.singletonMap(FILENAME_FIELD, filename));
 if (offset != null) {
@@ -1071,7 +1056,7 @@ to control when transactions are aborted and committed.
 
 For example, to commit a transaction at least every ten records:
 
-``` {.brush: .java;}
+```java
 private int recordsSent;
 
 @Override
@@ -1098,7 +1083,7 @@ public List<SourceRecord> poll() {
 
 Or to commit a transaction for exactly every tenth record:
 
-``` {.brush: .java;}
+```java
 private int recordsSent;
 
 @Override
@@ -1145,7 +1130,7 @@ If a connector doesn\'t support exactly-once semantics, it should still
 implement this method to let users know for certain that it cannot
 provide exactly-once semantics:
 
-``` {.brush: .java;}
+```java
 @Override
 public ExactlyOnceSupport exactlyOnceSupport(Map<String, String> props) {
     // This connector cannot provide exactly-once semantics under any conditions
@@ -1156,7 +1141,7 @@ public ExactlyOnceSupport exactlyOnceSupport(Map<String, String> props) {
 Otherwise, a connector should examine the configuration, and return
 `ExactlyOnceSupport.SUPPORTED` if it can provide exactly-once semantics:
 
-``` {.brush: .java;}
+```java
 @Override
 public ExactlyOnceSupport exactlyOnceSupport(Map<String, String> props) {
     // This connector can always provide exactly-once semantics
@@ -1170,7 +1155,7 @@ connector whether it can define its own transaction boundaries with the
 specified configuration, using the `canDefineTransactionBoundaries`
 method:
 
-``` {.brush: .java;}
+```java
 @Override
 public ConnectorTransactionBoundaries canDefineTransactionBoundaries(Map<String, String> props) {
     // This connector can always define its own transaction boundaries
@@ -1195,7 +1180,7 @@ table additions/deletions in a database. When they pick up changes, they
 should notify the framework via the `ConnectorContext` object that
 reconfiguration is necessary. For example, in a `SourceConnector`:
 
-``` {.brush: .java;}
+```java
 if (inputsChanged())
     this.context.requestTaskReconfiguration();
 ```
@@ -1240,7 +1225,7 @@ configuration definition to the framework.
 The following code in `FileStreamSourceConnector` defines the
 configuration and exposes it to the framework.
 
-``` {.brush: .java;}
+```java
 static final ConfigDef CONFIG_DEF = new ConfigDef()
     .define(FILE_CONFIG, Type.STRING, null, Importance.HIGH, "Source filename. If not specified, the standard input will be used")
     .define(TOPIC_CONFIG, Type.STRING, ConfigDef.NO_DEFAULT_VALUE, new ConfigDef.NonEmptyString(), Importance.HIGH, "The topic to publish data to")
@@ -1288,7 +1273,7 @@ classes in addition to primitive types: `Schema` and `Struct`.
 The API documentation provides a complete reference, but here is a
 simple example creating a `Schema` and `Struct`:
 
-``` {.brush: .java;}
+```java
 Schema schema = SchemaBuilder.struct().name(NAME)
     .field("name", Schema.STRING_SCHEMA)
     .field("age", Schema.INT_SCHEMA)
@@ -1376,7 +1361,7 @@ its tasks, including the ID of the worker to which each was assigned.
 For example, the `GET /connectors/file-source/status` request shows the
 status of a connector named `file-source`:
 
-``` {.brush: .json;}
+```json
 {
     "name": "file-source",
     "connector": {
