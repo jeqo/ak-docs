@@ -318,7 +318,7 @@ with Kafka Connect:
 
 Details on how to configure each transformation are listed below:
 
-<!--#include virtual="generated/connect_transforms.html" -->
+{{< connect-component-configs connect_transforms  >}}
 
 #### Predicates {#connect_predicates}
 
@@ -401,7 +401,7 @@ Kafka Connect includes the following predicates:
 
 Details on how to configure each predicate are listed below:
 
-<!--#include virtual="generated/connect_predicates.html" -->
+{{< connect-component-configs connect_predicates  >}}
 
 ### REST API {#connect_rest}
 
