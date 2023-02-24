@@ -9,8 +9,7 @@ section, we describe how Kafka Streams works underneath the covers.
 The picture below shows the anatomy of an application that uses the
 Kafka Streams library. Let\'s walk through some details.
 
-![](/%7B%7Bversion%7D%7D/images/streams-architecture-overview.jpg){.centered
-style="width:750px"}
+![](streams-architecture-overview.jpg)
 
 ## Stream Partitions and Tasks {#streams_architecture_tasks .anchor-link}
 
@@ -67,15 +66,14 @@ from the same stream partitions.
 to all threads over all instances, in a best-effort attempt to trade off
 load-balancing and stickiness of stateful tasks. For this assignment,
 Kafka Streams uses the
-[StreamsPartitionAssignor](https://github.com/apache/kafka/blob/trunk/streams/src/main/java/org/apache/kafka/streams/processor/internals/StreamsPartitionAssignor.java)
+[StreamsPartitionAssignor](https://github.com/apache/kafka/blob/{{<param akDotVersion>}}/streams/src/main/java/org/apache/kafka/streams/processor/internals/StreamsPartitionAssignor.java)
 class and doesn\'t let you change to a different assignor. If you try to
 use a different assignor, Kafka Streams ignores it.
 
 The following diagram shows two tasks each assigned with one partition
 of the input streams.
 
-![](/%7B%7Bversion%7D%7D/images/streams-architecture-tasks.jpg){.centered
-style="width:400px"}\
+![](streams-architecture-tasks.jpg)
 
 ## Threading Model {#streams_architecture_threads .anchor-link}
 
@@ -85,8 +83,7 @@ instance. Each thread can execute one or more tasks with their processor
 topologies independently. For example, the following diagram shows one
 stream thread running two stream tasks.
 
-![](/%7B%7Bversion%7D%7D/images/streams-architecture-threads.jpg){.centered
-style="width:400px"}
+![](streams-architecture-threads.jpg)
 
 Starting more stream threads or more instances of the application merely
 amounts to replicating the topology and having it process a different
@@ -95,8 +92,8 @@ worth noting that there is no shared state amongst the threads, so no
 inter-thread coordination is necessary. This makes it very simple to run
 topologies in parallel across the application instances and threads. The
 assignment of Kafka topic partitions amongst the various stream threads
-is transparently handled by Kafka Streams leveraging [Kafka\'s
-coordination](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Client-side+Assignment+Proposal)
+is transparently handled by Kafka Streams leveraging 
+[Kafka\'s coordination](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Client-side+Assignment+Proposal)
 functionality.
 
 As we described above, scaling your stream processing application with
@@ -119,7 +116,7 @@ the need to restart clients to recover the number of thread running.
 Kafka Streams provides so-called **state stores**, which can be used by
 stream processing applications to store and query data, which is an
 important capability when implementing stateful operations. The 
-[Kafka Streams DSL](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html),
+[Kafka Streams DSL](../developer-guide/dsl-api),
 for example, automatically creates and manages such state stores when
 you are calling stateful operators such as `join()` or `aggregate()`, or
 when you are windowing a stream.
@@ -132,8 +129,7 @@ automatic recovery for such local state stores.
 The following diagram shows two stream tasks with their dedicated local
 state stores.
 
-![](/%7B%7Bversion%7D%7D/images/streams-architecture-states.jpg){.centered
-style="width:400px"}\
+![](streams-architecture-states.jpg)
 
 ## Fault Tolerance {#streams_architecture_recovery .anchor-link}
 
@@ -152,7 +148,7 @@ changelog Kafka topic in which it tracks any state updates. These
 changelog topics are partitioned as well so that each local state store
 instance, and hence the task accessing the store, has its own dedicated
 changelog topic partition. 
-[Log compaction](/%7B%7Bversion%7D%7D/documentation/#compaction) is enabled
+[Log compaction](../../design#compaction) is enabled
 on the changelog topics so that old data can be purged safely to prevent
 the topics from growing indefinitely. If tasks run on a machine that
 fails and are restarted on another machine, Kafka Streams guarantees to
@@ -169,7 +165,7 @@ local states (i.e. fully replicated copies of the state). When a task
 migration happens, Kafka Streams will assign a task to an application
 instance where such a standby replica already exists in order to
 minimize the task (re)initialization cost. See `num.standby.replicas` in
-the [**Kafka Streams Configs**](/%7B%7Bversion%7D%7D/documentation/#streamsconfigs) section.
+the [**Kafka Streams Configs**](../../configuration#streamsconfigs) section.
 Starting in 2.6, Kafka Streams will guarantee that a task is only ever
 assigned to an instance with a fully caught-up local copy of the state,
 if such an instance exists. Standby tasks will increase the likelihood
@@ -180,5 +176,5 @@ configured, Kafka Streams will attempt to distribute a standby task on a
 different \"rack\" than the active one, thus having a faster recovery
 time when the rack of the active tasks fails. See
 `rack.aware.assignment.tags` in the 
-[**Kafka Streams Developer Guide**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/config-streams.html#rack-aware-assignment-tags)
+[**Kafka Streams Developer Guide**](../developer-guide/config-streams#rack-aware-assignment-tags)
 section.

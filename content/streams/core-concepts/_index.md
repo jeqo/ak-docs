@@ -49,7 +49,7 @@ We first summarize the key concepts of Kafka Streams.
     through one or more **processor topologies**, where a processor
     topology is a graph of stream processors (nodes) that are connected
     by streams (edges).
--   A [**stream processor**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/processor-api#defining-a-stream-processor){#defining-a-stream-processor}
+-   A [**stream processor**](../developer-guide/processor-api#defining-a-stream-processor)
     is a node in the processor topology; it represents a processing step
     to transform data in streams by receiving one input record at a time
     from its upstream processors in the topology, applying its operation
@@ -73,21 +73,20 @@ accessed while processing the current record. Therefore the processed
 results can either be streamed back into Kafka or written to an external
 system.
 
-![](/%7B%7Bversion%7D%7D/images/streams-architecture-topology.jpg){.centered
-style="width:400px"}
+![](../architecture/streams-architecture-topology.jpg)
 
 Kafka Streams offers two ways to define the stream processing topology:
-the [**Kafka Streams DSL**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html)
+the [**Kafka Streams DSL**](../developer-guide/dsl-api)
 provides the most common data transformation operations such as `map`,
 `filter`, `join` and `aggregations` out of the box; the lower-level
-[**Processor API**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/processor-api.html)
+[**Processor API**](../developer-guide/processor-api)
 allows developers define and connect custom processors as well as to
 interact with [state stores](#streams_state).
 
 A processor topology is merely a logical abstraction for your stream
 processing code. At runtime, the logical topology is instantiated and
 replicated inside the application for parallel processing (see 
-[**Stream Partitions and Tasks**](/%7B%7Bversion%7D%7D/documentation/streams/architecture#streams_architecture_tasks)
+[**Stream Partitions and Tasks**](../architecture#streams_architecture_tasks)
 for details).
 
 ## Time {#streams_time .anchor-link}
@@ -197,22 +196,22 @@ everywhere, but databases are everywhere, too.
 Any stream processing technology must therefore provide **first-class
 support for streams and tables**. Kafka\'s Streams API provides such
 functionality through its core abstractions for
-[streams](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api#streams_concepts_kstream){#streams_concepts_kstream}
+[streams](../developer-guide/dsl-api#streams_concepts_kstream)
 and
-[tables](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api#streams_concepts_ktable){#streams_concepts_ktable},
+[tables](../developer-guide/dsl-api#streams_concepts_ktable),
 which we will talk about in a minute. Now, an interesting observation is
 that there is actually a **close relationship between streams and
 tables**, the so-called stream-table duality. And Kafka exploits this
 duality in many ways: for example, to make your applications
-[elastic](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/running-app#elastic-scaling-of-your-application){#streams-developer-guide-execution-scaling},
-to support [fault-tolerant stateful processing](/%7B%7Bversion%7D%7D/documentation/streams/architecture#streams_architecture_recovery){#streams_architecture_recovery},
-or to run [interactive queries](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/interactive-queries#interactive-queries){#streams-developer-guide-interactive-queries}
+[elastic](../developer-guide/running-app#elastic-scaling-of-your-application),
+to support [fault-tolerant stateful processing](../architecture#streams_architecture_recovery),
+or to run [interactive queries](../developer-guide/interactive-queries#interactive-queries)
 against your application\'s latest processing results. And, beyond its
 internal usage, the Kafka Streams API also allows developers to exploit
 this duality in their own applications.
 
 Before we discuss concepts such as
-[aggregations](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api#aggregating){#streams-developer-guide-dsl-aggregating}
+[aggregations](../developer-guide/dsl-api#aggregating){#streams-developer-guide-dsl-aggregating}
 in Kafka Streams, we must first introduce **tables** in more detail, and
 talk about the aforementioned stream-table duality. Essentially, this
 duality means that a stream can be viewed as a table, and a table can be
@@ -222,7 +221,8 @@ exploits this duality.
 A simple form of a table is a collection of key-value pairs, also called
 a map or associative array. Such a table may look as follows:
 
-![](/%7B%7Bversion%7D%7D/images/streams-table-duality-01.png){.centered}
+![](streams-table-duality-01.png)
+
 The **stream-table duality** describes the close relationship between
 streams and tables.
 
@@ -249,14 +249,12 @@ is updated accordingly. Here, the state changes between different points
 in time - and different revisions of the table - can be represented as a
 changelog stream (second column).
 
-![](/%7B%7Bversion%7D%7D/images/streams-table-duality-02.png){.centered
-style="width:300px"}
+![](streams-table-duality-02.png)
 
 Interestingly, because of the stream-table duality, the same stream can
 be used to reconstruct the original table (third column):
 
-![](/%7B%7Bversion%7D%7D/images/streams-table-duality-03.png){.centered
-style="width:600px"}
+![](streams-table-duality-03.png)
 
 The same mechanism is used, for example, to replicate databases via
 change data capture (CDC) and, within Kafka Streams, to replicate its
@@ -305,7 +303,7 @@ out-of-order records can only be considered as such for event-time. In
 both cases, Kafka Streams is able to properly handle out-of-order
 records.
 
-## [States](#streams_state){#streams_state}
+## States {#streams_state}
 
 Some stream processing applications don\'t require state, which means
 the processing of a message is independent from the processing of all
@@ -313,7 +311,7 @@ other messages. However, being able to maintain state opens up many
 possibilities for sophisticated stream processing applications: you can
 join input streams, or group and aggregate data records. Many such
 stateful operators are provided by the 
-[**Kafka Streams DSL**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html).
+[**Kafka Streams DSL**](../developer-guide/dsl-api).
 
 Kafka Streams provides so-called **state stores**, which can be used by
 stream processing applications to store and query data. This is an
@@ -379,7 +377,8 @@ see
 To enable exactly-once semantics when running Kafka Streams
 applications, set the `processing.guarantee` config value (default value
 is **at_least_once**) to **StreamsConfig.EXACTLY_ONCE_V2** (requires
-brokers version 2.5 or newer). For more information, see the [Kafka Streams Configs](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/config-streams.html)
+brokers version 2.5 or newer). For more information, see the 
+[Kafka Streams Configs](../developer-guide/config-streams)
 section.
 
 ## Out-of-Order Handling {#streams_out_of_ordering .anchor-link}
@@ -398,7 +397,7 @@ timestamps:
     timestamps (but smaller offsets) to be processed earlier than
     records with smaller timestamps (but larger offsets) in the same
     topic-partition.
--   Within a [stream task](/%7B%7Bversion%7D%7D/documentation/streams/architecture#streams_architecture_tasks)
+-   Within a [stream task](../architecture#streams_architecture_tasks)
     that may be processing multiple topic-partitions, if users configure
     the application to not wait for all partitions to contain some
     buffered data and pick from the partition with the smallest
@@ -417,7 +416,7 @@ wait for longer time while bookkeeping their states during the wait
 time, i.e. making trade-off decisions between latency, cost, and
 correctness. In Kafka Streams specifically, users can configure their
 window operators for windowed aggregations to achieve such trade-offs
-(details can be found in [**Developer Guide**](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide)).
+(details can be found in [**Developer Guide**](../developer-guide)).
 As for Joins, users have to be aware that some of the out-of-order data
 cannot be handled by increasing on latency and cost in Streams yet:
 
