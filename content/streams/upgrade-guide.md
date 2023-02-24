@@ -145,10 +145,9 @@ methods.
 [KIP-761](https://cwiki.apache.org/confluence/display/KAFKA/KIP-761%3A+Add+Total+Blocked+Time+Metric+to+Streams)
 adds new metrics that allow to track blocking times on the underlying
 consumer and producer clients. Check out the section on [Kafka Streams
-metrics](/documentation/#kafka_streams_monitoring) for more details.
+metrics](../../operations#kafka_streams_monitoring) for more details.
 
-[Interactive
-Queries](/documentation/streams/developer-guide/interactive-queries.html)
+[Interactive Queries](../developer-guide/interactive-queries.html)
 were improved via
 [KIP-763](https://cwiki.apache.org/confluence/display/KAFKA/KIP-763%3A+Range+queries+with+open+endpoints)
 [KIP-766](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=186876596).
@@ -164,8 +163,8 @@ custom `StreamPartitioner` into the join using the newly added
 
 ## Streams API changes in 3.0.0 {#streams_api_changes_300}
 
-We improved the semantics of [task idling
-(`max.task.idle.ms`)](/documentation/streams/developer-guide/config-streams.html#max-task-idle-ms).
+We improved the semantics of 
+[task idling (`max.task.idle.ms`)](../developer-guide/config-streams#max-task-idle-ms).
 Now Streams provides stronger in-order join and merge processing
 semantics. Streams\'s new default pauses processing on tasks with
 multiple input partitions when one of the partitions has no data
@@ -177,8 +176,8 @@ processing whichever partition happens to be buffered. There is an
 option to disable this new behavior, and there is also an option to make
 Streams wait even longer for new records to be *produced* to the input
 partitions, which you can use to get stronger time semantics when you
-know some of your producers may be slow. See the [config
-reference](/documentation/streams/developer-guide/config-streams.html#max-task-idle-ms)
+know some of your producers may be slow. See the 
+[config reference](../developer-guide/config-streams#max-task-idle-ms)
 for more information, and
 [KIP-695](https://cwiki.apache.org/confluence/x/JSXZCQ) for the larger
 context of this change.
@@ -211,8 +210,7 @@ deprecated configs in 4.0 or after at least a year from the release of
 3.0, whichever comes last. Note that eos-v2 requires broker version 2.5
 or higher, like eos-beta, so users should begin to upgrade their kafka
 cluster if necessary. See
-[KIP-732](https://cwiki.apache.org/confluence/x/zJONCg) for more
-details.
+[KIP-732](https://cwiki.apache.org/confluence/x/zJONCg) for more details.
 
 We removed the default implementation of `RocksDBConfigSetter#close()`.
 
@@ -343,7 +341,7 @@ We removed the following deprecated APIs:
 
 The following dependencies were removed from Kafka Streams:
 
--   Connect-json: As of Kafka Streams no longer has a compile time
+-   `connect-json`: As of Kafka Streams no longer has a compile time
     dependency on \"connect:json\" module
     ([KAFKA-5146](https://issues.apache.org/jira/browse/KAFKA-5146)).
     Projects that were relying on this transitive dependency will have
@@ -431,7 +429,7 @@ configured through those configs or passed in explicitly. See
 [KIP-741](https://cwiki.apache.org/confluence/display/KAFKA/KIP-741%3A+Change+default+serde+to+be+null)
 for more details.
 
-## [Streams API changes in 2.7.0](#streams_api_changes_270){#streams_api_changes_270}
+## Streams API changes in 2.7.0 {#streams_api_changes_270}
 
 In `KeyQueryMetadata` we deprecated `getActiveHost()`,
 `getStandbyHosts()` as well as `getPartition()` and replaced them with
@@ -502,8 +500,7 @@ new `KStream.repartition()` operator (as per
 Streams will manage the topic for you. If you need to write into and
 read back from a topic that you mange, you can fall back to use
 `KStream.to()` in combination with `StreamsBuilder#stream()`. Please
-refer to the [developer
-guide](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html)
+refer to the [developer guide](../developer-guide/dsl-api)
 for more details about `KStream.repartition()`.
 
 The usability of `StateStore`s within the Processor API is improved:
@@ -530,7 +527,7 @@ We add a new `cogroup()` operator (via
 that allows to aggregate multiple streams in a single operation.
 Cogrouped streams can also be windowed before they are aggregated.
 Please refer to the [developer
-guide](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html)
+guide](../developer-guide/dsl-api)
 for more details.
 
 We added a new `KStream.toTable()` API to translate an input event
@@ -561,7 +558,7 @@ per
 [KIP-213](https://cwiki.apache.org/confluence/display/KAFKA/KIP-213+Support+non-key+joining+in+KTable)).
 This joiner allows for records to be joined between two KTables with
 different keys. Both [INNER and LEFT foreign-key
-joins](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html#ktable-ktable-fk-join)
+joins](../developer-guide/dsl-api#ktable-ktable-fk-join)
 are supported.
 
 In the 2.4 release, you now can name all operators in a Kafka Streams
@@ -619,12 +616,12 @@ adds new *client level* (i.e., `KafkaStreams` instance level) metrics to
 the existing thread-level, task-level, and processor-/state-store-level
 metrics. For a full list of available client level metrics, see the
 [KafkaStreams
-monitoring](/%7B%7Bversion%7D%7D/documentation/#kafka_streams_client_monitoring)
+monitoring](../../operations#kafka_streams_client_monitoring)
 section in the operations guide.\
 Furthermore, RocksDB metrics are exposed via
 [KIP-471](https://cwiki.apache.org/confluence/display/KAFKA/KIP-471%3A+Expose+RocksDB+Metrics+in+Kafka+Streams).
 For a full list of available RocksDB metrics, see the [RocksDB
-monitoring](/%7B%7Bversion%7D%7D/documentation/#kafka_streams_rocksdb_monitoring)
+monitoring](../../operations#kafka_streams_rocksdb_monitoring)
 section in the operations guide.
 
 Kafka Streams `test-utils` got improved via
@@ -636,7 +633,7 @@ application code. We deprecated `ConsumerRecordFactory`,
 and `TestOutputTopic`, respectively. We also introduced a new class
 `TestRecord` that simplifies assertion code. For full details see the
 [Testing
-section](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/testing.html)
+section](../developer-guide/testing)
 in the developer guide.
 
 In 2.4.0, we deprecated `WindowStore#put(K key, V value)` that should
@@ -788,7 +785,7 @@ implicit `Serialized`, you just need to recompile; if you pass in
 We\'ve added a new config named `max.task.idle.ms` to allow users
 specify how to handle out-of-order data within a task that may be
 processing multiple topic-partitions (see [Out-of-Order
-Handling](/%7B%7Bversion%7D%7D/documentation/streams/core-concepts.html#streams_out_of_ordering)
+Handling](../core-concepts#streams_out_of_ordering)
 section for more details). The default value is set to `0`, to favor
 minimized latency over synchronization between multiple input streams
 from topic-partitions. If users would like to wait for longer time when
@@ -873,7 +870,7 @@ We are introducing static membership towards Kafka Streams user. This
 feature reduces unnecessary rebalances during normal application
 upgrades or rolling bounces. For more details on how to use it, checkout
 [static membership
-design](/%7B%7Bversion%7D%7D/documentation/#static_membership). Note,
+design](../../design#static_membership). Note,
 Kafka Streams uses the same `ConsumerConfig#GROUP_INSTANCE_ID_CONFIG`,
 and you only need to make sure it is uniquely defined across different
 stream instances in one application.
@@ -966,7 +963,7 @@ track of the headers of the source topic\'s message that is being
 processed. Through this object, users can manipulate the headers map
 that is being propagated throughout the processor topology as well. For
 more details please feel free to read the [Developer
-Guide](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/processor-api.html#accessing-processor-context)
+Guide](../developer-guide/processor-api#accessing-processor-context)
 section.
 
 We have deprecated constructors of `KafkaStreams` that take a
@@ -1023,9 +1020,8 @@ functions as parameters for transformations avoiding the need anonymous
 classes in Java 7 or experimental SAM type conversions in Scala 2.11,
 automatic conversion between Java and Scala collection types, a way to
 implicitly provide Serdes to reduce boilerplate from your application
-and make it more typesafe, and more! For more information see the [Kafka
-Streams DSL for Scala
-documentation](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/dsl-api.html#scala-dsl)
+and make it more typesafe, and more! For more information see the 
+[Kafka Streams DSL for Scala documentation](../developer-guide/dsl-api#scala-dsl)
 and
 [KIP-270](https://cwiki.apache.org/confluence/display/KAFKA/KIP-270+-+A+Scala+Wrapper+Library+for+Kafka+Streams).
 
@@ -1173,8 +1169,7 @@ class `StreamsBuilder` one can get the constructed `Topology` via
 classes) were added. Those can be used to get a detailed description of
 the specified topology and can be obtained by calling
 `Topology#describe()`. An example using this new API is shown in the
-[quickstart
-section](/%7B%7Bversion%7D%7D/documentation/streams/quickstart).
+[quickstart section](../streams/quickstart).
 
 New methods in `KStream`:
 
@@ -1229,8 +1224,7 @@ Modified methods in `Processor`:
     interface, which triggers its `punctuate` API method periodically
     based on the `PunctuationType`. The `PunctuationType` determines
     what notion of time is used for the punctuation scheduling: either
-    [stream
-    time](/%7B%7Bversion%7D%7D/documentation/streams/core-concepts#streams_time)
+    [stream time](../streams/core-concepts#streams_time)
     or wall-clock time (by default, **stream time** is configured to
     represent event time via `TimestampExtractor`). In addition, the
     `punctuate` function inside `Processor` is also deprecated.
@@ -1260,8 +1254,7 @@ no longer in the sensor metrics names, but instead are added as tags of
 the sensors to achieve consistent metrics hierarchy. As a result you may
 need to make corresponding code changes on your metrics reporting and
 monitoring tools when upgrading to 1.0.0. Detailed metrics sensor can be
-found in the [Streams
-Monitoring](/%7B%7Bversion%7D%7D/documentation/#kafka_streams_monitoring)
+found in the [Streams Monitoring](../../operations#kafka_streams_monitoring)
 section.
 
 The introduction of
@@ -1394,9 +1387,8 @@ Parameter updates in `StreamsConfig`:
 
 -   parameter `zookeeper.connect` was deprecated; a Kafka Streams
     application does no longer interact with ZooKeeper for topic
-    management but uses the new broker admin protocol (cf. [KIP-4,
-    Section \"Topic Admin
-    Schema\"](https://cwiki.apache.org/confluence/display/KAFKA/KIP-4+-+Command+line+and+centralized+administrative+operations#KIP-4-Commandlineandcentralizedadministrativeoperations-TopicAdminSchema.1))
+    management but uses the new broker admin protocol 
+    (cf. [KIP-4, Section \"Topic Admin Schema\"](https://cwiki.apache.org/confluence/display/KAFKA/KIP-4+-+Command+line+and+centralized+administrative+operations#KIP-4-Commandlineandcentralizedadministrativeoperations-TopicAdminSchema.1))
 -   added many new parameters for metrics, security, and client
     configurations
 

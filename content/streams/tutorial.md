@@ -3,7 +3,7 @@
 In this guide we will start from scratch on setting up your own project
 to write a stream processing application using Kafka Streams. It is
 highly recommended to read the
-[quickstart](/%7B%7Bversion%7D%7D/documentation/streams/quickstart)
+[quickstart](../quickstart)
 first on how to run a Streams application written in Kafka Streams if
 you have not done so.
 
@@ -12,7 +12,7 @@ you have not done so.
 We are going to use a Kafka Streams Maven Archetype for creating a
 Streams project structure with the following commands:
 
-``` line-numbers
+```shell line-numbers
 mvn archetype:generate \
     -DarchetypeGroupId=org.apache.kafka \
     -DarchetypeArtifactId=streams-quickstart-java \
@@ -50,7 +50,7 @@ There are already several example programs written with Streams library
 under `src/main/java`. Since we are going to start writing such programs
 from scratch, we can now delete these examples:
 
-``` line-numbers
+```shell line-numbers
 > cd streams-quickstart
 > rm src/main/java/myapps/*.java
 ```
@@ -61,7 +61,7 @@ It\'s coding time now! Feel free to open your favorite IDE and import
 this Maven project, or simply open a text editor and create a java file
 under `src/main/java/myapps`. Let\'s name it `Pipe.java`:
 
-``` line-numbers
+```java line-numbers
 package myapps;
 
 public class Pipe {
@@ -88,7 +88,7 @@ Kafka cluster, and `StreamsConfig.APPLICATION_ID_CONFIG`, which gives
 the unique identifier of your Streams application to distinguish itself
 with other applications talking to the same Kafka cluster:
 
-``` line-numbers
+```java line-numbers
 Properties props = new Properties();
 props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe");
 props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");    // assuming that the Kafka broker this application is talking to runs on local machine with port 9092
@@ -98,27 +98,27 @@ In addition, you can customize other configurations in the same map, for
 example, default serialization and deserialization libraries for the
 record key-value pairs:
 
-``` line-numbers
+```java line-numbers
 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 ```
 
 For a full list of configurations of Kafka Streams please refer to this
-[table](/%7B%7Bversion%7D%7D/documentation/#streamsconfigs).
+[table](../../configuration#streamsconfigs).
 
 Next we will define the computational logic of our Streams application.
 In Kafka Streams this computational logic is defined as a `topology` of
 connected processor nodes. We can use a topology builder to construct
 such a topology,
 
-``` line-numbers
+```java line-numbers
 final StreamsBuilder builder = new StreamsBuilder();
 ```
 
 And then create a source stream from a Kafka topic named
 `streams-plaintext-input` using this topology builder:
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> source = builder.stream("streams-plaintext-input");
 ```
 
@@ -128,34 +128,34 @@ as `String` typed key-value pairs. The simplest thing we can do with
 this stream is to write it into another Kafka topic, say it\'s named
 `streams-pipe-output`:
 
-``` line-numbers
+```java line-numbers
 source.to("streams-pipe-output");
 ```
 
 Note that we can also concatenate the above two lines into a single line
 as:
 
-``` line-numbers
+```java line-numbers
 builder.stream("streams-plaintext-input").to("streams-pipe-output");
 ```
 
 We can inspect what kind of `topology` is created from this builder by
 doing the following:
 
-``` line-numbers
+```java line-numbers
 final Topology topology = builder.build();
 ```
 
 And print its description to standard output as:
 
-``` line-numbers
+```java line-numbers
 System.out.println(topology.describe());
 ```
 
 If we just stop here, compile and run the program, it will output the
 following information:
 
-``` line-numbers
+```shell line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.Pipe
 Sub-topologies:
@@ -188,7 +188,7 @@ client with the two components we have just constructed above: the
 configuration map specified in a `java.util.Properties` instance and the
 `Topology` object.
 
-``` line-numbers
+```java line-numbers
 final KafkaStreams streams = new KafkaStreams(topology, props);
 ```
 
@@ -198,7 +198,7 @@ client. We can, for example, add a shutdown hook with a countdown latch
 to capture a user interrupt and close the client upon terminating this
 program:
 
-``` line-numbers
+```java line-numbers
 final CountDownLatch latch = new CountDownLatch(1);
 
 // attach shutdown handler to catch control-c
@@ -221,7 +221,7 @@ System.exit(0);
 
 The complete code so far looks like this:
 
-``` line-numbers
+```java line-numbers
 package myapps;
 
 import org.apache.kafka.common.serialization.Serdes;
@@ -276,7 +276,7 @@ and the topics `streams-plaintext-input` and `streams-pipe-output`
 created on that broker, you can run this code in your IDE or on the
 command line, using Maven:
 
-``` line-numbers
+```shell line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.Pipe
 ```
@@ -294,14 +294,14 @@ add some real processing logic by augmenting the current topology. We
 can first create another program by first copy the existing `Pipe.java`
 class:
 
-``` line-numbers
+```shell line-numbers
 > cp src/main/java/myapps/Pipe.java src/main/java/myapps/LineSplit.java
 ```
 
 And change its class name as well as the application id config to
 distinguish with the original program:
 
-``` line-numbers
+```java line-numbers
 public class LineSplit {
 
     public static void main(String[] args) throws Exception {
@@ -316,7 +316,7 @@ Since each of the source stream\'s record is a `String` typed key-value
 pair, let\'s treat the value string as a text line and split it into
 words with a `FlatMapValues` operator:
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> source = builder.stream("streams-plaintext-input");
 KStream<String, String> words = source.flatMapValues(new ValueMapper<String, Iterable<String>>() {
             @Override
@@ -334,7 +334,7 @@ is a stateless operator that does not need to keep track of any
 previously received records or processed results. Note if you are using
 JDK 8 you can use lambda expression and simplify the above code as:
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> source = builder.stream("streams-plaintext-input");
 KStream<String, String> words = source.flatMapValues(value -> Arrays.asList(value.split("\\W+")));
 ```
@@ -343,7 +343,7 @@ And finally we can write the word stream back into another Kafka topic,
 say `streams-linesplit-output`. Again, these two steps can be
 concatenated as the following (assuming lambda expression is used):
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> source = builder.stream("streams-plaintext-input");
 source.flatMapValues(value -> Arrays.asList(value.split("\\W+")))
       .to("streams-linesplit-output");
@@ -352,7 +352,7 @@ source.flatMapValues(value -> Arrays.asList(value.split("\\W+")))
 If we now describe this augmented topology as
 `System.out.println(topology.describe())`, we will get the following:
 
-``` line-numbers
+```shell line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.LineSplit
 Sub-topologies:
@@ -377,7 +377,7 @@ node is \"stateless\" as it is not associated with any stores (i.e.
 
 The complete code looks like this (assuming lambda expression is used):
 
-``` line-numbers
+```java line-numbers
 package myapps;
 
 import org.apache.kafka.common.serialization.Serdes;
@@ -422,7 +422,7 @@ the topology by counting the occurrence of the words split from the
 source text stream. Following similar steps let\'s create another
 program based on the `LineSplit.java` class:
 
-``` line-numbers
+```java line-numbers
 public class WordCount {
 
     public static void main(String[] args) throws Exception {
@@ -437,7 +437,7 @@ In order to count the words we can first modify the `flatMapValues`
 operator to treat all of them as lower case (assuming lambda expression
 is used):
 
-``` line-numbers
+```java line-numbers
 source.flatMapValues(new ValueMapper<String, Iterable<String>>() {
     @Override
     public Iterable<String> apply(String value) {
@@ -452,7 +452,7 @@ with a `groupBy` operator. This operator generate a new grouped stream,
 which can then be aggregated by a `count` operator, which generates a
 running count on each of the grouped keys:
 
-``` line-numbers
+```java line-numbers
 KTable<String, Long> counts =
 source.flatMapValues(new ValueMapper<String, Iterable<String>>() {
             @Override
@@ -474,8 +474,8 @@ source.flatMapValues(new ValueMapper<String, Iterable<String>>() {
 Note that the `count` operator has a `Materialized` parameter that
 specifies that the running count should be stored in a state store named
 `counts-store`. This `counts-store` store can be queried in real-time,
-with details described in the [Developer
-Manual](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide#streams_interactive_queries).
+with details described in the 
+[Developer Manual](../developer-guide#streams_interactive_queries).
 
 We can also write the `counts` KTable\'s changelog stream back into
 another Kafka topic, say `streams-wordcount-output`. Because the result
@@ -486,19 +486,19 @@ serialization classes are not viable for writing it to Kafka anymore. We
 need to provide overridden serialization methods for `Long` types,
 otherwise a runtime exception will be thrown:
 
-``` line-numbers
+```java line-numbers
 counts.toStream().to("streams-wordcount-output", Produced.with(Serdes.String(), Serdes.Long()));
 ```
 
 Note that in order to read the changelog stream from topic
 `streams-wordcount-output`, one needs to set the value deserialization
 as `org.apache.kafka.common.serialization.LongDeserializer`. Details of
-this can be found in the [Play with a Streams
-Application](/%7B%7Bversion%7D%7D/documentation/streams/quickstart)
+this can be found in the 
+[Play with a Streams Application](../quickstart)
 section. Assuming lambda expression from JDK 8 can be used, the above
 code can be simplified as:
 
-``` line-numbers
+```java line-numbers
 KStream<String, String> source = builder.stream("streams-plaintext-input");
 source.flatMapValues(value -> Arrays.asList(value.toLowerCase(Locale.getDefault()).split("\\W+")))
       .groupBy((key, value) -> value)
@@ -510,7 +510,7 @@ source.flatMapValues(value -> Arrays.asList(value.toLowerCase(Locale.getDefault(
 If we again describe this augmented topology as
 `System.out.println(topology.describe())`, we will get the following:
 
-``` line-numbers
+```shell line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.WordCount
 Sub-topologies:
@@ -554,7 +554,7 @@ a record stream before further piping to the sink node
 
 The complete code looks like this (assuming lambda expression is used):
 
-``` line-numbers
+```java line-numbers
 package myapps;
 
 import org.apache.kafka.common.serialization.Serdes;
