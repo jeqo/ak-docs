@@ -17,12 +17,12 @@ with no arguments.
 You have the option of either adding topics manually or having them be
 created automatically when data is first published to a non-existent
 topic. If topics are auto-created then you may want to tune the default
-[topic configurations](#topicconfigs) used for auto-created topics.
+[topic configurations](../configuration#topicconfigs) used for auto-created topics.
 
 Topics are added and modified using the topic tool:
 
-``` line-numbers
-  > bin/kafka-topics.sh --bootstrap-server broker_host:port --create --topic my_topic_name \
+```bash line-numbers
+> bin/kafka-topics.sh --bootstrap-server broker_host:port --create --topic my_topic_name \
         --partitions 20 --replication-factor 3 --config x=y
 ```
 
@@ -38,7 +38,7 @@ partition must fit entirely on a single server. So if you have 20
 partitions the full data set (and read and write load) will be handled
 by no more than 20 servers (not counting replicas). Finally the
 partition count impacts the maximum parallelism of your consumers. This
-is discussed in greater detail in the [concepts section](#intro_consumers).
+is discussed in greater detail in the [concepts section](../design#theconsumer).
 
 Each sharded partition log is placed into its own folder under the Kafka
 log directory. The name of such folders consists of the topic name,
@@ -52,7 +52,7 @@ and a potentially 5 digit long partition id.
 The configurations added on the command line override the default
 settings the server has for things like the length of time data should
 be retained. The complete set of per-topic configurations is documented
-[here](#topicconfigs).
+[here](../configuration#topicconfigs).
 
 ### Modifying topics {#basic_ops_modify_topic .anchor-link}
 
@@ -61,8 +61,8 @@ same topic tool.
 
 To add partitions you can do
 
-``` line-numbers
-  > bin/kafka-topics.sh --bootstrap-server broker_host:port --alter --topic my_topic_name \
+```shell line-numbers
+> bin/kafka-topics.sh --bootstrap-server broker_host:port --alter --topic my_topic_name \
         --partitions 40
 ```
 
@@ -75,20 +75,20 @@ Kafka will not attempt to automatically redistribute data in any way.
 
 To add configs:
 
-``` line-numbers
-  > bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --add-config x=y
+```shell line-numbers
+> bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --add-config x=y
 ```
 
 To remove a config:
 
-``` line-numbers
-  > bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --delete-config x
+```shell line-numbers
+> bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --delete-config x
 ```
 
 And finally deleting a topic:
 
-``` line-numbers
-  > bin/kafka-topics.sh --bootstrap-server broker_host:port --delete --topic my_topic_name
+```shell line-numbers
+> bin/kafka-topics.sh --bootstrap-server broker_host:port --delete --topic my_topic_name
 ```
 
 Kafka does not currently support reducing the number of partitions for a
@@ -120,8 +120,8 @@ Syncing the logs will happen automatically whenever the server is
 stopped other than by a hard kill, but the controlled leadership
 migration requires using a special setting:
 
-``` line-numbers
-      controlled.shutdown.enable=true
+```properties line-numbers
+controlled.shutdown.enable=true
 ```
 
 Note that controlled shutdown will only succeed if *all* the partitions
@@ -143,15 +143,15 @@ as the leader to either node 5 or 9 because it is earlier in the replica
 list. By default the Kafka cluster will try to restore leadership to the
 preferred replicas. This behaviour is configured with:
 
-``` line-numbers
-      auto.leader.rebalance.enable=true
+```properties line-numbers
+auto.leader.rebalance.enable=true
 ```
 
 You can also set this to false, but you will then need to manually
 restore leadership to the restored replicas by running the command:
 
-``` line-numbers
-  > bin/kafka-leader-election.sh --bootstrap-server broker_host:port --election-type preferred --all-topic-partitions
+```shell line-numbers
+> bin/kafka-leader-election.sh --bootstrap-server broker_host:port --election-type preferred --all-topic-partitions
 ```
 
 ### Balancing Replicas Across Racks {#basic_ops_racks .anchor-link}
@@ -165,8 +165,8 @@ applied to other broker groupings such as availability zones in EC2.
 You can specify that a broker belongs to a particular rack by adding a
 property to the broker config:
 
-``` language-text
-  broker.rack=my-rack-id
+```properties language-text
+broker.rack=my-rack-id
 ```
 
 When a topic is [created](#basic_ops_add_topic),
@@ -200,8 +200,8 @@ well as how far behind the end of the log they are. To run this tool on
 a consumer group named *my-group* consuming a topic named *my-topic*
 would look like this:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
 
   TOPIC                          PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG        CONSUMER-ID                                       HOST                           CLIENT-ID
   my-topic                       0          2               4               2          consumer-1-029af89c-873c-4751-a720-cefd41a669d6   /127.0.0.1                     consumer-1
@@ -217,8 +217,8 @@ automatically when the last committed offset for that group expires.
 Manual deletion works only if the group does not have any active
 members. For example, to list all consumer groups across all topics:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
 
   test-consumer-group
 ```
@@ -226,8 +226,8 @@ members. For example, to list all consumer groups across all topics:
 To view offsets, as mentioned earlier, we \"describe\" the consumer
 group like this:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
 
   TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                    HOST            CLIENT-ID
   topic3          0          241019          395308          154289          consumer2-e76ea8c3-5d30-4299-9005-47eb41f3d3c4 /127.0.0.1      consumer2
@@ -241,11 +241,11 @@ group like this:
 There are a number of additional \"describe\" options that can be used
 to provide more detailed information about a consumer group:
 
--   \--members: This option provides the list of all active members in
+-   `--members`: This option provides the list of all active members in
     the consumer group.
 
-    ``` line-numbers
-          > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members
+    ```shell line-numbers
+        > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members
 
           CONSUMER-ID                                    HOST            CLIENT-ID       #PARTITIONS
           consumer1-3fc8d6f1-581a-4472-bdf3-3515b4aee8c1 /127.0.0.1      consumer1       2
@@ -254,12 +254,12 @@ to provide more detailed information about a consumer group:
           consumer3-ecea43e4-1f01-479f-8349-f9130b75d8ee /127.0.0.1      consumer3       0
     ```
 
--   \--members \--verbose: On top of the information reported by the
+-   `--members --verbose`: On top of the information reported by the
     \"\--members\" options above, this option also provides the
     partitions assigned to each member.
 
-    ``` line-numbers
-          > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members --verbose
+    ```shell line-numbers
+        > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members --verbose
 
           CONSUMER-ID                                    HOST            CLIENT-ID       #PARTITIONS     ASSIGNMENT
           consumer1-3fc8d6f1-581a-4472-bdf3-3515b4aee8c1 /127.0.0.1      consumer1       2               topic1(0), topic2(0)
@@ -268,13 +268,13 @@ to provide more detailed information about a consumer group:
           consumer3-ecea43e4-1f01-479f-8349-f9130b75d8ee /127.0.0.1      consumer3       0               -
     ```
 
--   \--offsets: This is the default describe option and provides the
+-   `--offsets`: This is the default describe option and provides the
     same output as the \"\--describe\" option.
 
--   \--state: This option provides useful group-level information.
+-   `--state`: This option provides useful group-level information.
 
-    ``` line-numbers
-          > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --state
+    ```shell line-numbers
+        > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --state
 
           COORDINATOR (ID)          ASSIGNMENT-STRATEGY       STATE                #MEMBERS
           localhost:9092 (0)        range                     Stable               4
@@ -283,8 +283,8 @@ to provide more detailed information about a consumer group:
 To manually delete one or multiple consumer groups, the \"\--delete\"
 option can be used:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group my-group --group my-other-group
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group my-group --group my-other-group
 
   Deletion of requested consumer groups ('my-group', 'my-other-group') was successful.
 ```
@@ -300,23 +300,22 @@ for more details.
 It has 3 execution options:
 
 -   (default) to display which offsets to reset.
--   \--execute : to execute \--reset-offsets process.
--   \--export : to export the results to a CSV format.
+-   `--execute` : to execute \--reset-offsets process.
+-   `--export` : to export the results to a CSV format.
 
-\--reset-offsets also has following scenarios to choose from (at least
-one scenario must be selected):
+`--reset-offsets` also has following scenarios to choose from (at least one scenario must be selected):
 
--   \--to-datetime \<String: datetime\> : Reset offsets to offsets from
+-   `--to-datetime <String: datetime>` : Reset offsets to offsets from
     datetime. Format: \'YYYY-MM-DDTHH:mm:SS.sss\'
--   \--to-earliest : Reset offsets to earliest offset.
--   \--to-latest : Reset offsets to latest offset.
--   \--shift-by \<Long: number-of-offsets\> : Reset offsets shifting
+-   `--to-earliest` : Reset offsets to earliest offset.
+-   `--to-latest` : Reset offsets to latest offset.
+-   `--shift-by <Long: number-of-offsets>` : Reset offsets shifting
     current offset by \'n\', where \'n\' can be positive or negative.
--   \--from-file : Reset offsets to values defined in CSV file.
--   \--to-current : Resets offsets to current offset.
--   \--by-duration \<String: duration\> : Reset offsets to offset by
+-   `--from-file` : Reset offsets to values defined in CSV file.
+-   `--to-current` : Resets offsets to current offset.
+-   `--by-duration <String: duration>` : Reset offsets to offset by
     duration from current timestamp. Format: \'PnDTnHnMnS\'
--   \--to-offset : Reset offsets to a specific offset.
+-   `--to-offset` : Reset offsets to a specific offset.
 
 Please note, that out of range offsets will be adjusted to available
 offset end. For example, if offset end is at 10 and offset shift request
@@ -324,8 +323,8 @@ is of 15, then, offset at 10 will actually be selected.
 
 For example, to reset offsets of a consumer group to the latest offset:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets --group consumergroup1 --topic topic1 --to-latest
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets --group consumergroup1 --topic topic1 --to-latest
 
   TOPIC                          PARTITION  NEW-OFFSET
   topic1                         0          0
@@ -335,8 +334,8 @@ If you are using the old high-level consumer and storing the group
 metadata in ZooKeeper (i.e. `offsets.storage=zookeeper`), pass
 `--zookeeper` instead of `--bootstrap-server`:
 
-``` line-numbers
-  > bin/kafka-consumer-groups.sh --zookeeper localhost:2181 --list
+```shell line-numbers
+> bin/kafka-consumer-groups.sh --zookeeper localhost:2181 --list
 ```
 
 ### Expanding your cluster {#basic_ops_cluster_expansion .anchor-link}
@@ -366,17 +365,17 @@ partitions should be moved around.
 
 The partition reassignment tool can run in 3 mutually exclusive modes:
 
--   \--generate: In this mode, given a list of topics and a list of
+-   `--generate`: In this mode, given a list of topics and a list of
     brokers, the tool generates a candidate reassignment to move all
     partitions of the specified topics to the new brokers. This option
     merely provides a convenient way to generate a partition
     reassignment plan given a list of topics and target brokers.
--   \--execute: In this mode, the tool kicks off the reassignment of
+-   `--execute`: In this mode, the tool kicks off the reassignment of
     partitions based on the user provided reassignment plan. (using the
     \--reassignment-json-file option). This can either be a custom
     reassignment plan hand crafted by the admin or provided by using the
     \--generate option
--   \--verify: In this mode, the tool verifies the status of the
+-   `--verify`: In this mode, the tool verifies the status of the
     reassignment for all partitions listed during the last \--execute.
     The status can be either of successfully completed, failed or in
     progress
@@ -403,8 +402,8 @@ Since the tool accepts the input list of topics as a json file, you
 first need to identify the topics you want to move and create the json
 file as follows:
 
-``` line-numbers
-  > cat topics-to-move.json
+```shell line-numbers
+> cat topics-to-move.json
   {"topics": [{"topic": "foo1"},
               {"topic": "foo2"}],
   "version":1
@@ -414,8 +413,8 @@ file as follows:
 Once the json file is ready, use the partition reassignment tool to
 generate a candidate assignment:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --topics-to-move-json-file topics-to-move.json --broker-list "5,6" --generate
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --topics-to-move-json-file topics-to-move.json --broker-list "5,6" --generate
   Current partition replica assignment
 
   {"version":1,
@@ -447,8 +446,8 @@ should be saved in case you want to rollback to it. The new assignment
 should be saved in a json file (e.g. expand-cluster-reassignment.json)
 to be input to the tool with the \--execute option as follows:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --execute
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --execute
   Current partition replica assignment
 
   {"version":1,
@@ -470,8 +469,8 @@ status of the partition reassignment. Note that the same
 expand-cluster-reassignment.json (used with the \--execute option)
 should be used with the \--verify option:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --verify
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo1,0] is completed
   Reassignment of partition [foo1,1] is still in progress
@@ -495,16 +494,16 @@ brokers 5,6 and partition 1 of topic foo2 to brokers 2,3:
 The first step is to hand craft the custom reassignment plan in a json
 file:
 
-``` line-numbers
-  > cat custom-reassignment.json
+```shell line-numbers
+> cat custom-reassignment.json
   {"version":1,"partitions":[{"topic":"foo1","partition":0,"replicas":[5,6]},{"topic":"foo2","partition":1,"replicas":[2,3]}]}
 ```
 
 Then, use the json file with the \--execute option to start the
 reassignment process:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --execute
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --execute
   Current partition replica assignment
 
   {"version":1,
@@ -522,8 +521,8 @@ the partition reassignment. Note that the same custom-reassignment.json
 (used with the \--execute option) should be used with the \--verify
 option:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --verify
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo1,0] is completed
   Reassignment of partition [foo2,1] is completed
@@ -557,8 +556,8 @@ increasing the replication factor, we will add more replicas on brokers
 The first step is to hand craft the custom reassignment plan in a json
 file:
 
-``` line-numbers
-  > cat increase-replication-factor.json
+```shell line-numbers
+> cat increase-replication-factor.json
   {"version":1,
   "partitions":[{"topic":"foo","partition":0,"replicas":[5,6,7]}]}
 ```
@@ -566,8 +565,8 @@ file:
 Then, use the json file with the \--execute option to start the
 reassignment process:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --execute
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --execute
   Current partition replica assignment
 
   {"version":1,
@@ -582,8 +581,8 @@ the partition reassignment. Note that the same
 increase-replication-factor.json (used with the \--execute option)
 should be used with the \--verify option:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --verify
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo,0] is completed
 ```
@@ -591,8 +590,8 @@ should be used with the \--verify option:
 You can also verify the increase in replication factor with the
 kafka-topics tool:
 
-``` line-numbers
-  > bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic foo --describe
+```shell line-numbers
+> bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic foo --describe
   Topic:foo PartitionCount:1    ReplicationFactor:3 Configs:
     Topic: foo  Partition: 0    Leader: 5   Replicas: 5,6,7 Isr: 5,6,7
 ```
@@ -613,13 +612,13 @@ view and alter the throttle values directly.
 So for example, if you were to execute a rebalance, with the below
 command, it would move partitions at no more than 50MB/s.
 
-``` language-bash
+```shell
 $ bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --execute --reassignment-json-file bigger-cluster.json --throttle 50000000
 ```
 
 When you execute this script you will see the throttle engage:
 
-``` line-numbers
+```shell line-numbers
   The inter-broker throttle limit was set to 50000000 B/s
   Successfully started partition reassignment for foo1-0
 ```
@@ -629,7 +628,7 @@ increase the throughput so it completes quicker, you can do this by
 re-running the execute command with the \--additional option passing the
 same reassignment-json-file:
 
-``` language-bash
+```shell
 $ bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092  --additional --execute --reassignment-json-file bigger-cluster.json --throttle 700000000
   The inter-broker throttle limit was set to 700000000 B/s
 ```
@@ -645,8 +644,8 @@ throttled.
 When the \--verify option is executed, and the reassignment has
 completed, the script will confirm that the throttle was removed:
 
-``` line-numbers
-  > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092  --verify --reassignment-json-file bigger-cluster.json
+```shell line-numbers
+> bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092  --verify --reassignment-json-file bigger-cluster.json
   Status of partition reassignment:
   Reassignment of partition [my-topic,1] is completed
   Reassignment of partition [my-topic,0] is completed
@@ -661,7 +660,7 @@ manage the throttling process. First pair refers to the throttle value
 itself. This is configured, at a broker level, using the dynamic
 properties:
 
-``` line-numbers
+```shell line-numbers
     leader.replication.throttled.rate
     follower.replication.throttled.rate
 ```
@@ -669,7 +668,7 @@ properties:
 Then there is the configuration pair of enumerated sets of throttled
 replicas:
 
-``` line-numbers
+```shell line-numbers
     leader.replication.throttled.replicas
     follower.replication.throttled.replicas
 ```
@@ -681,8 +680,8 @@ kafka-reassign-partitions.sh (discussed below).
 
 To view the throttle limit configuration:
 
-``` line-numbers
-  > bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type brokers
+```shell line-numbers
+> bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type brokers
   Configs for brokers '2' are leader.replication.throttled.rate=700000000,follower.replication.throttled.rate=700000000
   Configs for brokers '1' are leader.replication.throttled.rate=700000000,follower.replication.throttled.rate=700000000
 ```
@@ -693,8 +692,8 @@ throttled throughput value.
 
 To view the list of throttled replicas:
 
-``` line-numbers
-  > bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type topics
+```shell line-numbers
+> bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type topics
   Configs for topic 'my-topic' are leader.replication.throttled.replicas=1:102,0:101,
       follower.replication.throttled.replicas=1:101,0:102
 ```
@@ -746,28 +745,28 @@ throughput as described above.
 ### Setting quotas {#quotas .anchor-link}
 
 Quotas overrides and defaults may be configured at (user, client-id),
-user or client-id levels as described [here](#design_quotas). By
+user or client-id levels as described [here](../design#design_quotas). By
 default, clients receive an unlimited quota. It is possible to set
 custom quotas for each (user, client-id), user or client-id group.
 
 Configure custom quota for (user=user1, client-id=clientA):
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
   Updated config for entity: user-principal 'user1', client-id 'clientA'.
 ```
 
 Configure custom quota for user=user1:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1
   Updated config for entity: user-principal 'user1'.
 ```
 
 Configure custom quota for client-id=clientA:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-name clientA
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-name clientA
   Updated config for entity: client-id 'clientA'.
 ```
 
@@ -777,59 +776,59 @@ client-id group by specifying *\--entity-default* option instead of
 
 Configure default client-id quota for user=userA:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-default
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-default
   Updated config for entity: user-principal 'user1', default client-id.
 ```
 
 Configure default quota for user:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-default
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-default
   Updated config for entity: default user-principal.
 ```
 
 Configure default quota for client-id:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-default
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-default
   Updated config for entity: default client-id.
 ```
 
 Here\'s how to describe the quota for a given (user, client-id):
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
   Configs for user-principal 'user1', client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 Describe quota for a given user:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1
   Configs for user-principal 'user1' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 Describe quota for a given client-id:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type clients --entity-name clientA
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type clients --entity-name clientA
   Configs for client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 If entity name is not specified, all entities of the specified type are
 described. For example, describe all users:
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users
   Configs for user-principal 'user1' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
   Configs for default user-principal are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 Similarly for (user, client):
 
-``` line-numbers
-  > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-type clients
+```shell line-numbers
+> bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-type clients
   Configs for user-principal 'user1', default client-id are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
   Configs for user-principal 'user1', client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
@@ -940,7 +939,7 @@ from the source cluster to the target cluster.
 Here is a first example on how to configure data replication from a
 `primary` cluster to a `secondary` cluster (an active/passive setup):
 
-``` line-numbers
+```properties line-numbers
 # Basic settings
 clusters = primary, secondary
 primary.bootstrap.servers = broker3-primary:9092
@@ -986,7 +985,7 @@ components in this file:
 
 Example: Define MirrorMaker settings (explained in more detail later).
 
-``` line-numbers
+```properties line-numbers
 # Global settings
 clusters = us-west, us-east   # defines cluster aliases
 us-west.bootstrap.servers = broker3-west:9092
@@ -1007,7 +1006,7 @@ prefix the name of the configuration setting.
 
 Example: Define custom Kafka Connect settings to be used by MirrorMaker.
 
-``` line-numbers
+```properties line-numbers
 # Setting Kafka Connect defaults for MirrorMaker
 tasks.max = 5
 ```
@@ -1026,7 +1025,7 @@ of `{cluster}.{config_name}` in the MirrorMaker configuration file.
 
 Example: Define custom connector settings for the `us-west` cluster.
 
-``` line-numbers
+```properties line-numbers
 # us-west custom settings
 us-west.offset.storage.topic = my-mirrormaker-offsets
 ```
@@ -1042,7 +1041,7 @@ file:
 
 Example: Define custom producer, consumer, admin client settings.
 
-``` line-numbers
+```properties line-numbers
 # us-west cluster (from which to consume)
 us-west.consumer.isolation.level = read_committed
 us-west.admin.bootstrap.servers = broker57-primary:9092
@@ -1067,7 +1066,7 @@ source and target Kafka clusters in the MirrorMaker configuration file.
 Example: Define two cluster aliases `primary` and `secondary`, including
 their connection information.
 
-``` line-numbers
+```properties line-numbers
 clusters = primary, secondary
 primary.bootstrap.servers = broker10-primary:9092,broker-11-primary:9092
 secondary.bootstrap.servers = broker5-secondary:9092,broker6-secondary:9092
@@ -1078,7 +1077,7 @@ Secondly, you must explicitly enable individual replication flows with
 directional: if you need two-way (bidirectional) replication, you must
 enable flows in both directions.
 
-``` line-numbers
+```properties line-numbers
 # Enable replication from primary to secondary
 primary->secondary.enabled = true
 ```
@@ -1125,7 +1124,7 @@ The most important settings are:
 
 Example:
 
-``` line-numbers
+```shell line-numbers
 # Custom top-level defaults that apply to all replication flows
 topics = .*
 groups = consumer-group1, consumer-group2
@@ -1186,14 +1185,14 @@ for further details.
 
 #### Securing Replication Flows {#georeplication-flow-secure .anchor-link}
 
-MirrorMaker supports the same [security settings as Kafka
-Connect](#connectconfigs), so please refer to the linked section for
+MirrorMaker supports the same 
+[security settings as Kafka Connect](../configuration#connectconfigs), so please refer to the linked section for
 further information.
 
 Example: Encrypt communication between MirrorMaker and the `us-east`
 cluster.
 
-``` line-numbers
+```properties line-numbers
 us-east.security.protocol=SSL
 us-east.ssl.truststore.location=/path/to/truststore.jks
 us-east.ssl.truststore.password=my-secret-password
@@ -1222,7 +1221,7 @@ foo-topic  -->  us-west.foo-topic
 You can customize the separator (default: `.`) with the
 `replication.policy.separator` setting:
 
-``` line-numbers
+```properties line-numbers
 # Defining a custom separator
 us-west->us-east.replication.policy.separator = _
 ```
@@ -1241,7 +1240,7 @@ cluster.
 
 For example, the following two MirrorMaker processes would be racy:
 
-``` line-numbers
+```shell line-numbers
 # Configuration of process 1
 A->B.enabled = true
 A->B.topics = foo
@@ -1262,7 +1261,7 @@ be achieved, for example, through automation tooling or by using a
 single, shared MirrorMaker configuration file for your entire
 organization.
 
-#### [][Best Practice: Consume from Remote, Produce to Local {#georeplication-best-practice .anchor-link}
+#### Best Practice: Consume from Remote, Produce to Local {#georeplication-best-practice .anchor-link}
 
 To minimize latency (\"producer lag\"), it is recommended to locate
 MirrorMaker processes as close as possible to their target clusters,
@@ -1283,7 +1282,7 @@ the target clusters, and explicitly set these \"local\" clusters in the
 `--clusters` command line parameter (blank-separated list of cluster
 aliases):
 
-``` line-numbers
+```shell line-numbers
 # Run in secondary's data center, reading from the remote `primary` cluster
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties --clusters secondary
 ```
@@ -1299,7 +1298,7 @@ a primary to a secondary Kafka environment, but not from the secondary
 back to the primary. Please be aware that most production setups will
 need further configuration, such as security settings.
 
-``` line-numbers
+```shell line-numbers
 # Unidirectional flow (one-way) from primary to secondary cluster
 primary.bootstrap.servers = broker1-primary:9092
 secondary.bootstrap.servers = broker2-secondary:9092
@@ -1316,7 +1315,7 @@ The following example shows the basic settings to replicate topics
 between two clusters in both ways. Please be aware that most production
 setups will need further configuration, such as security settings.
 
-``` line-numbers
+```shell line-numbers
 # Bidirectional flow (two-way) between us-west and us-east clusters
 clusters = us-west, us-east
 us-west.bootstrap.servers = broker1-west:9092,broker2-west:9092
@@ -1345,7 +1344,7 @@ as well as (2) for Cross Data Center Replication (XDCR).
 First, define the source and target clusters along with their
 replication flows in the configuration:
 
-``` line-numbers
+```shell line-numbers
 # Basic settings
 clusters: west-1, west-2, east-1, east-2, north-1, north-2
 west-1.bootstrap.servers = ...
@@ -1378,7 +1377,7 @@ north-1->east-1.enabled = true
 
 Then, in each data center, launch one or more MirrorMaker as follows:
 
-``` line-numbers
+```shell line-numbers
 # In West DC:
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties --clusters west-1 west-2
 
@@ -1412,7 +1411,7 @@ parallel.
 
 To start a MirrorMaker process, run the command:
 
-``` line-numbers
+```shell line-numbers
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties
 ```
 
@@ -1423,7 +1422,7 @@ Optionally, as described previously, you can set the parameter
 `--clusters` to ensure that the MirrorMaker process produces data to
 nearby clusters only.
 
-``` line-numbers
+```shell line-numbers
 # Note: The cluster alias us-west must be defined in the configuration file
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties \
             --clusters us-west
@@ -1443,7 +1442,7 @@ update the configuration again once you completed your testing.
 You can stop a running MirrorMaker process by sending a SIGTERM signal
 with the command:
 
-``` line-numbers
+```shell line-numbers
 $ kill <MirrorMaker pid>
 ```
 
@@ -1580,7 +1579,7 @@ To enforce a topic naming structure, several options are available:
 -   Define a custom `CreateTopicPolicy` (cf.
     [KIP-108](https://cwiki.apache.org/confluence/display/KAFKA/KIP-108%3A+Create+Topic+Policy)
     and the setting
-    [create.topic.policy.class.name](#brokerconfigs_create.topic.policy.class.name))
+    [create.topic.policy.class.name](../configuration#brokerconfigs_create.topic.policy.class.name))
     to enforce strict naming patterns. These policies provide the most
     flexibility and can cover complex patterns and rules to match an
     organization\'s needs.
@@ -1595,20 +1594,20 @@ To enforce a topic naming structure, several options are available:
 ### Configuring Topics: Data Retention And More {#multitenancy-topic-configs .anchor-link}
 
 Kafka\'s configuration is very flexible due to its fine granularity, and
-it supports a plethora of [per-topic configuration
-settings](#topicconfigs) to help administrators set up multi-tenant
+it supports a plethora of 
+[per-topic configuration settings](../configuration#topicconfigs) to help administrators set up multi-tenant
 clusters. For example, administrators often need to define data
 retention policies to control how much and/or for how long data will be
 stored in a topic, with settings such as
-[retention.bytes](#retention.bytes) (size) and
-[retention.ms](#retention.ms) (time). This limits storage consumption
+[retention.bytes](../configuration#topicconfigs_retention.bytes) (size) and
+[retention.ms](../configuration#topicconfigs_#retention.ms) (time). This limits storage consumption
 within the cluster, and helps complying with legal requirements such as
 GDPR.
 
-### [][Securing Clusters and Topics: Authentication, Authorization, Encryption {#multitenancy-security .anchor-link}
+### Securing Clusters and Topics: Authentication, Authorization, Encryption {#multitenancy-security .anchor-link}
 
 Because the documentation has a dedicated chapter on
-[security](#security) that applies to any Kafka deployment, this section
+[security](../security) that applies to any Kafka deployment, this section
 focuses on additional considerations for multi-tenant environments.
 
 Security settings for Kafka fall into three main categories, which are
@@ -1629,8 +1628,8 @@ systems, like relational databases and traditional messaging systems.
     `AlterConfigPolicy` (see
     [KIP-108](https://cwiki.apache.org/confluence/display/KAFKA/KIP-108%3A+Create+Topic+Policy)
     and the settings
-    [create.topic.policy.class.name](#brokerconfigs_create.topic.policy.class.name),
-    [alter.config.policy.class.name](#brokerconfigs_alter.config.policy.class.name)).
+    [create.topic.policy.class.name](../configuration#brokerconfigs_create.topic.policy.class.name),
+    [alter.config.policy.class.name](../configuration#brokerconfigs_alter.config.policy.class.name)).
 
 When securing a multi-tenant Kafka environment, the most common
 administrative task is the third category (authorization), i.e.,
@@ -1652,7 +1651,7 @@ corporation\'s InfoSec team---is granted write permissions to all topics
 whose names start with \"acme.infosec.\", such as
 \"acme.infosec.telemetry.logins\" and \"acme.infosec.syslogs.events\".
 
-``` line-numbers
+```shell line-numbers
 # Grant permissions to user Alice
 $ bin/kafka-acls.sh \
     --bootstrap-server broker1:9092 \
@@ -1667,7 +1666,7 @@ the same shared cluster.
 ### Isolating Tenants: Quotas, Rate Limiting, Throttling {#multitenancy-isolation .anchor-link}
 
 Multi-tenant clusters should generally be configured with
-[quotas](#design_quotas), which protect against users (tenants) eating
+[quotas](../design#design_quotas), which protect against users (tenants) eating
 up too many cluster resources, such as when they attempt to write or
 read very high volumes of data, or create requests to brokers at an
 excessively high rate. This may cause network saturation, monopolize
@@ -1678,9 +1677,9 @@ avoid in a shared environment.
 principal) client quotas. Because a client\'s quotas apply irrespective
 of which topics the client is writing to or reading from, they are a
 convenient and effective tool to allocate resources in a multi-tenant
-cluster. [Request rate quotas](#design_quotascpu), for example, help to
+cluster. [Request rate quotas](../design#design_quotascpu), for example, help to
 limit a user\'s impact on broker CPU usage by limiting the time a broker
-spends on the [request handling path](/protocol.html) for that user,
+spends on the [request handling path](../protocol) for that user,
 after which throttling kicks in. In many situations, isolating users
 with request rate quotas has a bigger impact in multi-tenant clusters
 than setting incoming/outgoing network bandwidth quotas, because
@@ -1694,11 +1693,11 @@ and the quota type `controller_mutation_rate`).
 
 **Server quotas:** Kafka also supports different types of broker-side
 quotas. For example, administrators can set a limit on the rate with
-which the [broker accepts new connections](#brokerconfigs_max.connection.creation.rate), set the
-[maximum number of connections per broker](#brokerconfigs_max.connections), or set the maximum number of
-connections allowed [from a specific IP address](#brokerconfigs_max.connections.per.ip).
+which the [broker accepts new connections](../configuration#brokerconfigs_max.connection.creation.rate), set the
+[maximum number of connections per broker](../configuration#brokerconfigs_max.connections), or set the maximum number of
+connections allowed [from a specific IP address](../configuration#brokerconfigs_max.connections.per.ip).
 
-For more information, please refer to the [quota overview](#design_quotas) and [how to set quotas](#quotas).
+For more information, please refer to the [quota overview](../design#design_quotas) and [how to set quotas](#quotas).
 
 ### Monitoring and Metering {#multitenancy-monitoring .anchor-link}
 
@@ -1716,13 +1715,14 @@ topic-partitions (with the JMX metric
 stored in a topic. You can then define alerts when tenants on shared
 clusters are getting close to using too much storage space.
 
-### Multi-Tenancy and Geo-Replication](#multitenancy-georeplication) {#multi-tenancy-and-geo-replication .anchor-heading}
+### Multi-Tenancy and Geo-Replication {#multitenancy-georeplication}
 
 Kafka lets you share data across different clusters, which may be
 located in different geographical regions, data centers, and so on.
 Apart from use cases such as disaster recovery, this functionality is
 useful when a multi-tenant setup requires inter-cluster data sharing.
-See the section [Geo-Replication (Cross-Cluster Data Mirroring)](#georeplication) for more information.
+See the section [Geo-Replication (Cross-Cluster Data Mirroring)](#georeplication) 
+for more information.
 
 ### Further considerations {#multitenancy-more .anchor-link}
 
@@ -1751,28 +1751,28 @@ The most important producer configurations are:
 
 The most important consumer configuration is the fetch size.
 
-All configurations are documented in the [configuration](#configuration)
+All configurations are documented in the [configuration](../configuration)
 section.
 
 ### A Production Server Config {#prodconfig .anchor-link}
 
 Here is an example production server configuration:
 
-``` line-numbers
-  # ZooKeeper
-  zookeeper.connect=[list of ZooKeeper servers]
+```properties line-numbers
+# ZooKeeper
+zookeeper.connect=[list of ZooKeeper servers]
 
-  # Log configuration
-  num.partitions=8
-  default.replication.factor=3
-  log.dir=[List of directories. Kafka should have its own dedicated disk(s) or SSD(s).]
+# Log configuration
+num.partitions=8
+default.replication.factor=3
+log.dir=[List of directories. Kafka should have its own dedicated disk(s) or SSD(s).]
 
-  # Other configurations
-  broker.id=[An integer. Start with 0 and increment by 1 for each new broker.]
-  listeners=[list of listeners]
-  auto.create.topics.enable=false
-  min.insync.replicas=2
-  queued.max.requests=[number of concurrent requests]
+# Other configurations
+broker.id=[An integer. Start with 0 and increment by 1 for each new broker.]
+listeners=[list of listeners]
+auto.create.topics.enable=false
+min.insync.replicas=2
+queued.max.requests=[number of concurrent requests]
 ```
 
 Our client configuration varies a fair amount between different use
@@ -1829,7 +1829,7 @@ Kafka should run well on any unix system and has been tested on Linux
 and Solaris.
 
 We have seen a few issues running on Windows and Windows is not
-currently a well supported platform though we would be happy to change
+currently a well-supported platform though we would be happy to change
 that.
 
 It is unlikely to require much OS-level tuning, but there are three
@@ -1945,7 +1945,7 @@ writes to slow down the accumulation of data.
 
 You can see the current state of OS memory usage by doing
 
-``` language-bash
+```shell
  > cat /proc/meminfo 
 ```
 
@@ -2055,7 +2055,7 @@ controllers have all of the committed data. To determine if the majority
 of the controllers have the committed data, run the
 `kafka-metadata-quorum.sh` tool to describe the replication status:
 
-``` line-numbers
+```shell line-numbers
  > bin/kafka-metadata-quorum.sh --bootstrap-server broker_host:port describe --replication
  NodeId  LogEndOffset    Lag     LastFetchTimestamp      LastCaughtUpTimestamp   Status
  1       25806           0       1662500992757           1662500992757           Leader
@@ -2072,7 +2072,7 @@ close to each other for the majority of the controllers. At this point
 it is safer to format the controller\'s metadata log directory. This can
 be done by running the `kafka-storage.sh` command.
 
-``` line-numbers
+```shell line-numbers
  > bin/kafka-storage.sh format --cluster-id uuid --config server_properties
 ```
 
@@ -2085,7 +2085,7 @@ case, can you run the `kafka-storage.sh format` command with the
 
 Start the KRaft controller after formatting the log directories.
 
-``` line-numbers
+```shell line-numbers
  > /bin/kafka-server-start.sh server_properties
 ```
 
@@ -2121,89 +2121,9 @@ setting appropriate Java system properties. See
 [Monitoring and Management Using JMX Technology](https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html)
 for details on securing JMX.
 
-We do graphing and alerting on the following metrics:
+We do graphs and alerting on the following metrics:
 
-//TODO fix table
-
-  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Description                                                                                                                                                                                                     Mbean name                                                                                                                                   Normal value
-  Message in rate                                                                                                                                                                                                 kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic=(\[-.\\w\]+)                                                                Incoming message rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Byte in rate from clients                                                                                                                                                                                       kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=(\[-.\\w\]+)                                                                   Byte in (from the clients) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Byte in rate from other brokers                                                                                                                                                                                 kafka.server:type=BrokerTopicMetrics,name=ReplicationBytesInPerSec,topic=(\[-.\\w\]+)                                                        Byte in (from the other brokers) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Controller Request rate from Broker                                                                                                                                                                             kafka.controller:type=ControllerChannelManager,name=RequestRateAndQueueTimeMs,brokerId=(\[0-9\]+)                                            The rate (requests per second) at which the ControllerChannelManager takes requests from the queue of the given broker. And the time it takes for a request to stay in this queue before it is taken from the queue.
-  Controller Event queue size                                                                                                                                                                                     kafka.controller:type=ControllerEventManager,name=EventQueueSize                                                                             Size of the ControllerEventManager\'s queue.
-  Controller Event queue time                                                                                                                                                                                     kafka.controller:type=ControllerEventManager,name=EventQueueTimeMs                                                                           Time that takes for any event (except the Idle event) to wait in the ControllerEventManager\'s queue before being processed
-  Request rate                                                                                                                                                                                                    kafka.network:type=RequestMetrics,name=RequestsPerSec,request={Produce\|FetchConsumer\|FetchFollower},version=(\[0-9\]+)                     
-  Error rate                                                                                                                                                                                                      kafka.network:type=RequestMetrics,name=ErrorsPerSec,request=(\[-.\\w\]+),error=(\[-.\\w\]+)                                                  Number of errors in responses counted per-request-type, per-error-code. If a response contains multiple errors, all are counted. error=NONE indicates successful responses.
-  Produce request rate                                                                                                                                                                                            kafka.server:type=BrokerTopicMetrics,name=TotalProduceRequestsPerSec,topic=(\[-.\\w\]+)                                                      Produce request rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Fetch request rate                                                                                                                                                                                              kafka.server:type=BrokerTopicMetrics,name=TotalFetchRequestsPerSec,topic=(\[-.\\w\]+)                                                        Fetch request (from clients or followers) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Failed produce request rate                                                                                                                                                                                     kafka.server:type=BrokerTopicMetrics,name=FailedProduceRequestsPerSec,topic=(\[-.\\w\]+)                                                     Failed Produce request rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Failed fetch request rate                                                                                                                                                                                       kafka.server:type=BrokerTopicMetrics,name=FailedFetchRequestsPerSec,topic=(\[-.\\w\]+)                                                       Failed Fetch request (from clients or followers) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Request size in bytes                                                                                                                                                                                           kafka.network:type=RequestMetrics,name=RequestBytes,request=(\[-.\\w\]+)                                                                     Size of requests for each request type.
-  Temporary memory size in bytes                                                                                                                                                                                  kafka.network:type=RequestMetrics,name=TemporaryMemoryBytes,request={Produce\|Fetch}                                                         Temporary memory used for message format conversions and decompression.
-  Message conversion time                                                                                                                                                                                         kafka.network:type=RequestMetrics,name=MessageConversionsTimeMs,request={Produce\|Fetch}                                                     Time in milliseconds spent on message format conversions.
-  Message conversion rate                                                                                                                                                                                         kafka.server:type=BrokerTopicMetrics,name={Produce\|Fetch}MessageConversionsPerSec,topic=(\[-.\\w\]+)                                        Message format conversion rate, for Produce or Fetch requests, per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Request Queue Size                                                                                                                                                                                              kafka.network:type=RequestChannel,name=RequestQueueSize                                                                                      Size of the request queue.
-  Byte out rate to clients                                                                                                                                                                                        kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=(\[-.\\w\]+)                                                                  Byte out (to the clients) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Byte out rate to other brokers                                                                                                                                                                                  kafka.server:type=BrokerTopicMetrics,name=ReplicationBytesOutPerSec,topic=(\[-.\\w\]+)                                                       Byte out (to the other brokers) rate per topic. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Rejected byte rate                                                                                                                                                                                              kafka.server:type=BrokerTopicMetrics,name=BytesRejectedPerSec,topic=(\[-.\\w\]+)                                                             Rejected byte rate per topic, due to the record batch size being greater than max.message.bytes configuration. Omitting \'topic=(\...)\' will yield the all-topic rate.
-  Message validation failure rate due to no key specified for compacted topic                                                                                                                                     kafka.server:type=BrokerTopicMetrics,name=NoKeyCompactedTopicRecordsPerSec                                                                   0
-  Message validation failure rate due to invalid magic number                                                                                                                                                     kafka.server:type=BrokerTopicMetrics,name=InvalidMagicNumberRecordsPerSec                                                                    0
-  Message validation failure rate due to incorrect crc checksum                                                                                                                                                   kafka.server:type=BrokerTopicMetrics,name=InvalidMessageCrcRecordsPerSec                                                                     0
-  Message validation failure rate due to non-continuous offset or sequence number in batch                                                                                                                        kafka.server:type=BrokerTopicMetrics,name=InvalidOffsetOrSequenceRecordsPerSec                                                               0
-  Log flush rate and time                                                                                                                                                                                         kafka.log:type=LogFlushStats,name=LogFlushRateAndTimeMs                                                                                      
-  \# of offline log directories                                                                                                                                                                                   kafka.log:type=LogManager,name=OfflineLogDirectoryCount                                                                                      0
-  Leader election rate                                                                                                                                                                                            kafka.controller:type=ControllerStats,name=LeaderElectionRateAndTimeMs                                                                       non-zero when there are broker failures
-  Unclean leader election rate                                                                                                                                                                                    kafka.controller:type=ControllerStats,name=UncleanLeaderElectionsPerSec                                                                      0
-  Is controller active on broker                                                                                                                                                                                  kafka.controller:type=KafkaController,name=ActiveControllerCount                                                                             only one broker in the cluster should have 1
-  Pending topic deletes                                                                                                                                                                                           kafka.controller:type=KafkaController,name=TopicsToDeleteCount                                                                               
-  Pending replica deletes                                                                                                                                                                                         kafka.controller:type=KafkaController,name=ReplicasToDeleteCount                                                                             
-  Ineligible pending topic deletes                                                                                                                                                                                kafka.controller:type=KafkaController,name=TopicsIneligibleToDeleteCount                                                                     
-  Ineligible pending replica deletes                                                                                                                                                                              kafka.controller:type=KafkaController,name=ReplicasIneligibleToDeleteCount                                                                   
-  \# of under replicated partitions (\|ISR\| \< \|all replicas\|)                                                                                                                                                 kafka.server:type=ReplicaManager,name=UnderReplicatedPartitions                                                                              0
-  \# of under minIsr partitions (\|ISR\| \< min.insync.replicas)                                                                                                                                                  kafka.server:type=ReplicaManager,name=UnderMinIsrPartitionCount                                                                              0
-  \# of at minIsr partitions (\|ISR\| = min.insync.replicas)                                                                                                                                                      kafka.server:type=ReplicaManager,name=AtMinIsrPartitionCount                                                                                 0
-  Partition counts                                                                                                                                                                                                kafka.server:type=ReplicaManager,name=PartitionCount                                                                                         mostly even across brokers
-  Offline Replica counts                                                                                                                                                                                          kafka.server:type=ReplicaManager,name=OfflineReplicaCount                                                                                    0
-  Leader replica counts                                                                                                                                                                                           kafka.server:type=ReplicaManager,name=LeaderCount                                                                                            mostly even across brokers
-  ISR shrink rate                                                                                                                                                                                                 kafka.server:type=ReplicaManager,name=IsrShrinksPerSec                                                                                       If a broker goes down, ISR for some of the partitions will shrink. When that broker is up again, ISR will be expanded once the replicas are fully caught up. Other than that, the expected value for both ISR shrink rate and expansion rate is 0.
-  ISR expansion rate                                                                                                                                                                                              kafka.server:type=ReplicaManager,name=IsrExpandsPerSec                                                                                       See above
-  Failed ISR update rate                                                                                                                                                                                          kafka.server:type=ReplicaManager,name=FailedIsrUpdatesPerSec                                                                                 0
-  Max lag in messages btw follower and leader replicas                                                                                                                                                            kafka.server:type=ReplicaFetcherManager,name=MaxLag,clientId=Replica                                                                         lag should be proportional to the maximum batch size of a produce request.
-  Lag in messages per follower replica                                                                                                                                                                            kafka.server:type=FetcherLagMetrics,name=ConsumerLag,clientId=(\[-.\\w\]+),topic=(\[-.\\w\]+),partition=(\[0-9\]+)                           lag should be proportional to the maximum batch size of a produce request.
-  Requests waiting in the producer purgatory                                                                                                                                                                      kafka.server:type=DelayedOperationPurgatory,name=PurgatorySize,delayedOperation=Produce                                                      non-zero if ack=-1 is used
-  Requests waiting in the fetch purgatory                                                                                                                                                                         kafka.server:type=DelayedOperationPurgatory,name=PurgatorySize,delayedOperation=Fetch                                                        size depends on fetch.wait.max.ms in the consumer
-  Request total time                                                                                                                                                                                              kafka.network:type=RequestMetrics,name=TotalTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                           broken into queue, local, remote and response send time
-  Time the request waits in the request queue                                                                                                                                                                     kafka.network:type=RequestMetrics,name=RequestQueueTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                    
-  Time the request is processed at the leader                                                                                                                                                                     kafka.network:type=RequestMetrics,name=LocalTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                           
-  Time the request waits for the follower                                                                                                                                                                         kafka.network:type=RequestMetrics,name=RemoteTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                          non-zero for produce requests when ack=-1
-  Time the request waits in the response queue                                                                                                                                                                    kafka.network:type=RequestMetrics,name=ResponseQueueTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                   
-  Time to send the response                                                                                                                                                                                       kafka.network:type=RequestMetrics,name=ResponseSendTimeMs,request={Produce\|FetchConsumer\|FetchFollower}                                    
-  Number of messages the consumer lags behind the producer by. Published by the consumer, not broker.                                                                                                             kafka.consumer:type=consumer-fetch-manager-metrics,client-id={client-id} Attribute: records-lag-max                                          
-  The average fraction of time the network processors are idle                                                                                                                                                    kafka.network:type=SocketServer,name=NetworkProcessorAvgIdlePercent                                                                          between 0 and 1, ideally \> 0.3
-  The number of connections disconnected on a processor due to a client not re-authenticating and then using the connection beyond its expiration time for anything other than re-authentication                  kafka.server:type=socket-server-metrics,listener=\[SASL_PLAINTEXT\|SASL_SSL\],networkProcessor=\<#\>,name=expired-connections-killed-count   ideally 0 when re-authentication is enabled, implying there are no longer any older, pre-2.2.0 clients connecting to this (listener, processor) combination
-  The total number of connections disconnected, across all processors, due to a client not re-authenticating and then using the connection beyond its expiration time for anything other than re-authentication   kafka.network:type=SocketServer,name=ExpiredConnectionsKilledCount                                                                           ideally 0 when re-authentication is enabled, implying there are no longer any older, pre-2.2.0 clients connecting to this broker
-  The average fraction of time the request handler threads are idle                                                                                                                                               kafka.server:type=KafkaRequestHandlerPool,name=RequestHandlerAvgIdlePercent                                                                  between 0 and 1, ideally \> 0.3
-  Bandwidth quota metrics per (user, client-id), user or client-id                                                                                                                                                kafka.server:type={Produce\|Fetch},user=(\[-.\\w\]+),client-id=(\[-.\\w\]+)                                                                  Two attributes. throttle-time indicates the amount of time in ms the client was throttled. Ideally = 0. byte-rate indicates the data produce/consume rate of the client in bytes/sec. For (user, client-id) quotas, both user and client-id are specified. If per-client-id quota is applied to the client, user is not specified. If per-user quota is applied, client-id is not specified.
-  Request quota metrics per (user, client-id), user or client-id                                                                                                                                                  kafka.server:type=Request,user=(\[-.\\w\]+),client-id=(\[-.\\w\]+)                                                                           Two attributes. throttle-time indicates the amount of time in ms the client was throttled. Ideally = 0. request-time indicates the percentage of time spent in broker network and I/O threads to process requests from client group. For (user, client-id) quotas, both user and client-id are specified. If per-client-id quota is applied to the client, user is not specified. If per-user quota is applied, client-id is not specified.
-  Requests exempt from throttling                                                                                                                                                                                 kafka.server:type=Request                                                                                                                    exempt-throttle-time indicates the percentage of time spent in broker network and I/O threads to process requests that are exempt from throttling.
-  ZooKeeper client request latency                                                                                                                                                                                kafka.server:type=ZooKeeperClientMetrics,name=ZooKeeperRequestLatencyMs                                                                      Latency in millseconds for ZooKeeper requests from broker.
-  ZooKeeper connection status                                                                                                                                                                                     kafka.server:type=SessionExpireListener,name=SessionState                                                                                    Connection status of broker\'s ZooKeeper session which may be one of Disconnected\|SyncConnected\|AuthFailed\|ConnectedReadOnly\|SaslAuthenticated\|Expired.
-  Max time to load group metadata                                                                                                                                                                                 kafka.server:type=group-coordinator-metrics,name=partition-load-time-max                                                                     maximum time, in milliseconds, it took to load offsets and group metadata from the consumer offset partitions loaded in the last 30 seconds (including time spent waiting for the loading task to be scheduled)
-  Avg time to load group metadata                                                                                                                                                                                 kafka.server:type=group-coordinator-metrics,name=partition-load-time-avg                                                                     average time, in milliseconds, it took to load offsets and group metadata from the consumer offset partitions loaded in the last 30 seconds (including time spent waiting for the loading task to be scheduled)
-  Max time to load transaction metadata                                                                                                                                                                           kafka.server:type=transaction-coordinator-metrics,name=partition-load-time-max                                                               maximum time, in milliseconds, it took to load transaction metadata from the consumer offset partitions loaded in the last 30 seconds (including time spent waiting for the loading task to be scheduled)
-  Avg time to load transaction metadata                                                                                                                                                                           kafka.server:type=transaction-coordinator-metrics,name=partition-load-time-avg                                                               average time, in milliseconds, it took to load transaction metadata from the consumer offset partitions loaded in the last 30 seconds (including time spent waiting for the loading task to be scheduled)
-  Consumer Group Offset Count                                                                                                                                                                                     kafka.server:type=GroupMetadataManager,name=NumOffsets                                                                                       Total number of committed offsets for Consumer Groups
-  Consumer Group Count                                                                                                                                                                                            kafka.server:type=GroupMetadataManager,name=NumGroups                                                                                        Total number of Consumer Groups
-  Consumer Group Count, per State                                                                                                                                                                                 kafka.server:type=GroupMetadataManager,name=NumGroups\[PreparingRebalance,CompletingRebalance,Empty,Stable,Dead\]                            The number of Consumer Groups in each state: PreparingRebalance, CompletingRebalance, Empty, Stable, Dead
-  Number of reassigning partitions                                                                                                                                                                                kafka.server:type=ReplicaManager,name=ReassigningPartitions                                                                                  The number of reassigning leader partitions on a broker.
-  Outgoing byte rate of reassignment traffic                                                                                                                                                                      kafka.server:type=BrokerTopicMetrics,name=ReassignmentBytesOutPerSec                                                                         0; non-zero when a partition reassignment is in progress.
-  Incoming byte rate of reassignment traffic                                                                                                                                                                      kafka.server:type=BrokerTopicMetrics,name=ReassignmentBytesInPerSec                                                                          0; non-zero when a partition reassignment is in progress.
-  Size of a partition on disk (in bytes)                                                                                                                                                                          kafka.log:type=Log,name=Size,topic=(\[-.\\w\]+),partition=(\[0-9\]+)                                                                         The size of a partition on disk, measured in bytes.
-  Number of log segments in a partition                                                                                                                                                                           kafka.log:type=Log,name=NumLogSegments,topic=(\[-.\\w\]+),partition=(\[0-9\]+)                                                               The number of log segments in a partition.
-  First offset in a partition                                                                                                                                                                                     kafka.log:type=Log,name=LogStartOffset,topic=(\[-.\\w\]+),partition=(\[0-9\]+)                                                               The first offset in a partition.
-  Last offset in a partition                                                                                                                                                                                      kafka.log:type=Log,name=LogEndOffset,topic=(\[-.\\w\]+),partition=(\[0-9\]+)                                                                 The last offset in a partition.
-  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table kafka-metrics >}}
 
 ### KRaft Monitoring Metrics {#kraft_monitoring .anchor-link}
 
@@ -2217,60 +2137,15 @@ by `process.roles`
 These metrics are reported on both Controllers and Brokers in a KRaft
 Cluster
 
-//TODO fix table
-
-  ------------------------------------- ----------------------------------------------------------------------------------------------------------------------- ----------------------------------------------------------------------
-  Metric/Attribute name                 Description                                                                                                             Mbean name
-  Current State                         The current state of this member; possible values are leader, candidate, voted, follower, unattached.                   kafka.server:type=raft-metrics,name=current-state
-  Current Leader                        The current quorum leader\'s id; -1 indicates unknown.                                                                  kafka.server:type=raft-metrics,name=current-leader
-  Current Voted                         The current voted leader\'s id; -1 indicates not voted for anyone.                                                      kafka.server:type=raft-metrics,name=current-vote
-  Current Epoch                         The current quorum epoch.                                                                                               kafka.server:type=raft-metrics,name=current-epoch
-  High Watermark                        The high watermark maintained on this member; -1 if it is unknown.                                                      kafka.server:type=raft-metrics,name=high-watermark
-  Log End Offset                        The current raft log end offset.                                                                                        kafka.server:type=raft-metrics,name=log-end-offset
-  Number of Unknown Voter Connections   Number of unknown voters whose connection information is not cached. This value of this metric is always 0.             kafka.server:type=raft-metrics,name=number-unknown-voter-connections
-  Average Commit Latency                The average time in milliseconds to commit an entry in the raft log.                                                    kafka.server:type=raft-metrics,name=commit-latency-avg
-  Maximum Commit Latency                The maximum time in milliseconds to commit an entry in the raft log.                                                    kafka.server:type=raft-metrics,name=commit-latency-max
-  Average Election Latency              The average time in milliseconds spent on electing a new leader.                                                        kafka.server:type=raft-metrics,name=election-latency-avg
-  Maximum Election Latency              The maximum time in milliseconds spent on electing a new leader.                                                        kafka.server:type=raft-metrics,name=election-latency-max
-  Fetch Records Rate                    The average number of records fetched from the leader of the raft quorum.                                               kafka.server:type=raft-metrics,name=fetch-records-rate
-  Append Records Rate                   The average number of records appended per sec by the leader of the raft quorum.                                        kafka.server:type=raft-metrics,name=append-records-raft
-  Average Poll Idle Ratio               The average fraction of time the client\'s poll() is idle as opposed to waiting for the user code to process records.   kafka.server:type=raft-metrics,name=poll-idle-ratio-avg
-  ------------------------------------- ----------------------------------------------------------------------------------------------------------------------- ----------------------------------------------------------------------
+{{< ops-metrics-table kraft-quorum-metrics >}}
 
 #### KRaft Controller Monitoring Metrics {#kraft_controller_monitoring .anchor-link}
 
-// TODO fix table
-
-  ----------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ ------------------------------------------------------------------------------
-  Metric/Attribute name               Description                                                                                                                                                                                            Mbean name
-  Active Controller Count             The number of Active Controllers on this node. Valid values are \'0\' or \'1\'.                                                                                                                        kafka.controller:type=KafkaController,name=ActiveControllerCount
-  Event Queue Time Ms                 A Histogram of the time in milliseconds that requests spent waiting in the Controller Event Queue.                                                                                                     kafka.controller:type=ControllerEventManager,name=EventQueueTimeMs
-  Event Queue Processing Time Ms      A Histogram of the time in milliseconds that requests spent being processed in the Controller Event Queue.                                                                                             kafka.controller:type=ControllerEventManager,name=EventQueueProcessingTimeMs
-  Fenced Broker Count                 The number of fenced brokers as observed by this Controller.                                                                                                                                           kafka.controller:type=KafkaController,name=FencedBrokerCount
-  Active Broker Count                 The number of fenced brokers as observed by this Controller.                                                                                                                                           kafka.controller:type=KafkaController,name=ActiveBrokerCount
-  Global Topic Count                  The number of global topics as observed by this Controller.                                                                                                                                            kafka.controller:type=KafkaController,name=GlobalTopicCount
-  Global Partition Count              The number of global partitions as observed by this Controller.                                                                                                                                        kafka.controller:type=KafkaController,name=GlobalPartitionCount
-  Offline Partition Count             The number of offline topic partitions (non-internal) as observed by this Controller.                                                                                                                  kafka.controller:type=KafkaController,name=OfflinePartitionCount
-  Preferred Replica Imbalance Count   The count of topic partitions for which the leader is not the preferred leader.                                                                                                                        kafka.controller:type=KafkaController,name=PreferredReplicaImbalanceCount
-  Metadata Error Count                The number of times this controller node has encountered an error during metadata log processing.                                                                                                      kafka.controller:type=KafkaController,name=MetadataErrorCount
-  Last Applied Record Offset          The offset of the last record from the cluster metadata partition that was applied by the Controller.                                                                                                  kafka.controller:type=KafkaController,name=LastAppliedRecordOffset
-  Last Committed Record Offset        The offset of the last record committed to this Controller.                                                                                                                                            kafka.controller:type=KafkaController,name=LastCommittedRecordOffset
-  Last Applied Record Timestamp       The timestamp of the last record from the cluster metadata partition that was applied by the Controller.                                                                                               kafka.controller:type=KafkaController,name=LastAppliedRecordTimestamp
-  Last Applied Record Lag Ms          The difference between now and the timestamp of the last record from the cluster metadata partition that was applied by the controller. For active Controllers the value of this lag is always zero.   kafka.controller:type=KafkaController,name=LastAppliedRecordLagMs
-  ----------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ ------------------------------------------------------------------------------
+{{< ops-metrics-table kraft-controller-metrics >}}
 
 #### KRaft Broker Monitoring Metrics {#kraft_broker_monitoring .anchor-link}
 
-// TODO fix table
-
-  ------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------
-  Metric/Attribute name           Description                                                                                                                                     Mbean name
-  Last Applied Record Offset      The offset of the last record from the cluster metadata partition that was applied by the broker                                                kafka.server:type=broker-metadata-metrics,name=last-applied-record-offset
-  Last Applied Record Timestamp   The timestamp of the last record from the cluster metadata partition that was applied by the broker.                                            kafka.server:type=broker-metadata-metrics,name=last-applied-record-timestamp
-  Last Applied Record Lag Ms      The difference between now and the timestamp of the last record from the cluster metadata partition that was applied by the broker              kafka.server:type=broker-metadata-metrics,name=last-applied-record-lag-ms
-  Metadata Load Error Count       The number of errors encountered by the BrokerMetadataListener while loading the metadata log and generating a new MetadataDelta based on it.   kafka.server:type=broker-metadata-metrics,name=metadata-load-error-count
-  Metadata Apply Error Count      The number of errors encountered by the BrokerMetadataPublisher while applying a new MetadataImage based on the latest MetadataDelta.           kafka.server:type=broker-metadata-metrics,name=metadata-apply-error-count
-  ------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------
+{{< ops-metrics-table kraft-broker-metrics >}}
 
 ### Common monitoring metrics for producer/consumer/connect/streams {#selector_monitoring}
 
@@ -2278,49 +2153,7 @@ The following metrics are available on
 producer/consumer/connector/streams instances. For specific metrics,
 please see following sections.
 
-//TODO fix table
-
-  ------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------ -----------------------------------------------------------------------------------------------------------
-  Metric/Attribute name                       Description                                                                                                                                            Mbean name
-  connection-close-rate                       Connections closed per second in the window.                                                                                                           kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  connection-close-total                      Total connections closed in the window.                                                                                                                kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  connection-creation-rate                    New connections established per second in the window.                                                                                                  kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  connection-creation-total                   Total new connections established in the window.                                                                                                       kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  network-io-rate                             The average number of network operations (reads or writes) on all connections per second.                                                              kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  network-io-total                            The total number of network operations (reads or writes) on all connections.                                                                           kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  outgoing-byte-rate                          The average number of outgoing bytes sent per second to all servers.                                                                                   kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  outgoing-byte-total                         The total number of outgoing bytes sent to all servers.                                                                                                kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  request-rate                                The average number of requests sent per second.                                                                                                        kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  request-total                               The total number of requests sent.                                                                                                                     kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  request-size-avg                            The average size of all requests in the window.                                                                                                        kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  request-size-max                            The maximum size of any request sent in the window.                                                                                                    kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  incoming-byte-rate                          Bytes/second read off all sockets.                                                                                                                     kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  incoming-byte-total                         Total bytes read off all sockets.                                                                                                                      kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  response-rate                               Responses received per second.                                                                                                                         kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  response-total                              Total responses received.                                                                                                                              kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  select-rate                                 Number of times the I/O layer checked for new I/O to perform per second.                                                                               kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  select-total                                Total number of times the I/O layer checked for new I/O to perform.                                                                                    kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-wait-time-ns-avg                         The average length of time the I/O thread spent waiting for a socket ready for reads or writes in nanoseconds.                                         kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-wait-time-ns-total                       The total time the I/O thread spent waiting in nanoseconds.                                                                                            kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-waittime-total                           **\*Deprecated\*** The total time the I/O thread spent waiting in nanoseconds. Replacement is `io-wait-time-ns-total`.                                 kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-wait-ratio                               The fraction of time the I/O thread spent waiting.                                                                                                     kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-time-ns-avg                              The average length of time for I/O per select call in nanoseconds.                                                                                     kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-time-ns-total                            The total time the I/O thread spent doing I/O in nanoseconds.                                                                                          kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  iotime-total                                **\*Deprecated\*** The total time the I/O thread spent doing I/O in nanoseconds. Replacement is `io-time-ns-total`.                                    kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  io-ratio                                    The fraction of time the I/O thread spent doing I/O.                                                                                                   kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  connection-count                            The current number of active connections.                                                                                                              kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  successful-authentication-rate              Connections per second that were successfully authenticated using SASL or SSL.                                                                         kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  successful-authentication-total             Total connections that were successfully authenticated using SASL or SSL.                                                                              kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  failed-authentication-rate                  Connections per second that failed authentication.                                                                                                     kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  failed-authentication-total                 Total connections that failed authentication.                                                                                                          kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  successful-reauthentication-rate            Connections per second that were successfully re-authenticated using SASL.                                                                             kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  successful-reauthentication-total           Total connections that were successfully re-authenticated using SASL.                                                                                  kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  reauthentication-latency-max                The maximum latency in ms observed due to re-authentication.                                                                                           kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  reauthentication-latency-avg                The average latency in ms observed due to re-authentication.                                                                                           kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  failed-reauthentication-rate                Connections per second that failed re-authentication.                                                                                                  kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  failed-reauthentication-total               Total connections that failed re-authentication.                                                                                                       kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  successful-authentication-no-reauth-total   Total connections that were successfully authenticated by older, pre-2.2.0 SASL clients that do not support re-authentication. May only be non-zero.   kafka.\[producer\|consumer\|connect\]:type=\[producer\|consumer\|connect\]-metrics,client-id=(\[-.\\w\]+)
-  ------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------ -----------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table client-common-metrics >}}
 
 ### Common Per-broker metrics for producer/consumer/connect/streams {#common_node_monitoring}
 
@@ -2328,104 +2161,31 @@ The following metrics are available on
 producer/consumer/connector/streams instances. For specific metrics,
 please see following sections.
 
-//TODO fix table
-
-  ----------------------- ------------------------------------------------------------------ -----------------------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name   Description                                                        Mbean name
-  outgoing-byte-rate      The average number of outgoing bytes sent per second for a node.   kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  outgoing-byte-total     The total number of outgoing bytes sent for a node.                kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-rate            The average number of requests sent per second for a node.         kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-total           The total number of requests sent for a node.                      kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-size-avg        The average size of all requests in the window for a node.         kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-size-max        The maximum size of any request sent in the window for a node.     kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  incoming-byte-rate      The average number of bytes received per second for a node.        kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  incoming-byte-total     The total number of bytes received for a node.                     kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-latency-avg     The average request latency in ms for a node.                      kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  request-latency-max     The maximum request latency in ms for a node.                      kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  response-rate           Responses received per second for a node.                          kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  response-total          Total responses received for a node.                               kafka.\[producer\|consumer\|connect\]:type=\[consumer\|producer\|connect\]-node-metrics,client-id=(\[-.\\w\]+),node-id=(\[0-9\]+)
-  ----------------------- ------------------------------------------------------------------ -----------------------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table client-common-per-broker-metrics >}}
 
 ### Producer monitoring {#producer_monitoring .anchor-link}
 
 The following metrics are available on producer instances.
 
-//TODO fix table
-
-  -------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------
-  Metric/Attribute name            Description                                                                                                                               Mbean name
-  waiting-threads                  The number of user threads blocked waiting for buffer memory to enqueue their records.                                                    kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  buffer-total-bytes               The maximum amount of buffer memory the client can use (whether or not it is currently used).                                             kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  buffer-available-bytes           The total amount of buffer memory that is not being used (either unallocated or in the free list).                                        kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  bufferpool-wait-time             The fraction of time an appender waits for space allocation.                                                                              kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  bufferpool-wait-time-total       **\*Deprecated\*** The total time an appender waits for space allocation in nanoseconds. Replacement is `bufferpool-wait-time-ns-total`   kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  bufferpool-wait-time-ns-total    The total time an appender waits for space allocation in nanoseconds.                                                                     kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  flush-time-ns-total              The total time the Producer spent in Producer.flush in nanoseconds.                                                                       kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  txn-init-time-ns-total           The total time the Producer spent initializing transactions in nanoseconds (for EOS).                                                     kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  txn-begin-time-ns-total          The total time the Producer spent in beginTransaction in nanoseconds (for EOS).                                                           kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  txn-send-offsets-time-ns-total   The total time the Producer spent sending offsets to transactions in nanoseconds (for EOS).                                               kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  txn-commit-time-ns-total         The total time the Producer spent committing transactions in nanoseconds (for EOS).                                                       kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  txn-abort-time-ns-total          The total time the Producer spent aborting transactions in nanoseconds (for EOS).                                                         kafka.producer:type=producer-metrics,client-id=(\[-.\\w\]+)
-  -------------------------------- ----------------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------
+{{< ops-metrics-table producer-metrics >}}
 
 #### Producer Sender Metrics {#producer_sender_monitoring .anchor-link}
+
+{{< metrics-table producer_metrics >}}
 
 ### Consumer monitoring {#consumer_monitoring .anchor-link}
 
 The following metrics are available on consumer instances.
 
-//TODO check table
-
-  --------------------------- ------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------
-  Metric/Attribute name       Description                                                                                                               Mbean name
-  time-between-poll-avg       The average delay between invocations of poll().                                                                          kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  time-between-poll-max       The max delay between invocations of poll().                                                                              kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  last-poll-seconds-ago       The number of seconds since the last poll() invocation.                                                                   kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  poll-idle-ratio-avg         The average fraction of time the consumer\'s poll() is idle as opposed to waiting for the user code to process records.   kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  commited-time-ns-total      The total time the Consumer spent in committed in nanoseconds.                                                            kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  commit-sync-time-ns-total   The total time the Consumer spent committing offsets in nanoseconds (for AOS).                                            kafka.consumer:type=consumer-metrics,client-id=(\[-.\\w\]+)
-  --------------------------- ------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------
+{{< ops-metrics-table consumer-metrics >}}
 
 #### Consumer Group Metrics {#consumer_group_monitoring .anchor-link}
 
-//TODO fix table
-
-  --------------------------------- ---------------------------------------------------------------------------------- -------------------------------------------------------------------------
-  Metric/Attribute name             Description                                                                        Mbean name
-  commit-latency-avg                The average time taken for a commit request                                        kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  commit-latency-max                The max time taken for a commit request                                            kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  commit-rate                       The number of commit calls per second                                              kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  commit-total                      The total number of commit calls                                                   kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  assigned-partitions               The number of partitions currently assigned to this consumer                       kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  heartbeat-response-time-max       The max time taken to receive a response to a heartbeat request                    kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  heartbeat-rate                    The average number of heartbeats per second                                        kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  heartbeat-total                   The total number of heartbeats                                                     kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  join-time-avg                     The average time taken for a group rejoin                                          kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  join-time-max                     The max time taken for a group rejoin                                              kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  join-rate                         The number of group joins per second                                               kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  join-total                        The total number of group joins                                                    kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  sync-time-avg                     The average time taken for a group sync                                            kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  sync-time-max                     The max time taken for a group sync                                                kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  sync-rate                         The number of group syncs per second                                               kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  sync-total                        The total number of group syncs                                                    kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  rebalance-latency-avg             The average time taken for a group rebalance                                       kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  rebalance-latency-max             The max time taken for a group rebalance                                           kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  rebalance-latency-total           The total time taken for group rebalances so far                                   kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  rebalance-total                   The total number of group rebalances participated                                  kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  rebalance-rate-per-hour           The number of group rebalance participated per hour                                kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  failed-rebalance-total            The total number of failed group rebalances                                        kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  failed-rebalance-rate-per-hour    The number of failed group rebalance event per hour                                kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  last-rebalance-seconds-ago        The number of seconds since the last rebalance event                               kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  last-heartbeat-seconds-ago        The number of seconds since the last controller heartbeat                          kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-revoked-latency-avg    The average time taken by the on-partitions-revoked rebalance listener callback    kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-revoked-latency-max    The max time taken by the on-partitions-revoked rebalance listener callback        kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-assigned-latency-avg   The average time taken by the on-partitions-assigned rebalance listener callback   kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-assigned-latency-max   The max time taken by the on-partitions-assigned rebalance listener callback       kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-lost-latency-avg       The average time taken by the on-partitions-lost rebalance listener callback       kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  partitions-lost-latency-max       The max time taken by the on-partitions-lost rebalance listener callback           kafka.consumer:type=consumer-coordinator-metrics,client-id=(\[-.\\w\]+)
-  --------------------------------- ---------------------------------------------------------------------------------- -------------------------------------------------------------------------
+{{< ops-metrics-table consumer-group-metrics >}}
 
 #### Consumer Fetch Metrics {#consumer_fetch_monitoring .anchor-link}
+
+{{< metrics-table consumer_metrics >}}
 
 ### Connect Monitoring {#connect_monitoring .anchor-link}
 
@@ -2433,6 +2193,8 @@ A Connect worker process contains all the producer and consumer metrics
 as well as metrics specific to Connect. The worker process itself has a
 number of metrics, while each connector and task have additional
 metrics.
+
+{{< metrics-table connect_metrics >}}
 
 ### Streams Monitoring {#kafka_streams_monitoring .anchor-link}
 
@@ -2456,45 +2218,13 @@ collected:
 
 All of the following metrics have a recording level of `info`:
 
-  ----------------------- ---------------------------------------------------------------------------------- ----------------------------------------------------------
-  Metric/Attribute name   Description                                                                        Mbean name
-  version                 The version of the Kafka Streams client.                                           kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  commit-id               The version control commit ID of the Kafka Streams client.                         kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  application-id          The application ID of the Kafka Streams client.                                    kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  topology-description    The description of the topology executed in the Kafka Streams client.              kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  state                   The state of the Kafka Streams client.                                             kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  failed-stream-threads   The number of failed stream threads since the start of the Kafka Streams client.   kafka.streams:type=stream-metrics,client-id=(\[-.\\w\]+)
-  ----------------------- ---------------------------------------------------------------------------------- ----------------------------------------------------------
+{{< ops-metrics-table streams-client-metrics >}}
 
 #### Thread Metrics {#kafka_streams_thread_monitoring .anchor-link}
 
 All of the following metrics have a recording level of `info`:
 
-  ----------------------- -------------------------------------------------------------------------------------------- -----------------------------------------------------------------
-  Metric/Attribute name   Description                                                                                  Mbean name
-  commit-latency-avg      The average execution time in ms, for committing, across all running tasks of this thread.   kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  commit-latency-max      The maximum execution time in ms, for committing, across all running tasks of this thread.   kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  poll-latency-avg        The average execution time in ms, for consumer polling.                                      kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  poll-latency-max        The maximum execution time in ms, for consumer polling.                                      kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  process-latency-avg     The average execution time in ms, for processing.                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  process-latency-max     The maximum execution time in ms, for processing.                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  punctuate-latency-avg   The average execution time in ms, for punctuating.                                           kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  punctuate-latency-max   The maximum execution time in ms, for punctuating.                                           kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  commit-rate             The average number of commits per second.                                                    kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  commit-total            The total number of commit calls.                                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  poll-rate               The average number of consumer poll calls per second.                                        kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  poll-total              The total number of consumer poll calls.                                                     kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  process-rate            The average number of processed records per second.                                          kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  process-total           The total number of processed records.                                                       kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  punctuate-rate          The average number of punctuate calls per second.                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  punctuate-total         The total number of punctuate calls.                                                         kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  task-created-rate       The average number of tasks created per second.                                              kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  task-created-total      The total number of tasks created.                                                           kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  task-closed-rate        The average number of tasks closed per second.                                               kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  task-closed-total       The total number of tasks closed.                                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  blocked-time-ns-total   The total time the thread spent blocked on kafka.                                            kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  thread-start-time       The time that the thread was started.                                                        kafka.streams:type=stream-thread-metrics,thread-id=(\[-.\\w\]+)
-  ----------------------- -------------------------------------------------------------------------------------------- -----------------------------------------------------------------
+{{< ops-metrics-table streams-thread-metrics >}}
 
 #### Task Metrics {#kafka_streams_task_monitoring .anchor-link}
 
@@ -2502,24 +2232,7 @@ All of the following metrics have a recording level of `debug`, except
 for the dropped-records-\* and active-process-ratio metrics which have a
 recording level of `info`:
 
-  --------------------------- ------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------
-  Metric/Attribute name       Description                                                                                             Mbean name
-  process-latency-avg         The average execution time in ns, for processing.                                                       kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  process-latency-max         The maximum execution time in ns, for processing.                                                       kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  process-rate                The average number of processed records per second across all source processor nodes of this task.      kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  process-total               The total number of processed records across all source processor nodes of this task.                   kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  commit-latency-avg          The average execution time in ns, for committing.                                                       kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  commit-latency-max          The maximum execution time in ns, for committing.                                                       kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  commit-rate                 The average number of commit calls per second.                                                          kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  commit-total                The total number of commit calls.                                                                       kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  record-lateness-avg         The average observed lateness of records (stream time - record timestamp).                              kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  record-lateness-max         The max observed lateness of records (stream time - record timestamp).                                  kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  enforced-processing-rate    The average number of enforced processings per second.                                                  kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  enforced-processing-total   The total number enforced processings.                                                                  kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  dropped-records-rate        The average number of records dropped within this task.                                                 kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  dropped-records-total       The total number of records dropped within this task.                                                   kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  active-process-ratio        The fraction of time the stream thread spent on processing this task among all assigned active tasks.   kafka.streams:type=stream-task-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+)
-  --------------------------- ------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-task-metrics >}}
 
 #### Processor Node Metrics {#kafka_streams_node_monitoring .anchor-link}
 
@@ -2532,20 +2245,7 @@ without successor nodes). All of the metrics have a recording level of
 `debug`, except for the record-e2e-latency-\* metrics which have a
 recording level of `info`:
 
-  ------------------------ ----------------------------------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name    Description                                                                                                                                                 Mbean name
-  bytes-consumed-total     The total number of bytes consumed by a source processor node.                                                                                              kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+),topic=(\[-.\\w\]+)
-  bytes-produced-total     The total number of bytes produced by a sink processor node.                                                                                                kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+),topic=(\[-.\\w\]+)
-  process-rate             The average number of records processed by a source processor node per second.                                                                              kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  process-total            The total number of records processed by a source processor node per second.                                                                                kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  suppression-emit-rate    The rate at which records that have been emitted downstream from suppression operation nodes.                                                               kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  suppression-emit-total   The total number of records that have been emitted downstream from suppression operation nodes.                                                             kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  record-e2e-latency-avg   The average end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  record-e2e-latency-max   The maximum end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  record-e2e-latency-min   The minimum end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+)
-  records-consumed-total   The total number of records consumed by a source processor node.                                                                                            kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+),topic=(\[-.\\w\]+)
-  records-produced-total   The total number of records produced by a sink processor node.                                                                                              kafka.streams:type=stream-processor-node-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),processor-node-id=(\[-.\\w\]+),topic=(\[-.\\w\]+)
-  ------------------------ ----------------------------------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-node-metrics >}}
 
 #### State Store Metrics {#kafka_streams_store_monitoring .anchor-link}
 
@@ -2568,43 +2268,7 @@ suppression-buffer-count-avg, and suppression-buffer-count-max are only
 available for suppression buffers. All other metrics are not available
 for suppression buffers.
 
-  ------------------------------ ----------------------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name          Description                                                                                                                                                 Mbean name
-  put-latency-avg                The average put execution time in ns.                                                                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-latency-max                The maximum put execution time in ns.                                                                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-if-absent-latency-avg      The average put-if-absent execution time in ns.                                                                                                             kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-if-absent-latency-max      The maximum put-if-absent execution time in ns.                                                                                                             kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  get-latency-avg                The average get execution time in ns.                                                                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  get-latency-max                The maximum get execution time in ns.                                                                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  delete-latency-avg             The average delete execution time in ns.                                                                                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  delete-latency-max             The maximum delete execution time in ns.                                                                                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-all-latency-avg            The average put-all execution time in ns.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-all-latency-max            The maximum put-all execution time in ns.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  all-latency-avg                The average all operation execution time in ns.                                                                                                             kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  all-latency-max                The maximum all operation execution time in ns.                                                                                                             kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  range-latency-avg              The average range execution time in ns.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  range-latency-max              The maximum range execution time in ns.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  flush-latency-avg              The average flush execution time in ns.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  flush-latency-max              The maximum flush execution time in ns.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  restore-latency-avg            The average restore execution time in ns.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  restore-latency-max            The maximum restore execution time in ns.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-rate                       The average put rate for this store.                                                                                                                        kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-if-absent-rate             The average put-if-absent rate for this store.                                                                                                              kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  get-rate                       The average get rate for this store.                                                                                                                        kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  delete-rate                    The average delete rate for this store.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  put-all-rate                   The average put-all rate for this store.                                                                                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  all-rate                       The average all operation rate for this store.                                                                                                              kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  range-rate                     The average range rate for this store.                                                                                                                      kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  flush-rate                     The average flush rate for this store.                                                                                                                      kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  restore-rate                   The average restore rate for this store.                                                                                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  suppression-buffer-size-avg    The average total size, in bytes, of the buffered data over the sampling window.                                                                            kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),in-memory-suppression-id=(\[-.\\w\]+)
-  suppression-buffer-size-max    The maximum total size, in bytes, of the buffered data over the sampling window.                                                                            kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),in-memory-suppression-id=(\[-.\\w\]+)
-  suppression-buffer-count-avg   The average number of records buffered over the sampling window.                                                                                            kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),in-memory-suppression-id=(\[-.\\w\]+)
-  suppression-buffer-count-max   The maximum number of records buffered over the sampling window.                                                                                            kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),in-memory-suppression-id=(\[-.\\w\]+)
-  record-e2e-latency-avg         The average end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  record-e2e-latency-max         The maximum end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  record-e2e-latency-min         The minimum end-to-end latency of a record, measured by comparing the record timestamp with the system time when it has been fully processed by the node.   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  ------------------------------ ----------------------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-store-metrics >}}
 
 #### RocksDB Metrics {#kafka_streams_rocksdb_monitoring .anchor-link}
 
@@ -2630,31 +2294,7 @@ state stores. If a state store consists of multiple RocksDB instances,
 as is the case for WindowStores and SessionStores, each metric reports
 an aggregation over the RocksDB instances of the state store.
 
-  ------------------------------- --------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name           Description                                                                                                     Mbean name
-  bytes-written-rate              The average number of bytes written per second to the RocksDB state store.                                      kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  bytes-written-total             The total number of bytes written to the RocksDB state store.                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  bytes-read-rate                 The average number of bytes read per second from the RocksDB state store.                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  bytes-read-total                The total number of bytes read from the RocksDB state store.                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-bytes-flushed-rate     The average number of bytes flushed per second from the memtable to disk.                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-bytes-flushed-total    The total number of bytes flushed from the memtable to disk.                                                    kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-hit-ratio              The ratio of memtable hits relative to all lookups to the memtable.                                             kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-flush-time-avg         The average duration of memtable flushes to disc in ms.                                                         kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-flush-time-min         The minimum duration of memtable flushes to disc in ms.                                                         kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  memtable-flush-time-max         The maximum duration of memtable flushes to disc in ms.                                                         kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-data-hit-ratio      The ratio of block cache hits for data blocks relative to all lookups for data blocks to the block cache.       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-index-hit-ratio     The ratio of block cache hits for index blocks relative to all lookups for index blocks to the block cache.     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-filter-hit-ratio    The ratio of block cache hits for filter blocks relative to all lookups for filter blocks to the block cache.   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  write-stall-duration-avg        The average duration of write stalls in ms.                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  write-stall-duration-total      The total duration of write stalls in ms.                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  bytes-read-compaction-rate      The average number of bytes read per second during compaction.                                                  kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  bytes-written-compaction-rate   The average number of bytes written per second during compaction.                                               kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  compaction-time-avg             The average duration of disc compactions in ms.                                                                 kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  compaction-time-min             The minimum duration of disc compactions in ms.                                                                 kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  compaction-time-max             The maximum duration of disc compactions in ms.                                                                 kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  number-open-files               The number of current open files.                                                                               kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  number-file-errors-total        The total number of file errors occurred.                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  ------------------------------- --------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-rocksdb-stats-metrics >}}
 
 **RocksDB Properties-based Metrics:** All of the following
 properties-based metrics have a recording level of `info` and are
@@ -2667,42 +2307,13 @@ instances if each instance uses its own block cache, and they report the
 recorded value from only one instance if a single block cache is shared
 among all instances.
 
-  ----------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name               Description                                                                                                                                                Mbean name
-  num-immutable-mem-table             The number of immutable memtables that have not yet been flushed.                                                                                          kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  cur-size-active-mem-table           The approximate size of the active memtable in bytes.                                                                                                      kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  cur-size-all-mem-tables             The approximate size of active and unflushed immutable memtables in bytes.                                                                                 kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  size-all-mem-tables                 The approximate size of active, unflushed immutable, and pinned immutable memtables in bytes.                                                              kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-entries-active-mem-table        The number of entries in the active memtable.                                                                                                              kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-entries-imm-mem-tables          The number of entries in the unflushed immutable memtables.                                                                                                kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-deletes-active-mem-table        The number of delete entries in the active memtable.                                                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-deletes-imm-mem-tables          The number of delete entries in the unflushed immutable memtables.                                                                                         kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  mem-table-flush-pending             This metric reports 1 if a memtable flush is pending, otherwise it reports 0.                                                                              kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-running-flushes                 The number of currently running flushes.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  compaction-pending                  This metric reports 1 if at least one compaction is pending, otherwise it reports 0.                                                                       kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-running-compactions             The number of currently running compactions.                                                                                                               kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  estimate-pending-compaction-bytes   The estimated total number of bytes a compaction needs to rewrite on disk to get all levels down to under target size (only valid for level compaction).   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  total-sst-files-size                The total size in bytes of all SST files.                                                                                                                  kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  live-sst-files-size                 The total size in bytes of all SST files that belong to the latest LSM tree.                                                                               kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  num-live-versions                   Number of live versions of the LSM tree.                                                                                                                   kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-capacity                The capacity of the block cache in bytes.                                                                                                                  kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-usage                   The memory size of the entries residing in block cache in bytes.                                                                                           kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  block-cache-pinned-usage            The memory size for the entries being pinned in the block cache in bytes.                                                                                  kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  estimate-num-keys                   The estimated number of keys in the active and unflushed immutable memtables and storage.                                                                  kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  estimate-table-readers-mem          The estimated memory in bytes used for reading SST tables, excluding memory used in block cache.                                                           kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  background-errors                   The total number of background errors.                                                                                                                     kafka.streams:type=stream-state-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),\[store-scope\]-id=(\[-.\\w\]+)
-  ----------------------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------- ---------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-rocksdb-props-metrics >}}
 
 #### Record Cache Metrics {#kafka_streams_cache_monitoring .anchor-link}
 
 All of the following metrics have a recording level of `debug`:
 
-  ----------------------- --------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------
-  Metric/Attribute name   Description                                                                                               Mbean name
-  hit-ratio-avg           The average cache hit ratio defined as the ratio of cache read hits over the total cache read requests.   kafka.streams:type=stream-record-cache-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),record-cache-id=(\[-.\\w\]+)
-  hit-ratio-min           The mininum cache hit ratio.                                                                              kafka.streams:type=stream-record-cache-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),record-cache-id=(\[-.\\w\]+)
-  hit-ratio-max           The maximum cache hit ratio.                                                                              kafka.streams:type=stream-record-cache-metrics,thread-id=(\[-.\\w\]+),task-id=(\[-.\\w\]+),record-cache-id=(\[-.\\w\]+)
-  ----------------------- --------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------
+{{< ops-metrics-table streams-cache-metrics >}}
 
 ### Others {#others_monitoring .anchor-link}
 
@@ -2826,14 +2437,14 @@ controller servers that should be used. All the controllers must be
 enumerated. Each controller is identified with their `id`, `host` and
 `port` information. For example:
 
-``` line-numbers
+```properties line-numbers
 controller.quorum.voters=id1@host1:port1,id2@host2:port2,id3@host3:port3
 ```
 
 If a Kafka cluster has 3 controllers named controller1, controller2 and
 controller3, then controller1 may have the following configuration:
 
-``` line-numbers
+```properties line-numbers
 process.roles=controller
 node.id=1
 listeners=CONTROLLER://controller1.example.com:9093
@@ -2872,8 +2483,8 @@ The `kafka-metadata-quorum` tool can be used to describe the runtime
 state of the cluster metadata partition. For example, the following
 command displays a summary of the metadata quorum:
 
-``` line-numbers
-  > bin/kafka-metadata-quorum.sh --bootstrap-server  broker_host:port describe --status
+```shell line-numbers
+> bin/kafka-metadata-quorum.sh --bootstrap-server  broker_host:port describe --status
 ClusterId:              fMCL8kv1SWm87L_Md-I2hg
 LeaderId:               3002
 LeaderEpoch:            2
@@ -2891,15 +2502,15 @@ snapshots for the cluster metadata directory. The tool will scan the
 provided files and decode the metadata records. For example, this
 command decodes and prints the records in the first log segment:
 
-``` line-numbers
-  > bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
+```shell line-numbers
+> bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
 ```
 
 This command decodes and prints the recrods in the a cluster metadata
 snapshot:
 
-``` line-numbers
-  > bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000100-0000000001.checkpoint
+```shell line-numbers
+> bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000100-0000000001.checkpoint
 ```
 
 #### Metadata Shell {#kraft_shell_tool .anchor-link}
@@ -2907,13 +2518,13 @@ snapshot:
 The `kafka-metadata-shell` tool can be used to interactively inspect the
 state of the cluster metadata partition:
 
-``` line-numbers
-  > bin/kafka-metadata-shell.sh  --snapshot metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
->> ls /
+```shell line-numbers
+> bin/kafka-metadata-shell.sh  --snapshot metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
+> ls /
 brokers  local  metadataQuorum  topicIds  topics
->> ls /topics
+> ls /topics
 foo
->> cat /topics/foo/0/data
+> cat /topics/foo/0/data
 {
   "partitionId" : 0,
   "topicId" : "5zoAlv-xEh9xRANKXt1Lbg",
@@ -2925,15 +2536,13 @@ foo
   "leaderEpoch" : 0,
   "partitionEpoch" : 0
 }
->> exit
-  
 ```
 
 ### Deploying Considerations {#kraft_deployment .anchor-link}
 
 Kafka server\'s `process.role` should be set to either `broker` or
 `controller` but not both. Combined mode can be used in development
-enviroment but it should be avoided in critical deployment evironments.
+environment but it should be avoided in critical deployment environments.
 
 For redundancy, a Kafka cluster should use 3 controllers. More than 3
 servers is not recommended in critical environments. In the rare case of
@@ -2952,7 +2561,6 @@ The following features are not fullying implemented in KRaft mode:
 
 -   Configuring SCRAM users via the administrative API
 -   Supporting JBOD configurations with multiple storage directories
--   Modifying certain dynamic configurations on the standalone KRaft
-    controller
+-   Modifying certain dynamic configurations on the standalone KRaft controller
 -   Delegation tokens
 -   Upgrade from ZooKeeper mode

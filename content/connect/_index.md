@@ -318,6 +318,8 @@ with Kafka Connect:
 
 Details on how to configure each transformation are listed below:
 
+<!--#include virtual="generated/connect_transforms.html" -->
+
 #### Predicates {#connect_predicates}
 
 Transformations can be configured with predicates so that the
@@ -398,6 +400,8 @@ Kafka Connect includes the following predicates:
 -   `RecordIsTombstone` - matches tombstone records, that is records with a null value.
 
 Details on how to configure each predicate are listed below:
+
+<!--#include virtual="generated/connect_predicates.html" -->
 
 ### REST API {#connect_rest}
 
@@ -1328,9 +1332,8 @@ set of connectors and their tasks in the cluster as a simple way to make
 sure that each worker has approximately the same amount of work. This
 behavior can be still enabled by setting `connect.protocol=eager`.
 
-Starting with 2.3.0, Kafka Connect is using by default a protocol that
-performs [incremental cooperative
-rebalancing](https://cwiki.apache.org/confluence/display/KAFKA/KIP-415%3A+Incremental+Cooperative+Rebalancing+in+Kafka+Connect)
+Starting with 2.3.0, Kafka Connect is using by default a protocol that performs 
+[incremental cooperative rebalancing](https://cwiki.apache.org/confluence/display/KAFKA/KIP-415%3A+Incremental+Cooperative+Rebalancing+in+Kafka+Connect)
 that incrementally balances the connectors and tasks across the Connect
 workers, affecting only tasks that are new, to be removed, or need to
 move from one worker to another. Other tasks are not stopped and
