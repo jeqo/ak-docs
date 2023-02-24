@@ -10,8 +10,6 @@ manage the topics and your applications.
 Kafka Streams distinguishes between [user topics](#streams-developer-guide-topics-user)
 and [internal topics](#streams-developer-guide-topics-internal)
 
-
-
 ## User topics {#user-topics}
 
 User topics exist externally to an application and are read from or
@@ -29,7 +27,7 @@ Intermediate topics
 :   Topics that are both input and output topics of the application's topology.
 
 User topics must be created and manually managed ahead of time (e.g.,
-via the [topic tools](../../kafka/post-deployment.html#kafka-operations-admin)). 
+via the [topic tools](../../../operations#basic_ops)). 
 If user topics are shared among multiple applications for
 reading and writing, the application users must coordinate topic
 management. If user topics are centrally managed, then application users
@@ -46,7 +44,7 @@ create user topics, because:
     as the replication factor. These default settings might not be what
     you want for certain output topics (e.g.,
     `auto.create.topics.enable=true` in the
-    [Kafka broker configuration](http://kafka.apache.org/0100/documentation.html#brokerconfigs)).
+    [Kafka broker configuration](../../../configuration#brokerconfigs)).
 
 ## Internal topics {#internal-topics}
 
@@ -57,7 +55,7 @@ stream application.
 
 If security is enabled on the Kafka brokers, you must grant the
 underlying clients admin permissions so that they can create internal
-topics set. For more information, see [Streams Security](security.html#streams-developer-guide-security).
+topics set. For more information, see [Streams Security](../security#streams-developer-guide-security).
 
 Note:
 

@@ -5,9 +5,9 @@ scratch by using the application reset tool. This can be useful for
 development and testing, or when fixing bugs.
 
 The application reset tool handles the Kafka Streams 
-[user topics](manage-topics.html#streams-developer-guide-topics-user) 
+[user topics](../manage-topics#streams-developer-guide-topics-user) 
 (input, output, and intermediate topics) and 
-[internal topics](manage-topics.html#streams-developer-guide-topics-internal) 
+[internal topics](../manage-topics#streams-developer-guide-topics-internal) 
 differently when resetting the application.
 
 Here's what the application reset tool does for each topic type:
@@ -160,5 +160,5 @@ same machine. You can use either of these methods:
     in your application code.
 -   Manually delete the corresponding local state directory (default
     location: `/tmp/kafka-streams/<application.id>`). For more information, see
-    [Streams](/%7B%7Bversion%7D%7D/javadoc/org/apache/kafka/streams/StreamsConfig.html#STATE_DIR_CONFIG)
+    [Streams](/{{< param akVersion >}}/javadoc/org/apache/kafka/streams/StreamsConfig.html#STATE_DIR_CONFIG)
     javadocs.

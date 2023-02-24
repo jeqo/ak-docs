@@ -1,4 +1,4 @@
-baseURL = 'http://kafka.apache.org/documentation'
+baseURL = 'http://kafka.apache.org/34/documentation'
 languageCode = 'en-us'
 title = 'Apache Kafka documentation'
 theme = 'book'

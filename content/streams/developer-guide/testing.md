@@ -12,7 +12,7 @@ To test a Kafka Streams application, Kafka provides a test-utils
 artifact that can be added as regular dependency to your test code base.
 Example `pom.xml` snippet when using Maven:
 
-``` line-numbers
+```xml line-numbers
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams-test-utils</artifactId>
@@ -33,7 +33,7 @@ computes the correct result with the manually piped in data records. The
 test driver captures the results records and allows to query its
 embedded state stores.
 
-``` line-numbers
+```java line-numbers
 // Processor API
 Topology topology = new Topology();
 topology.addSource("sourceProcessor", "input-topic");
@@ -54,7 +54,7 @@ and the corresponding serializers. `TestInputTopic` provides various
 methods to pipe new message values, keys and values, or list of KeyValue
 objects.
 
-``` line-numbers
+```java line-numbers
 TestInputTopic<String, Long> inputTopic = testDriver.createInputTopic("input-topic", stringSerde.serializer(), longSerde.serializer());
 inputTopic.pipeInput("key", 42L);
 ```
@@ -66,7 +66,7 @@ or the collection of records. For example, you can validate returned
 `KeyValue` with standard assertions if you only care about the key and
 value, but not the timestamp of the result record.
 
-``` line-numbers
+```java line-numbers
 TestOutputTopic<String, Long> outputTopic = testDriver.createOutputTopic("output-topic", stringSerde.deserializer(), longSerde.deserializer());
 assertThat(outputTopic.readKeyValue(), equalTo(new KeyValue<>("key", 42L)));
 ```
@@ -77,7 +77,7 @@ Wall-clock-time punctuations can also be triggered by advancing the test
 driver\'s wall-clock-time (the driver mocks wall-clock-time internally
 to give users control over it).
 
-``` line-numbers
+```java line-numbers
 testDriver.advanceWallClockTime(Duration.ofSeconds(20));
 ```
 
@@ -86,14 +86,14 @@ after a test. Accessing stores before a test is useful to pre-populate a
 store with some initial values. After data was processed, expected
 updates to the store can be verified.
 
-``` line-numbers
+```java line-numbers
 KeyValueStore store = testDriver.getKeyValueStore("store-name");
 ```
 
 Note, that you should always close the test driver at the end to make
 sure all resources are release properly.
 
-``` line-numbers
+```java line-numbers
 testDriver.close();
 ```
 
@@ -105,7 +105,7 @@ per key using a key-value-store. While processing, no output is
 generated, but only the store is updated. Output is only sent downstream
 based on event-time and wall-clock punctuations.
 
-``` line-numbers
+```java line-numbers
 private TopologyTestDriver testDriver;
 private TestInputTopic<String, Long> inputTopic;
 private TestOutputTopic<String, Long> outputTopic;
@@ -243,7 +243,7 @@ public class CustomMaxAggregator implements Processor<String, Long> {
 
 ## Unit Testing Processors {#unit-testing-processors}
 
-If you [write a Processor](processor-api.html), you will want to test it.
+If you [write a Processor](../processor-api), you will want to test it.
 
 Because the `Processor` forwards its results to the context rather than
 returning them, Unit testing requires a mocked context capable of
@@ -255,7 +255,7 @@ capturing forwarded data for inspection. For this reason, we provide a
 To begin with, instantiate your processor and initialize it with the
 mock context:
 
-``` line-numbers
+```java line-numbers
 final Processor processorUnderTest = ...;
 final MockProcessorContext context = new MockProcessorContext();
 processorUnderTest.init(context);
@@ -264,7 +264,7 @@ processorUnderTest.init(context);
 If you need to pass configuration to your processor or set the default
 serdes, you can create the mock with config:
 
-``` line-numbers
+```java line-numbers
 final Properties props = new Properties();
 props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Long().getClass());
@@ -277,7 +277,7 @@ final MockProcessorContext context = new MockProcessorContext(props);
 The mock will capture any values that your processor forwards. You can
 make assertions on them:
 
-``` line-numbers
+```java line-numbers
 processorUnderTest.process("key", "value");
 
 final Iterator<CapturedForward> forwarded = context.forwarded().iterator();
@@ -293,14 +293,14 @@ assertEquals(context.forwarded().size(), 0);
 If your processor forwards to specific child processors, you can query
 the context for captured data by child name:
 
-``` line-numbers
+```java line-numbers
 final List<CapturedForward> captures = context.forwarded("childProcessorName");
 ```
 
 The mock also captures whether your processor has called `commit()` on
 the context:
 
-``` line-numbers
+```java line-numbers
 assertTrue(context.committed());
 
 // commit captures can also be reset.
@@ -315,7 +315,7 @@ In case your processor logic depends on the record metadata (topic,
 partition, offset, or timestamp), you can set them on the context,
 either all together or individually:
 
-``` line-numbers
+```java line-numbers
 context.setRecordMetadata("topicName", /*partition*/ 0, /*offset*/ 0L, /*timestamp*/ 0L);
 context.setTopic("topicName");
 context.setPartition(0);
@@ -333,7 +333,7 @@ register state stores. You\'re encouraged to use a simple in-memory
 store of the appropriate type (KeyValue, Windowed, or Session), since
 the mock context does *not* manage changelogs, state directories, etc.
 
-``` line-numbers
+```java line-numbers
 final KeyValueStore<String, Integer> store =
     Stores.keyValueStoreBuilder(
             Stores.inMemoryKeyValueStore("myStore"),
@@ -352,7 +352,7 @@ Processors can schedule punctuators to handle periodic tasks. The mock
 context does *not* automatically execute punctuators, but it does
 capture them to allow you to unit test them as well:
 
-``` line-numbers
+```java line-numbers
 final MockProcessorContext.CapturedPunctuator capturedPunctuator = context.scheduledPunctuators().get(0);
 final long interval = capturedPunctuator.getIntervalMs();
 final PunctuationType type = capturedPunctuator.getType();
@@ -364,4 +364,4 @@ punctuator.punctuate(/*timestamp*/ 0L);
 If you need to write tests involving automatic firing of scheduled
 punctuators, we recommend creating a simple topology with your processor
 and using the
-[`TopologyTestDriver`](testing.html#testing-topologytestdriver).
+[`TopologyTestDriver`](#testing-topologytestdriver).

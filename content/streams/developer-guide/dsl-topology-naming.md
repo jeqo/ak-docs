@@ -30,7 +30,7 @@ your topology via the `Topology#desribe()` method, you can see what the
 processor is, but you don\'t have any context for its business purpose.
 For example, consider the following simple topology:\
 
-``` line-numbers
+```java line-numbers
 KStream<String,String> stream = builder.stream("input");
 stream.filter((k,v) -> !v.equals("invalid_txn"))
       .mapValues((v) -> v.substring(0,5))
@@ -73,7 +73,7 @@ names to the processors in their topology.
 
 Now let\'s take a look at your topology with all the processors named:
 
-``` line-numbers
+```java line-numbers
 KStream<String,String> stream =
 builder.stream("input", Consumed.as("Customer_transactions_input_topic"));
 stream.filter((k,v) -> !v.equals("invalid_txn"), Named.as("filter_out_invalid_txns"))
@@ -117,7 +117,7 @@ shifting presents no issue for many topologies. But the name shifting
 does have implications for topologies with stateful operators or
 repartition topics. Here\'s a different topology with some state:
 
-``` line-numbers
+```java line-numbers
 KStream<String,String> stream = builder.stream("input");
  stream.groupByKey()
        .count()
@@ -147,7 +147,7 @@ named `KSTREAM-AGGREGATE-STATE-STORE-0000000002`. Here\'s what happens
 when you add a filter to keep some of the records out of the
 aggregation:
 
-``` line-numbers
+```java line-numbers
 KStream<String,String> stream = builder.stream("input");
 stream.filter((k,v)-> v !=null && v.length() >= 6 )
       .groupByKey()
@@ -180,7 +180,7 @@ Notice that since you\'ve added an operation *before* the `count`
 operation, the state store (and the changelog topic) names have changed.
 This name change means you can\'t do a rolling re-deployment of your
 updated topology. Also, you must use the 
-[Streams Reset Tool](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/app-reset-tool)
+[Streams Reset Tool](../app-reset-tool)
 to re-calculate the aggregations, because the changelog topic has
 changed on start-up and the new changelog topic contains no data.
 Fortunately, there\'s an easy solution to remedy this situation. Give
@@ -193,7 +193,7 @@ reiterating the importance of naming these DSL topology operations
 again. Here\'s how your DSL code looks now giving a specific name to
 your state store:
 
-``` line-numbers
+```java line-numbers
 KStream<String,String> stream = builder.stream("input");
 stream.filter((k, v) -> v != null && v.length() >= 6)
       .groupByKey()
@@ -241,7 +241,7 @@ Here are a couple of points to remember when naming your DSL topology:
     recommended that you do so. But this will be a topology breaking
     change, so you\'ll need to shut down all application instances, make
     the changes, and run the 
-    [Streams Reset Tool](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/app-reset-tool).
+    [Streams Reset Tool](../app-reset-tool).
     Although this may be inconvenient at first, it\'s worth the effort
     to protect your application from unexpected errors due to topology
     changes.
@@ -257,11 +257,11 @@ Here\'s a quick reference on naming the critical parts of your Kafka
 Streams application to prevent topology name changes from breaking your
 application:
 
-  Operation                                                 Naming Class
-  --------------------------------------------------------- --------------
-  Aggregation repartition topics                            Grouped
-  KStream-KStream Join repartition topics                   StreamJoined
-  KStream-KTable Join repartition topic                     Joined
-  KStream-KStream Join state stores                         StreamJoined
-  State Stores (for aggregations and KTable-KTable joins)   Materialized
-  Stream/Table non-stateful operations                      Named
+| Operation                                               | Naming Class |
+|---------------------------------------------------------|--------------|
+| Aggregation repartition topics                          | Grouped      |
+| KStream-KStream Join repartition topics                 | StreamJoined |
+| KStream-KTable Join repartition topic                   | Joined       |
+| KStream-KStream Join state stores                       | StreamJoined |
+| State Stores (for aggregations and KTable-KTable joins) | Materialized |
+| Stream/Table non-stateful operations                    | Named        |

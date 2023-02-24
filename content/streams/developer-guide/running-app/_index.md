@@ -4,7 +4,7 @@ You can run Java applications that use the Kafka Streams library without
 any additional configuration or requirements. Kafka Streams also
 provides the ability to receive notification of the various states of
 the application. The ability to monitor the runtime status is discussed
-in [the monitoring guide](/documentation/#kafka_streams_monitoring).
+in [the monitoring guide](../../../operations#kafka_streams_monitoring).
 
 **Table of Contents**
 
@@ -20,7 +20,7 @@ in [the monitoring guide](/documentation/#kafka_streams_monitoring).
 You can package your Java application as a fat JAR file and then start
 the application like this:
 
-``` line-numbers
+```shell line-numbers
 # Start the application in class `com.example.MyStreamsApp`
 # from the fat JAR named `path-to-app-fatjar.jar`.
 $ java -cp path-to-app-fatjar.jar com.example.MyStreamsApp
@@ -30,13 +30,13 @@ When you start your application you are launching a Kafka Streams
 instance of your application. You can run multiple instances of your
 application. A common scenario is that there are multiple instances of
 your application running in parallel. For more information, see
-[Parallelism Model](../architecture.html#streams_architecture_tasks).
+[Parallelism Model](../architecture#streams_architecture_tasks).
 
 When the application instance starts running, the defined processor
 topology will be initialized as one or more stream tasks. If the
 processor topology defines any state stores, these are also constructed
-during the initialization period. For more information, see the [State
-restoration during workload rebalance](#streams-developer-guide-execution-scaling-state-restoration) section).
+during the initialization period. For more information, see the 
+[State restoration during workload rebalance](#streams-developer-guide-execution-scaling-state-restoration) section).
 
 ## Elastic scaling of your application {#elastic-scaling-of-your-application}
 
@@ -46,8 +46,8 @@ application runtime without any downtime or data loss. This makes your
 applications resilient in the face of failures and for allows you to
 perform maintenance as needed (e.g. rolling upgrades).
 
-For more information about this elasticity, see the [Parallelism
-Model](../architecture.html#streams_architecture_tasks) section. 
+For more information about this elasticity, see the 
+[Parallelism Model](../architecture#streams_architecture_tasks) section. 
 Kafka Streams leverages the Kafka group management
 functionality, which is built right into the 
 [Kafka wire protocol](https://cwiki.apache.org/confluence/display/KAFKA/A+Guide+To+The+Kafka+Protocol). 
@@ -85,22 +85,22 @@ memory and Java heap space, local storage, network bandwidth, and so on.
 Similarly, if you stop any of the running instances of your application,
 then you are removing and freeing up the respective processing capacity.
 
-![](images/streams-elastic-scaling-1.png)
+![](streams-elastic-scaling-1.png)
 
-[Before adding capacity: only a single instance of your Kafka Streams
+> Before adding capacity: only a single instance of your Kafka Streams
 application is running. At this point the corresponding Kafka consumer
 group of your application contains only a single member (this instance).
 All data is being read and processed by this single
-instance.]
+instance.
 
-![](images/streams-elastic-scaling-2.png)
+![](streams-elastic-scaling-2.png)
 
-[After adding capacity: now two additional instances of your Kafka
+> After adding capacity: now two additional instances of your Kafka
 Streams application are running, and they have automatically joined the
 application's Kafka consumer group for a total of three current members.
 These three instances are automatically splitting the processing work
 between each other. The splitting is based on the Kafka topic partitions
-from which data is being read.]
+from which data is being read.
 
 ### Removing capacity from your application {#removing-capacity-from-your-application}
 
@@ -114,7 +114,7 @@ to another results in moving the processing work plus any internal state
 of these stream tasks. The state of a stream task is recreated in the
 target instance from its changelog topic.
 
-![](images/streams-elastic-scaling-3.png)
+![](streams-elastic-scaling-3.png)
 
 ### State restoration during workload rebalance {#state-restoration-during-workload-rebalance}
 
@@ -136,18 +136,18 @@ store is restored like this:
     state is restored to the most recent snapshot. This method takes
     less time because it is applying a smaller portion of the changelog.
 
-For more information, see [Standby Replicas](config-streams.html#num-standby-replicas).
+For more information, see [Standby Replicas](../config-streams#num-standby-replicas).
 
 As of version 2.6, Streams will now do most of a task\'s restoration in
 the background through warmup replicas. These will be assigned to
 instances that need to restore a lot of state for a task. A stateful
 active task will only be assigned to an instance once its state is
-within the configured [`acceptable.recovery.lag`](config-streams.html#acceptable-recovery-lag), 
+within the configured [`acceptable.recovery.lag`](../config-streams#acceptable-recovery-lag), 
 if one exists. This means that most of the time, a task
 migration will **not** result in downtime for that task. It will remain
 active on the instance that\'s already caught up, while the instance
 that it\'s being migrated to works on restoring the state. Streams will
-[regularly probe](config-streams.html#probing-rebalance-interval-ms) 
+[regularly probe](../config-streams#probing-rebalance-interval-ms) 
 for warmup tasks that have finished restoring and transition
 them to active tasks when ready.
 

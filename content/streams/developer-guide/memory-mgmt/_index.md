@@ -23,21 +23,21 @@ instance of the processing topology. It is leveraged by the following
 -   Source `KTable`: `KTable` instances that are created via
     `StreamsBuilder#table()` or `StreamsBuilder#globalTable()`.
 -   Aggregation `KTable`: instances of `KTable` that are created as a result of
-    [aggregations](dsl-api.html#streams-developer-guide-dsl-aggregating).
+    [aggregations](../dsl-api##streams-developer-guide-dsl-aggregating).
 
 For such `KTable` instances, the record cache is used for:
 
 -   Internal caching and compacting of output records before they are
-    written by the underlying stateful [processor node](../core-concepts#streams_processor_node) to its internal state stores.
+    written by the underlying stateful [processor node](../../core-concepts#streams_processor_node) to its internal state stores.
 -   Internal caching and compacting of output records before they are
-    forwarded from the underlying stateful [processor node](../core-concepts#streams_processor_node) to any of its downstream processor nodes.
+    forwarded from the underlying stateful [processor node](../../core-concepts#streams_processor_node) to any of its downstream processor nodes.
 
 Use the following example to understand the behaviors with and without
 record caching. In this example, the input is a
 `KStream<String, Integer>` with the records `<K, V>: <A, 1>, <D, 5>, <A, 20>, <A, 300>`. The focus in this example
 is on the records with key == `A`.
 
--   An [aggregation](dsl-api.html#streams-developer-guide-dsl-aggregating) computes the sum of record values, grouped by key, for
+-   An [aggregation](../dsl-api##streams-developer-guide-dsl-aggregating) computes the sum of record values, grouped by key, for
     the input and returns a `KTable<String,Integer>`.
 
     -   **Without caching**: a sequence of output records is emitted
@@ -58,7 +58,7 @@ The cache size is specified through the
 `cache.max.bytes.buffering` parameter, which
 is a global setting per processing topology:
 
-```line-numbers
+```java line-numbers
 // Enable record cache of size 10 MB.
 Properties props = new Properties();
 props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024L);
@@ -77,8 +77,7 @@ finishes processing at a node, it is marked as dirty in the cache. Any
 other keyed record `R2 = <K1, V2>` with the same key
 `K1` that is processed on that node during
 that time will overwrite `<K1, V1>`, this is referred to as
-"being compacted". This has the same effect as [Kafka's log
-compaction](../design#compaction), 
+"being compacted". This has the same effect as [Kafka's log compaction](../../../design#compaction), 
 but happens earlier, while the records are still in memory,
 and within your client-side application, rather than on the server-side
 (i.e. the Kafka broker). After flushing, `R2` is forwarded to the next processing node and then
@@ -96,7 +95,7 @@ scenarios.
 
 -   To turn off caching the cache size can be set to zero:
 
-    ```line-numbers
+    ```java line-numbers
     // Disable record cache
     Properties props = new Properties();
     props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
@@ -106,7 +105,7 @@ scenarios.
     will be cached, you can set the commit interval. In this example, it
     is set to 1000 milliseconds:
 
-    ```line-numbers
+    ```java line-numbers
     Properties props = new Properties();
     // Enable record cache of size 10 MB.
     props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024L);
@@ -135,7 +134,7 @@ the cache has space for only 3 keys.
         commit interval will be the primary factor.
     -   The total number of records output has been reduced from 15 to 8.
 
-![](images/streams-cache-and-commit-interval.png)
+![](streams-cache-and-commit-interval.png)
 
 ## Record caches in the Processor API {#record-caches-in-the-processor-api}
 
@@ -152,13 +151,14 @@ system, but is a performance optimization for the state stores. For
 example, with the Processor API you can store a record in a state store
 while forwarding a different value downstream.
 
-Following from the example first shown in section [State Stores](processor-api.html#streams-developer-guide-state-store), 
+Following from the example first shown in section 
+[State Stores](../processor-api#streams-developer-guide-state-store), 
 to disable caching, you can add the
 `withCachingDisabled` call (note that caches
 are enabled by default, however there is an explicit
 `withCachingEnabled` call).
 
-```line-numbers
+```java line-numbers
 StoreBuilder countStoreBuilder =
   Stores.keyValueStoreBuilder(
     Stores.persistentKeyValueStore("Counts"),
@@ -181,7 +181,7 @@ change the memory allocator to `jemalloc`, you need to set the
 environment variable `LD_PRELOAD` before you start your Kafka Streams
 application:
 
-```line-numbers
+```shell line-numbers
 # example: install jemalloc (on Debian)
 $ apt install -y libjemalloc-dev
 # set LD_PRELOAD before you start your Kafka Streams application
@@ -199,7 +199,7 @@ the same Cache object to each instance.
 See [RocksDB Memory Usage](https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB) for details. 
 An example RocksDBConfigSetter implementing this is shown below:
 
-```line-numbers
+```java line-numbers
 public static class BoundedMemoryRocksDBConfig implements RocksDBConfigSetter {
 
    private static org.rocksdb.Cache cache = new org.rocksdb.LRUCache(TOTAL_OFF_HEAP_MEMORY, -1, false, INDEX_FILTER_BLOCK_RATIO);1
@@ -242,7 +242,7 @@ public static class BoundedMemoryRocksDBConfig implements RocksDBConfigSetter {
 2. This must be set in order for `INDEX_FILTER_BLOCK_RATIO` to take effect (see footnote 1) as described in the 
     [RocksDB docs](https://github.com/facebook/rocksdb/wiki/Block-Cache#caching-index-and-filter-blocks)
 3. You may want to modify the default 
-    [block size](https://github.com/apache/kafka/blob/2.3/streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBStore.java#L79) 
+    [block size](https://github.com/apache/kafka/blob/{{<param akVersion>}}/streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBStore.java#L79) 
     per these instructions from the [RocksDB docs](https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB#indexes-and-filter-blocks). 
     A larger block size means index blocks will be smaller, but the cached data blocks may contain more cold data that would otherwise be evicted.
 

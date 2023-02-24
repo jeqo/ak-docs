@@ -6,9 +6,9 @@
 -   [Security example](#security-example)
 
 Kafka Streams natively integrates with the 
-[Kafka's security features](../../../documentation.html#security)
-and supports all of the client-side security features in Kafka. Streams
-leverages the [Java Producer and Consumer API](../../../documentation.html#api).
+[Kafka's security features](../../../security)
+and supports all of the client-side security features in Kafka Streams
+leverages the [Java Producer and Consumer API](../../../api).
 
 To secure your Stream processing applications, configure the security
 settings in the corresponding Kafka producer and consumer clients, and
@@ -42,7 +42,7 @@ Client authorization
     fraudulent activities.
 
 For more information about the security features in Apache Kafka, see
-[Kafka Security](../../../documentation.html#security).
+[Kafka Security](../../../security).
 
 ## Required ACL setting for secure Kafka clusters {#required-acl-setting-for-secure-kafka-clusters}
 
@@ -53,7 +53,7 @@ to be authorized with appropriate access. In particular, when Streams
 applications are run against a secured Kafka cluster, the principal
 running the application must have the ACL set so that the application
 has the permissions to create, read and write 
-[internal topics](manage-topics.html#streams-developer-guide-topics-internal).
+[internal topics](../manage-topics#streams-developer-guide-topics-internal).
 
 To avoid providing this permission to your application, you can create
 the required internal topics manually. If the internal topics exist,
@@ -76,7 +76,7 @@ there is no guarantee about this naming pattern in future
 releases---it\'s not part of the public API.
 
 Since all internal topics as well as the embedded consumer group name
-are prefixed with the [application id](/%7B%7Bversion%7D%7D/documentation/streams/developer-guide/config-streams.html#required-configuration-parameters), 
+are prefixed with the [application id](../config-streams#required-configuration-parameters), 
 it is recommended to use ACLs on prefixed resource pattern
 to configure control lists to allow client to manage all topics and
 consumer groups started with this prefix as
@@ -100,7 +100,7 @@ The snippet below shows the settings to enable client authentication and
 SSL encryption for data-in-transit between your Kafka Streams
 application and the Kafka cluster it is reading and writing from:
 
-``` line-numbers
+```properties line-numbers
 # Essential security settings to enable client authentication and SSL encryption
 bootstrap.servers=kafka.example.com:9093
 security.protocol=SSL
@@ -118,7 +118,7 @@ and your application will authenticate itself against the Kafka brokers
 that it is communicating with. Note that this example does not cover
 client authorization.
 
-``` line-numbers
+```java line-numbers
 // Code of your Java application that uses the Kafka Streams library
 Properties settings = new Properties();
 settings.put(StreamsConfig.APPLICATION_ID_CONFIG, "secure-kafka-streams-app");

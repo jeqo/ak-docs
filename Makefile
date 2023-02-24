@@ -1,15 +1,17 @@
+VERSION := 35
+
 all: build
 
 build:
-	hugo -b http://localhost:8080/35/documentation
+	hugo -b http://localhost:8080/${VERSION}/documentation
 
 test:
-	hugo serve -b http://localhost:1313/documentation
+	hugo serve -b http://localhost:1313/${VERSION}/documentation
 
 site: build
-	rm -rf kafka-site/35
-	mkdir kafka-site/35
-	cp -r public kafka-site/35/documentation
+	rm -rf kafka-site/${VERSION}
+	mkdir kafka-site/${VERSION}
+	cp -r public kafka-site/${VERSION}/documentation
 	docker build -t ak-docs .
 
 run:
