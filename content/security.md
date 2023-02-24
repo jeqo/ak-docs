@@ -53,7 +53,7 @@ purpose of the listener. For example, many configurations use a separate
 listener for client traffic, so they might refer to the corresponding
 listener as `CLIENT` in the configuration:
 
-`listeners=CLIENT://localhost:9092`{.language-text}
+`listeners=CLIENT://localhost:9092`
 
 The security protocol of each listener is defined in a separate
 configuration: `listener.security.protocol.map`. The value is a
@@ -124,7 +124,7 @@ define the controller listener along with any security properties that
 are needed to configure it. For example, we might use the following
 configuration on a standalone broker:
 
-``` line-numbers
+```properties line-numbers
 process.roles=broker
 listeners=BROKER://localhost:9092
 inter.broker.listener.name=BROKER
@@ -144,7 +144,7 @@ For KRaft servers which have both the broker and controller role
 enabled, the configuration is similar. The only difference is that the
 controller listener must be included in `listeners`:
 
-``` line-numbers
+```properties line-numbers
 process.roles=broker,controller
 listeners=BROKER://localhost:9092,CONTROLLER://localhost:9093
 inter.broker.listener.name=BROKER
@@ -201,7 +201,7 @@ format as of Java version 9, to ensure this format is being used
 regardless of the Java version in use all following commands
 explicitly specify the PKCS12 format.
 
-``` line-numbers
+```shell line-numbers
 > keytool -keystore {keystorefile} -alias localhost -validity {validity} -genkey -keyalg RSA -storetype pkcs12
 ```
 
@@ -229,7 +229,7 @@ used for authentication purposes.\
 To generate certificate signing requests run the following command
 for all server keystores created so far.
 
-``` line-numbers
+```shell line-numbers
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -255,7 +255,7 @@ Server host name verification may be disabled by setting
 For dynamically configured broker listeners, hostname verification
 may be disabled using `kafka-configs.sh`:\
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-configs.sh --bootstrap-server localhost:9093 --entity-type brokers --entity-name 0 --alter --add-config "listener.name.internal.ssl.endpoint.identification.algorithm="
 ```
 
@@ -292,7 +292,7 @@ into the signing request.\
 To add a SAN field append the following argument
 `-ext SAN=DNS:{FQDN},IP:{IPADDRESS}` to the keytool command:
 
-``` line-numbers
+```shell line-numbers
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -421,7 +421,7 @@ keep track of which certificates were signed with this CA. Both of
 these are simply text files that reside in the same directory as
 your CA keys.
 
-``` line-numbers
+```shell line-numbers
 > echo 01 > serial.txt
 > touch index.txt
 ```
@@ -429,7 +429,7 @@ your CA keys.
 With these steps done you are now ready to generate your CA that
 will be used to sign certificates later.
 
-``` line-numbers
+```shell line-numbers
 > openssl req -x509 -config openssl-ca.cnf -newkey rsa:4096 -sha256 -nodes -out cacert.pem -outform PEM
 ```
 
@@ -442,13 +442,13 @@ anybody when connecting to any service that trusts this CA.\
 The next step is to add the generated CA to the \*\*clients\'
 truststore\*\* so that the clients can trust this CA:
 
-``` line-numbers
+```shell line-numbers
 > keytool -keystore client.truststore.jks -alias CARoot -import -file ca-cert
 ```
 
 **Note:** If you configure the Kafka brokers to require client
 authentication by setting ssl.client.auth to be \"requested\" or
-\"required\" in the [Kafka brokers config](#brokerconfigs) then you
+\"required\" in the [Kafka brokers config](../configuration#brokerconfigs) then you
 must provide a truststore for the Kafka brokers as well and it
 should have all the CA certificates that clients\' keys were signed
 by.
@@ -473,14 +473,14 @@ can authenticate all other machines.
 
 Then sign it with the CA:
 
-``` line-numbers
+```shell line-numbers
 > openssl ca -config openssl-ca.cnf -policy signing_policy -extensions signing_req -out {server certificate} -infiles {certificate signing request}
 ```
 
 Finally, you need to import both the certificate of the CA and the
 signed certificate into the keystore:
 
-``` line-numbers
+```shell line-numbers
 > keytool -keystore {keystore} -alias CARoot -import -file {CA certificate}
 > keytool -keystore {keystore} -alias localhost -import -file cert-signed
 ```
@@ -535,7 +535,7 @@ encrypted or externalized using password protection feature in Kafka
 in this case. Note that the default SSL engine factory has limited
 capabilities for decryption of encrypted private keys when external
 tools like OpenSSL are used for encryption. Third party libraries
-like BouncyCastle may be integrated witn a custom `SslEngineFactory`
+like BouncyCastle may be integrated with a custom `SslEngineFactory`
 to support a wider range of encrypted private keys.
 
 ### 4. Common Pitfalls in Production {#security_ssl_production .anchor-link}
@@ -556,7 +556,7 @@ cause issues when trying to use these certificates with Kafka.
 1.  **[Extended Key Usage](https://tools.ietf.org/html/rfc5280#section-4.2.1.12)**\
     Certificates may contain an extension field that controls the
     purpose for which the certificate can be used. If this field is
-    empty, there are no restricitions on the usage, but if any usage
+    empty, there are no restrictions on the usage, but if any usage
     is specified in here, valid SSL implementations have to enforce
     these usages.\
     Relevant usages for Kafka are:
@@ -585,13 +585,13 @@ cause issues when trying to use these certificates with Kafka.
     fields from CSRs and prefer to specify these themselves as this
     makes it harder for a malicious party to obtain certificates
     with potentially misleading or fraudulent values. It is
-    adviseable to double check signed certificates, whether these
+    advisable to double-check signed certificates, whether these
     contain all requested SAN fields to enable proper hostname
     verification. The following command can be used to print
     certificate details to the console, which should be compared
     with what was originally requested:
 
-    ``` line-numbers
+    ```shell line-numbers
     > openssl x509 -in certificate.crt -text -noout
     ```
 
@@ -600,13 +600,13 @@ cause issues when trying to use these certificates with Kafka.
 If SSL is not enabled for inter-broker communication (see below for
 how to enable it), both PLAINTEXT and SSL ports will be necessary.
 
-``` line-numbers
+```properties line-numbers
 listeners=PLAINTEXT://host.name:port,SSL://host.name:port
 ```
 
 Following SSL configs are needed on the broker side
 
-``` line-numbers
+```properties line-numbers
 ssl.keystore.location=/var/private/ssl/server.keystore.jks
 ssl.keystore.password=test1234
 ssl.key.password=test1234
@@ -641,19 +641,17 @@ settings that are worth considering:
 If you want to enable SSL for inter-broker communication, add the
 following to the server.properties file (it defaults to PLAINTEXT)
 
-``` line-numbers
+```properties line-numbers
 security.inter.broker.protocol=SSL
 ```
 
 Due to import regulations in some countries, the Oracle
 implementation limits the strength of cryptographic algorithms
 available by default. If stronger algorithms are needed (for
-example, AES with 256-bit keys), the [JCE Unlimited Strength
-Jurisdiction Policy
-Files](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-must be obtained and installed in the JDK/JRE. See the [JCA
-Providers
-Documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html)
+example, AES with 256-bit keys), the 
+[JCE Unlimited Strength Jurisdiction Policy Files](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+must be obtained and installed in the JDK/JRE. See the 
+[JCA Providers Documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html)
 for more information.
 
 The JRE/JDK will have a default pseudo-random number generator
@@ -678,7 +676,7 @@ with addresses: PLAINTEXT -> EndPoint(192.168.64.1,9092,PLAINTEXT),SSL -> EndPoi
 To check quickly if the server keystore and truststore are setup
 properly you can run the following command
 
-``` line-numbers
+```shell line-numbers
 > openssl s_client -debug -connect localhost:9093 -tls1
 ```
 
@@ -704,7 +702,7 @@ both producer and consumer.\
 If client authentication is not required in the broker, then the
 following is a minimal configuration example:
 
-``` line-numbers
+```properties line-numbers
 security.protocol=SSL
 ssl.truststore.location=/var/private/ssl/client.truststore.jks
 ssl.truststore.password=test1234
@@ -716,7 +714,7 @@ still available, but integrity checking is disabled. If client
 authentication is required, then a keystore must be created like in
 step 1 and the following must also be configured:
 
-``` line-numbers
+```properties line-numbers
 ssl.keystore.location=/var/private/ssl/client.keystore.jks
 ssl.keystore.password=test1234
 ssl.key.password=test1234
@@ -739,7 +737,7 @@ our requirements and the broker configuration:
 
 Examples using console-producer and console-consumer:
 
-``` line-numbers
+```shell line-numbers
 > kafka-console-producer.sh --bootstrap-server localhost:9093 --topic test --producer.config client-ssl.properties
 > kafka-console-consumer.sh --bootstrap-server localhost:9093 --topic test --consumer.config client-ssl.properties
 ```
@@ -785,7 +783,7 @@ multiple mechanisms are configured on a listener, configs must
 be provided for each mechanism using the listener and mechanism
 prefix. For example,
 
-``` line-numbers
+```properties line-numbers
 listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
     username="admin" \
     password="admin-secret";
@@ -896,7 +894,7 @@ Kafka supports the following SASL mechanisms:
     parameter, which contains one or more comma-separated
     values:
 
-    ``` text
+    ```properties text
     listeners=SASL_PLAINTEXT://host.name:port
     ```
 
@@ -905,12 +903,11 @@ Kafka supports the following SASL mechanisms:
     make sure you set the same SASL protocol for inter-broker
     communication:
 
-    ``` text
+    ```properties text
     security.inter.broker.protocol=SASL_PLAINTEXT (or SASL_SSL)
     ```
 
-2.  Select one or more [supported
-    mechanisms](#security_sasl_mechanism) to enable in the
+2.  Select one or more [supported mechanisms](#security_sasl_mechanism) to enable in the
     broker and follow the steps to configure SASL for the
     mechanism. To enable multiple mechanisms in the broker,
     follow the steps [here](#security_sasl_multimechanism).
@@ -930,7 +927,7 @@ may perform a reverse DNS lookup of the broker address. Due to
 how the JRE implements reverse DNS lookups, clients may observe
 slow SASL handshakes if fully qualified domain names are not
 used, for both the client\'s `bootstrap.servers` and a broker\'s
-[`advertised.listeners`](#brokerconfigs_advertised.listeners).
+[`advertised.listeners`](../configuration#brokerconfigs_advertised.listeners).
 
 ### 3. Authentication using SASL/Kerberos {#security_sasl_kerberos}
 
@@ -958,7 +955,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
     create these principals yourself using the following
     commands:
 
-    ``` line-numbers
+    ```shell line-numbers
     > sudo /usr/sbin/kadmin.local -q 'addprinc -randkey kafka/{hostname}@{REALM}'
     > sudo /usr/sbin/kadmin.local -q "ktadd -k /etc/security/keytabs/{keytabname}.keytab kafka/{hostname}@{REALM}"
     ```
@@ -1018,7 +1015,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    as described [here](#security_sasl_brokerconfig). For
    example:
 
-   ``` line-numbers
+   ```properties line-numbers
    listeners=SASL_PLAINTEXT://host.name:port
    security.inter.broker.protocol=SASL_PLAINTEXT
    sasl.mechanism.inter.broker.protocol=GSSAPI
@@ -1030,7 +1027,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    the kafka brokers. In the above example, principal is
    \"kafka/kafka1.hostname.com@EXAMPLE.com\", so:
 
-   ``` line-numbers
+   ```properties line-numbers
    sasl.kerberos.service.name=kafka
    ```
 
@@ -1051,7 +1048,7 @@ To configure SASL authentication on the clients:
    an example configuration for a client using a keytab
    (recommended for long-running processes):
 
-   ``` line-numbers
+   ```properties line-numbers
    sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required \
        useKeyTab=true \
        storeKey=true  \
@@ -1063,7 +1060,7 @@ To configure SASL authentication on the clients:
    kafka-console-producer, kinit can be used along with
    \"useTicketCache=true\" as in:
 
-   ``` line-numbers
+   ```properties line-numbers
    sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required \
        useTicketCache=true;
    ```
@@ -1090,7 +1087,7 @@ To configure SASL authentication on the clients:
 4.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ``` line-numbers
+    ```properties line-numbers
     security.protocol=SASL_PLAINTEXT (or SASL_SSL)
     sasl.mechanism=GSSAPI
     sasl.kerberos.service.name=kafka
@@ -1145,7 +1142,7 @@ of ACLs etc.
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ``` line-numbers
+    ```properties line-numbers
     listeners=SASL_SSL://host.name:port
     security.inter.broker.protocol=SASL_SSL
     sasl.mechanism.inter.broker.protocol=PLAIN
@@ -1162,7 +1159,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the PLAIN mechanism:
 
-    ``` line-numbers
+    ```properties line-numbers
     sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
         username="alice" \
         password="alice-secret";
@@ -1184,7 +1181,7 @@ To configure SASL authentication on the clients:
 2.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ``` line-numbers
+    ```properties line-numbers
     security.protocol=SASL_SSL
     sasl.mechanism=PLAIN
     ```
@@ -1214,8 +1211,8 @@ To configure SASL authentication on the clients:
 Salted Challenge Response Authentication Mechanism (SCRAM) is a
 family of SASL mechanisms that addresses the security concerns with
 traditional mechanisms that perform username/password authentication
-like PLAIN and DIGEST-MD5. The mechanism is defined in [RFC
-5802](https://tools.ietf.org/html/rfc5802). Kafka supports
+like PLAIN and DIGEST-MD5. The mechanism is defined in 
+[RFC 5802](https://tools.ietf.org/html/rfc5802). Kafka supports
 [SCRAM-SHA-256](https://tools.ietf.org/html/rfc7677) and
 SCRAM-SHA-512 which can be used with TLS to perform secure
 authentication. Under the default implementation of
@@ -1223,8 +1220,8 @@ authentication. Under the default implementation of
 `Principal` for configuration of ACLs etc. The default SCRAM
 implementation in Kafka stores SCRAM credentials in Zookeeper and is
 suitable for use in Kafka installations where Zookeeper is on a
-private network. Refer to [Security
-Considerations](#security_sasl_scram_security) for more details.
+private network. 
+Refer to [Security Considerations](#security_sasl_scram_security) for more details.
 
 #### 1. Creating SCRAM Credentials {#security_sasl_scram_credentials .anchor-link}
 
@@ -1240,35 +1237,35 @@ will be used to authenticate new connections.
 Create SCRAM credentials for user *alice* with password
 *alice-secret*:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[iterations=8192,password=alice-secret],SCRAM-SHA-512=[password=alice-secret]' --entity-type users --entity-name alice
 ```
 
 The default iteration count of 4096 is used if iterations are
 not specified. A random salt is created and the SCRAM identity
 consisting of salt, iterations, StoredKey and ServerKey are
-stored in Zookeeper. See [RFC
-5802](https://tools.ietf.org/html/rfc5802) for details on SCRAM
+stored in Zookeeper. 
+See [RFC 5802](https://tools.ietf.org/html/rfc5802) for details on SCRAM
 identity and the individual fields.
 
 The following examples also require a user *admin* for
 inter-broker communication which can be created using:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[password=admin-secret],SCRAM-SHA-512=[password=admin-secret]' --entity-type users --entity-name admin
 ```
 
 Existing credentials may be listed using the *\--describe*
 option:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --describe --entity-type users --entity-name alice
 ```
 
 Credentials may be deleted for one or more SCRAM mechanisms
 using the *\--alter \--delete-config* option:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name alice
 ```
 
@@ -1302,7 +1299,7 @@ using the *\--alter \--delete-config* option:
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ``` line-numbers
+    ```properties line-numbers
     listeners=SASL_SSL://host.name:port
     security.inter.broker.protocol=SASL_SSL
     sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256 (or SCRAM-SHA-512)
@@ -1319,7 +1316,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the SCRAM mechanisms:
 
-    ``` line-numbers
+    ```properties line-numbers
     sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
         username="alice" \
         password="alice-secret";
@@ -1375,10 +1372,10 @@ either on behalf of a resource owner by orchestrating an approval
 interaction between the resource owner and the HTTP service, or by
 allowing the third-party application to obtain access on its own
 behalf.\" The SASL OAUTHBEARER mechanism enables the use of the
-framework in a SASL (i.e. a non-HTTP) context; it is defined in [RFC
-7628](https://tools.ietf.org/html/rfc7628). The default OAUTHBEARER
-implementation in Kafka creates and validates [Unsecured JSON Web
-Tokens](https://tools.ietf.org/html/rfc7515#appendix-A.5) and is
+framework in a SASL (i.e. a non-HTTP) context; it is defined in 
+[RFC 7628](https://tools.ietf.org/html/rfc7628). The default OAUTHBEARER
+implementation in Kafka creates and validates 
+[Unsecured JSON Web Tokens](https://tools.ietf.org/html/rfc7515#appendix-A.5) and is
 only suitable for use in non-production Kafka installations. Refer
 to [Security Considerations](#security_sasl_oauthbearer_security)
 for more details.
@@ -1417,7 +1414,7 @@ principalName of OAuthBearerToken is used as the authenticated
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ``` line-numbers
+    ```properties line-numbers
     listeners=SASL_SSL://host.name:port (or SASL_PLAINTEXT if non-production)
     security.inter.broker.protocol=SASL_SSL (or SASL_PLAINTEXT if non-production)
     sasl.mechanism.inter.broker.protocol=OAUTHBEARER
@@ -1434,7 +1431,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the OAUTHBEARER mechanisms:
 
-    ``` line-numbers
+    ```properties line-numbers
     sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required \
         unsecuredLoginStringClaim_sub="alice";
     ```
@@ -1456,7 +1453,7 @@ To configure SASL authentication on the clients:
 2.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ``` line-numbers
+    ```properties line-numbers
     security.protocol=SASL_SSL (or SASL_PLAINTEXT if non-production)
     sasl.mechanism=OAUTHBEARER
     ```
@@ -1474,22 +1471,15 @@ To configure SASL authentication on the clients:
     the flexibility to create arbitrary tokens in a DEV or TEST
     environment.
 -   Here are the various supported JAAS module options on the
-    client side (and on the broker side if OAUTHBEARER is the
-    inter-broker protocol):
-    JAAS Module Option for Unsecured Token Creation
+    client side (and on the broker side if OAUTHBEARER is the inter-broker protocol):
+    {{< security-jaas-option-table unsecured-token-creation-options >}}
 
 #### 4. Unsecured Token Validation Options for SASL/OAUTHBEARER {#security_sasl_oauthbearer_unsecured_validation}
 
 -   Here are the various supported JAAS module options on the
-    broker side for [Unsecured JSON Web
-    Token](https://tools.ietf.org/html/rfc7515#appendix-A.5)
+    broker side for [Unsecured JSON Web Token](https://tools.ietf.org/html/rfc7515#appendix-A.5)
     validation:
-      JAAS Module Option for Unsecured Token Validation   Documentation
-      --------------------------------------------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      `unsecuredValidatorPrincipalClaimName="value"`      Set to a non-empty value if you wish a particular `String` claim holding a principal name to be checked for existence; the default is to check for the existence of the \'`sub`\' claim.
-      `unsecuredValidatorScopeClaimName="value"`          Set to a custom claim name if you wish the name of the `String` or `String List` claim holding any token scope to be something other than \'`scope`\'.
-      `unsecuredValidatorRequiredScope="value"`           Set to a space-delimited list of scope values if you wish the `String/String List` claim holding the token scope to be checked to make sure it contains certain values.
-      `unsecuredValidatorAllowableClockSkewMs="value"`    Set to a positive integer value if you wish to allow up to some number of positive milliseconds of clock skew (the default is 0).
+    {{< security-jaas-option-table unsecured-token-validation-options >}}
 -   The default unsecured SASL/OAUTHBEARER implementation may be
     overridden (and must be overridden in production
     environments) using custom login and SASL Server callback
@@ -1507,12 +1497,12 @@ elsewhere for details. The default values are usually
 reasonable, in which case these configuration parameters would
 not need to be explicitly set.
 
-  Producer/Consumer/Broker Configuration Property
-  -------------------------------------------------
-  `sasl.login.refresh.window.factor`
-  `sasl.login.refresh.window.jitter`
-  `sasl.login.refresh.min.period.seconds`
-  `sasl.login.refresh.min.buffer.seconds`
+|Producer/Consumer/Broker Configuration Property|
+|-----------------------------------------------|
+| `sasl.login.refresh.window.factor` |
+| `sasl.login.refresh.window.jitter` |
+| `sasl.login.refresh.min.period.seconds` |
+| `sasl.login.refresh.min.buffer.seconds` |
 
 #### 6. Secure/Production Use of SASL/OAUTHBEARER {#security_sasl_oauthbearer_prod}
 
@@ -1539,8 +1529,7 @@ broker configuration option.
 #### 7. Security Considerations for SASL/OAUTHBEARER {#security_sasl_oauthbearer_security}
 
 -   The default implementation of SASL/OAUTHBEARER in Kafka
-    creates and validates [Unsecured JSON Web
-    Tokens](https://tools.ietf.org/html/rfc7515#appendix-A.5).
+    creates and validates [Unsecured JSON Web Tokens](https://tools.ietf.org/html/rfc7515#appendix-A.5).
     This is suitable only for non-production use.
 -   OAUTHBEARER should be used in production enviromnments only
     with TLS-encryption to prevent interception of tokens.
@@ -1549,8 +1538,7 @@ broker configuration option.
     environments) using custom login and SASL Server callback
     handlers as described above.
 -   For more details on OAuth 2 security considerations in
-    general, refer to [RFC 6749, Section
-    10](https://tools.ietf.org/html/rfc6749#section-10).
+    general, refer to [RFC 6749, Section 10](https://tools.ietf.org/html/rfc6749#section-10).
 
 ### 7. Enabling multiple SASL mechanisms in a broker {#security_sasl_multimechanism .anchor-link}
 
@@ -1576,14 +1564,14 @@ broker configuration option.
 
 2.  Enable the SASL mechanisms in server.properties:
 
-    ``` line-numbers
+    ```properties line-numbers
     sasl.enabled.mechanisms=GSSAPI,PLAIN,SCRAM-SHA-256,SCRAM-SHA-512,OAUTHBEARER
     ```
 
 3.  Specify the SASL security protocol and mechanism for
     inter-broker communication in server.properties if required:
 
-    ``` line-numbers
+    ```properties line-numbers
     security.inter.broker.protocol=SASL_PLAINTEXT (or SASL_SSL)
     sasl.mechanism.inter.broker.protocol=GSSAPI (or one of the other enabled mechanisms)
     ```
@@ -1639,10 +1627,6 @@ Typical steps for delegation token usage are:
     authenticating with the Kafka cluster.
 3.  Token owner/renewer can renew/expire the delegation tokens.
 
-```{=html}
-<!-- -->
-```
-
 #### 1. Token Management {#security_token_management .anchor-link}
 
 A secret is used to generate and verify delegation tokens. This
@@ -1685,31 +1669,31 @@ examples are given below.
 
 Create a delegation token:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1
 ```
 
 Create a delegation token for a different owner:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1 --owner-principal User:owner1
 ```
 
 Renew a delegation token:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --renew    --renew-time-period -1 --command-config client.properties --hmac ABCDEFGHIJK
 ```
 
 Expire a delegation token:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --expire   --expiry-time-period -1   --command-config client.properties  --hmac ABCDEFGHIJK
 ```
 
 Existing tokens can be described using the \--describe option:
 
-``` line-numbers
+```shell line-numbers
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --describe --command-config client.properties  --owner-principal User:user1
 ```
 
@@ -1772,14 +1756,14 @@ implementations which store ACLs in the cluster metadata (either
 Zookeeper or the KRaft metadata log). For Zookeeper-based clusters, the
 provided implementation is configured as follows:
 
-``` line-numbers
+```properties line-numbers
 authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 ```
 
 For KRaft clusters, use the following configuration on all nodes
 (brokers, controllers, or combined broker/controller nodes):
 
-``` line-numbers
+```properties line-numbers
 authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
 ```
 
@@ -1796,7 +1780,7 @@ Resource R, then R has no associated ACLs, and therefore no one other
 than super users is allowed to access R. If you want to change that
 behavior, you can include the following in server.properties.
 
-``` line-numbers
+```properties line-numbers
 allow.everyone.if.no.acl.found=true
 ```
 
@@ -1804,7 +1788,7 @@ One can also add super users in server.properties like the following
 (note that the delimiter is semicolon since SSL user names may contain
 comma). Default PrincipalType string \"User\" is case sensitive.
 
-``` line-numbers
+```properties line-numbers
 super.users=User:Bob;User:Alice
 ```
 
@@ -1876,7 +1860,7 @@ to \"serviceuser\" and
 For advanced use cases, one can customize the name by setting a
 customized PrincipalBuilder in server.properties like the following.
 
-``` line-numbers
+```properties line-numbers
 principal.builder.class=CustomizedPrincipalBuilderClass
 ```
 
@@ -1907,7 +1891,7 @@ RULE:[n:string](regexp)s/pattern/replacement/g/U
 An example of adding a rule to properly translate user@MYDOMAIN.COM to
 user while also keeping the default rule in place is:
 
-``` line-numbers
+```properties line-numbers
 sasl.kerberos.principal.to.local.rules=RULE:[1:$1@$0](.*@MYDOMAIN.COM)s/@.*//,DEFAULT
 ```
 
@@ -1917,409 +1901,7 @@ Kafka Authorization management CLI can be found under bin directory with
 all the other CLIs. The CLI script is called **kafka-acls.sh**.
 Following lists all the options that the script supports:
 
-+-----------------+-----------------+-----------------+-----------------+
-| Option          | Description     | Default         | Option type     |
-+=================+=================+=================+=================+
-| \--add          | Indicates to    |                 | Action          |
-|                 | the script that |                 |                 |
-|                 | user is trying  |                 |                 |
-|                 | to add an acl.  |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--remove       | Indicates to    |                 | Action          |
-|                 | the script that |                 |                 |
-|                 | user is trying  |                 |                 |
-|                 | to remove an    |                 |                 |
-|                 | acl.            |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--list         | Indicates to    |                 | Action          |
-|                 | the script that |                 |                 |
-|                 | user is trying  |                 |                 |
-|                 | to list acls.   |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--b            | A list of       |                 | Configuration   |
-| ootstrap-server | host/port pairs |                 |                 |
-|                 | to use for      |                 |                 |
-|                 | establishing    |                 |                 |
-|                 | the connection  |                 |                 |
-|                 | to the Kafka    |                 |                 |
-|                 | cluster. Only   |                 |                 |
-|                 | one of          |                 |                 |
-|                 | \--b            |                 |                 |
-|                 | ootstrap-server |                 |                 |
-|                 | or              |                 |                 |
-|                 | \--authorizer   |                 |                 |
-|                 | option must be  |                 |                 |
-|                 | specified.      |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \-              | A property file |                 | Configuration   |
-| -command-config | containing      |                 |                 |
-|                 | configs to be   |                 |                 |
-|                 | passed to Admin |                 |                 |
-|                 | Client. This    |                 |                 |
-|                 | option can only |                 |                 |
-|                 | be used with    |                 |                 |
-|                 | \--b            |                 |                 |
-|                 | ootstrap-server |                 |                 |
-|                 | option.         |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--cluster      | Indicates to    |                 | ResourcePattern |
-|                 | the script that |                 |                 |
-|                 | the user is     |                 |                 |
-|                 | trying to       |                 |                 |
-|                 | interact with   |                 |                 |
-|                 | acls on the     |                 |                 |
-|                 | singular        |                 |                 |
-|                 | cluster         |                 |                 |
-|                 | resource.       |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--topic        | Indicates to    |                 | ResourcePattern |
-| \[topic-name\]  | the script that |                 |                 |
-|                 | the user is     |                 |                 |
-|                 | trying to       |                 |                 |
-|                 | interact with   |                 |                 |
-|                 | acls on topic   |                 |                 |
-|                 | resource        |                 |                 |
-|                 | pattern(s).     |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--group        | Indicates to    |                 | ResourcePattern |
-| \[group-name\]  | the script that |                 |                 |
-|                 | the user is     |                 |                 |
-|                 | trying to       |                 |                 |
-|                 | interact with   |                 |                 |
-|                 | acls on         |                 |                 |
-|                 | consumer-group  |                 |                 |
-|                 | resource        |                 |                 |
-|                 | pattern(s)      |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--t            | The             |                 | ResourcePattern |
-| ransactional-id | transactionalId |                 |                 |
-| \[tra           | to which ACLs   |                 |                 |
-| nsactional-id\] | should be added |                 |                 |
-|                 | or removed. A   |                 |                 |
-|                 | value of \*     |                 |                 |
-|                 | indicates the   |                 |                 |
-|                 | ACLs should     |                 |                 |
-|                 | apply to all    |                 |                 |
-|                 | tr              |                 |                 |
-|                 | ansactionalIds. |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--d            | Delegation      |                 | ResourcePattern |
-| elegation-token | token to which  |                 |                 |
-| \[del           | ACLs should be  |                 |                 |
-| egation-token\] | added or        |                 |                 |
-|                 | removed. A      |                 |                 |
-|                 | value of \*     |                 |                 |
-|                 | indicates ACL   |                 |                 |
-|                 | should apply to |                 |                 |
-|                 | all tokens.     |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \-              | A user resource |                 | ResourcePattern |
-| -user-principal | to which ACLs   |                 |                 |
-| \[u             | should be added |                 |                 |
-| ser-principal\] | or removed.     |                 |                 |
-|                 | This is         |                 |                 |
-|                 | currently       |                 |                 |
-|                 | supported in    |                 |                 |
-|                 | relation with   |                 |                 |
-|                 | delegation      |                 |                 |
-|                 | tokens. A value |                 |                 |
-|                 | of \* indicates |                 |                 |
-|                 | ACL should      |                 |                 |
-|                 | apply to all    |                 |                 |
-|                 | users.          |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--resour       | Indicates to    | literal         | Configuration   |
-| ce-pattern-type | the script the  |                 |                 |
-| \               | type of         |                 |                 |
-| [pattern-type\] | resource        |                 |                 |
-|                 | pattern, (for   |                 |                 |
-|                 | \--add), or     |                 |                 |
-|                 | resource        |                 |                 |
-|                 | pattern filter, |                 |                 |
-|                 | (for \--list    |                 |                 |
-|                 | and \--remove), |                 |                 |
-|                 | the user wishes |                 |                 |
-|                 | to use.\        |                 |                 |
-|                 | When adding     |                 |                 |
-|                 | acls, this      |                 |                 |
-|                 | should be a     |                 |                 |
-|                 | specific        |                 |                 |
-|                 | pattern type,   |                 |                 |
-|                 | e.g.            |                 |                 |
-|                 | \'literal\' or  |                 |                 |
-|                 | \'prefixed\'.\  |                 |                 |
-|                 | When listing or |                 |                 |
-|                 | removing acls,  |                 |                 |
-|                 | a specific      |                 |                 |
-|                 | pattern type    |                 |                 |
-|                 | filter can be   |                 |                 |
-|                 | used to list or |                 |                 |
-|                 | remove acls     |                 |                 |
-|                 | from a specific |                 |                 |
-|                 | type of         |                 |                 |
-|                 | resource        |                 |                 |
-|                 | pattern, or the |                 |                 |
-|                 | filter values   |                 |                 |
-|                 | of \'any\' or   |                 |                 |
-|                 | \'match\' can   |                 |                 |
-|                 | be used, where  |                 |                 |
-|                 | \'any\' will    |                 |                 |
-|                 | match any       |                 |                 |
-|                 | pattern type,   |                 |                 |
-|                 | but will match  |                 |                 |
-|                 | the resource    |                 |                 |
-|                 | name exactly,   |                 |                 |
-|                 | and \'match\'   |                 |                 |
-|                 | will perform    |                 |                 |
-|                 | pattern         |                 |                 |
-|                 | matching to     |                 |                 |
-|                 | list or remove  |                 |                 |
-|                 | all acls that   |                 |                 |
-|                 | affect the      |                 |                 |
-|                 | supplied        |                 |                 |
-|                 | resource(s).\   |                 |                 |
-|                 | WARNING:        |                 |                 |
-|                 | \'match\', when |                 |                 |
-|                 | used in         |                 |                 |
-|                 | combination     |                 |                 |
-|                 | with the        |                 |                 |
-|                 | \'\--remove\'   |                 |                 |
-|                 | switch, should  |                 |                 |
-|                 | be used with    |                 |                 |
-|                 | care.           |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--             | Principal is in |                 | Principal       |
-| allow-principal | Pri             |                 |                 |
-|                 | ncipalType:name |                 |                 |
-|                 | format that     |                 |                 |
-|                 | will be added   |                 |                 |
-|                 | to ACL with     |                 |                 |
-|                 | Allow           |                 |                 |
-|                 | permission.     |                 |                 |
-|                 | Default         |                 |                 |
-|                 | PrincipalType   |                 |                 |
-|                 | string \"User\" |                 |                 |
-|                 | is case         |                 |                 |
-|                 | sensitive.\     |                 |                 |
-|                 | You can specify |                 |                 |
-|                 | multiple        |                 |                 |
-|                 | \--             |                 |                 |
-|                 | allow-principal |                 |                 |
-|                 | in a single     |                 |                 |
-|                 | command.        |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \-              | Principal is in |                 | Principal       |
-| -deny-principal | Pri             |                 |                 |
-|                 | ncipalType:name |                 |                 |
-|                 | format that     |                 |                 |
-|                 | will be added   |                 |                 |
-|                 | to ACL with     |                 |                 |
-|                 | Deny            |                 |                 |
-|                 | permission.     |                 |                 |
-|                 | Default         |                 |                 |
-|                 | PrincipalType   |                 |                 |
-|                 | string \"User\" |                 |                 |
-|                 | is case         |                 |                 |
-|                 | sensitive.\     |                 |                 |
-|                 | You can specify |                 |                 |
-|                 | multiple        |                 |                 |
-|                 | \-              |                 |                 |
-|                 | -deny-principal |                 |                 |
-|                 | in a single     |                 |                 |
-|                 | command.        |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--principal    | Principal is in |                 | Principal       |
-|                 | Pri             |                 |                 |
-|                 | ncipalType:name |                 |                 |
-|                 | format that     |                 |                 |
-|                 | will be used    |                 |                 |
-|                 | along with      |                 |                 |
-|                 | \--list option. |                 |                 |
-|                 | Default         |                 |                 |
-|                 | PrincipalType   |                 |                 |
-|                 | string \"User\" |                 |                 |
-|                 | is case         |                 |                 |
-|                 | sensitive. This |                 |                 |
-|                 | will list the   |                 |                 |
-|                 | ACLs for the    |                 |                 |
-|                 | specified       |                 |                 |
-|                 | principal.\     |                 |                 |
-|                 | You can specify |                 |                 |
-|                 | multiple        |                 |                 |
-|                 | \--principal in |                 |                 |
-|                 | a single        |                 |                 |
-|                 | command.        |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--allow-host   | IP address from | if              | Host            |
-|                 | which           | \--             |                 |
-|                 | principals      | allow-principal |                 |
-|                 | listed in       | is specified    |                 |
-|                 | \--             | defaults to \*  |                 |
-|                 | allow-principal | which           |                 |
-|                 | will have       | translates to   |                 |
-|                 | access.         | \"all hosts\"   |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--deny-host    | IP address from | if              | Host            |
-|                 | which           | \-              |                 |
-|                 | principals      | -deny-principal |                 |
-|                 | listed in       | is specified    |                 |
-|                 | \-              | defaults to \*  |                 |
-|                 | -deny-principal | which           |                 |
-|                 | will be denied  | translates to   |                 |
-|                 | access.         | \"all hosts\"   |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--operation    | Operation that  | All             | Operation       |
-|                 | will be allowed |                 |                 |
-|                 | or denied.\     |                 |                 |
-|                 | Valid values    |                 |                 |
-|                 | are:            |                 |                 |
-|                 |                 |                 |                 |
-|                 | -   Read        |                 |                 |
-|                 | -   Write       |                 |                 |
-|                 | -   Create      |                 |                 |
-|                 | -   Delete      |                 |                 |
-|                 | -   Alter       |                 |                 |
-|                 | -   Describe    |                 |                 |
-|                 | -               |                 |                 |
-|                 |   ClusterAction |                 |                 |
-|                 | -               |                 |                 |
-|                 | DescribeConfigs |                 |                 |
-|                 | -               |                 |                 |
-|                 |    AlterConfigs |                 |                 |
-|                 | -               |                 |                 |
-|                 | IdempotentWrite |                 |                 |
-|                 | -               |                 |                 |
-|                 |    CreateTokens |                 |                 |
-|                 | -               |                 |                 |
-|                 |  DescribeTokens |                 |                 |
-|                 | -   All         |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--producer     | Convenience     |                 | Convenience     |
-|                 | option to       |                 |                 |
-|                 | add/remove acls |                 |                 |
-|                 | for producer    |                 |                 |
-|                 | role. This will |                 |                 |
-|                 | generate acls   |                 |                 |
-|                 | that allows     |                 |                 |
-|                 | WRITE, DESCRIBE |                 |                 |
-|                 | and CREATE on   |                 |                 |
-|                 | topic.          |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--consumer     | Convenience     |                 | Convenience     |
-|                 | option to       |                 |                 |
-|                 | add/remove acls |                 |                 |
-|                 | for consumer    |                 |                 |
-|                 | role. This will |                 |                 |
-|                 | generate acls   |                 |                 |
-|                 | that allows     |                 |                 |
-|                 | READ, DESCRIBE  |                 |                 |
-|                 | on topic and    |                 |                 |
-|                 | READ on         |                 |                 |
-|                 | consumer-group. |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--idempotent   | Enable          |                 | Convenience     |
-|                 | idempotence for |                 |                 |
-|                 | the producer.   |                 |                 |
-|                 | This should be  |                 |                 |
-|                 | used in         |                 |                 |
-|                 | combination     |                 |                 |
-|                 | with the        |                 |                 |
-|                 | \--producer     |                 |                 |
-|                 | option.\        |                 |                 |
-|                 | Note that       |                 |                 |
-|                 | idempotence is  |                 |                 |
-|                 | enabled         |                 |                 |
-|                 | automatically   |                 |                 |
-|                 | if the producer |                 |                 |
-|                 | is authorized   |                 |                 |
-|                 | to a particular |                 |                 |
-|                 | tr              |                 |                 |
-|                 | ansactional-id. |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--force        | Convenience     |                 | Convenience     |
-|                 | option to       |                 |                 |
-|                 | assume yes to   |                 |                 |
-|                 | all queries and |                 |                 |
-|                 | do not prompt.  |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--authorizer   | (DEPRECATED:    | kafka.sec       | Configuration   |
-|                 | not supported   | urity.authorize |                 |
-|                 | in KRaft) Fully | r.AclAuthorizer |                 |
-|                 | qualified class |                 |                 |
-|                 | name of the     |                 |                 |
-|                 | authorizer.     |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--author       | (DEPRECATED:    |                 | Configuration   |
-| izer-properties | not supported   |                 |                 |
-|                 | in KRaft)       |                 |                 |
-|                 | key=val pairs   |                 |                 |
-|                 | that will be    |                 |                 |
-|                 | passed to       |                 |                 |
-|                 | authorizer for  |                 |                 |
-|                 | initialization. |                 |                 |
-|                 | For the default |                 |                 |
-|                 | authorizer in   |                 |                 |
-|                 | ZK clsuters,    |                 |                 |
-|                 | the example     |                 |                 |
-|                 | values are:     |                 |                 |
-|                 | zo              |                 |                 |
-|                 | okeeper.connect |                 |                 |
-|                 | =localhost:2181 |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
-| \--zk-          | (DEPRECATED:    |                 | Configuration   |
-| tls-config-file | not supported   |                 |                 |
-|                 | in KRaft)       |                 |                 |
-|                 | Identifies the  |                 |                 |
-|                 | file where      |                 |                 |
-|                 | ZooKeeper       |                 |                 |
-|                 | client TLS      |                 |                 |
-|                 | connectivity    |                 |                 |
-|                 | properties for  |                 |                 |
-|                 | the authorizer  |                 |                 |
-|                 | are defined.    |                 |                 |
-|                 | Any properties  |                 |                 |
-|                 | other than the  |                 |                 |
-|                 | following (with |                 |                 |
-|                 | or without an   |                 |                 |
-|                 | \"authorizer.\" |                 |                 |
-|                 | prefix) are     |                 |                 |
-|                 | ignored:        |                 |                 |
-|                 | zookeeper.cl    |                 |                 |
-|                 | ientCnxnSocket, |                 |                 |
-|                 | zookeeper.ssl   |                 |                 |
-|                 | .cipher.suites, |                 |                 |
-|                 | zookeeper.ssl   |                 |                 |
-|                 | .client.enable, |                 |                 |
-|                 | zookeeper.      |                 |                 |
-|                 | ssl.crl.enable, |                 |                 |
-|                 | zo              |                 |                 |
-|                 | okeeper.ssl.ena |                 |                 |
-|                 | bled.protocols, |                 |                 |
-|                 | zoo             |                 |                 |
-|                 | keeper.ssl.endp |                 |                 |
-|                 | oint.identifica |                 |                 |
-|                 | tion.algorithm, |                 |                 |
-|                 | zo              |                 |                 |
-|                 | okeeper.ssl.key |                 |                 |
-|                 | store.location, |                 |                 |
-|                 | zo              |                 |                 |
-|                 | okeeper.ssl.key |                 |                 |
-|                 | store.password, |                 |                 |
-|                 | zookeeper.ssl   |                 |                 |
-|                 | .keystore.type, |                 |                 |
-|                 | zookeeper.s     |                 |                 |
-|                 | sl.ocsp.enable, |                 |                 |
-|                 | zookeepe        |                 |                 |
-|                 | r.ssl.protocol, |                 |                 |
-|                 | zook            |                 |                 |
-|                 | eeper.ssl.trust |                 |                 |
-|                 | store.location, |                 |                 |
-|                 | zook            |                 |                 |
-|                 | eeper.ssl.trust |                 |                 |
-|                 | store.password, |                 |                 |
-|                 | zookeeper.ssl.  |                 |                 |
-|                 | truststore.type |                 |                 |
-+-----------------+-----------------+-----------------+-----------------+
+{{< cli-table kafka-acls-cli >}}
 
 ### Examples {#security_authz_examples .anchor-link}
 
@@ -2329,7 +1911,7 @@ Following lists all the options that the script supports:
     from IP 198.51.100.0 and IP 198.51.100.1\". You can do that by
     executing the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic
     ```
 
@@ -2341,7 +1923,7 @@ Following lists all the options that the script supports:
     Read from Test-topic but only deny User:BadBob from IP 198.51.100.3
     we can do so using following commands:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:'*' --allow-host '*' --deny-principal User:BadBob --deny-host 198.51.100.3 --operation Read --topic Test-topic
     ```
 
@@ -2355,7 +1937,7 @@ Following lists all the options that the script supports:
     Topic from IP 198.51.200.0\" You can do that by using the wildcard
     resource \'\*\', e.g. by executing the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Peter --allow-host 198.51.200.1 --producer --topic '*'
     ```
 
@@ -2364,7 +1946,7 @@ Following lists all the options that the script supports:
     any Topic whose name starts with \'Test-\' from any host\". You can
     do that by executing the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Jane --producer --topic Test- --resource-pattern-type prefixed
     ```
 
@@ -2378,14 +1960,14 @@ Following lists all the options that the script supports:
     option. To remove the acls added by the first example above we can
     execute the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic 
     ```
 
     If you want to remove the acl added to the prefixed resource pattern
     above we can execute the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Jane --producer --topic Test- --resource-pattern-type Prefixed
     ```
 
@@ -2394,7 +1976,7 @@ Following lists all the options that the script supports:
     with the resource. To list all acls on the literal resource pattern
     Test-topic, we can execute the CLI with following options:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic
     ```
 
@@ -2404,7 +1986,7 @@ Following lists all the options that the script supports:
     on prefixed resource patterns. Acls on the wildcard resource pattern
     can be queried explicitly:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic '*'
     ```
 
@@ -2413,7 +1995,7 @@ Following lists all the options that the script supports:
     such patterns may not be known. We can list *all* acls affecting
     Test-topic by using \'\--resource-pattern-type match\', e.g.
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic --resource-pattern-type match
     ```
 
@@ -2426,14 +2008,14 @@ Following lists all the options that the script supports:
     handle these cases. In order to add User:Bob as a producer of
     Test-topic we can execute the following command:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --producer --topic Test-topic
     ```
 
     Similarly to add Alice as a consumer of Test-topic with consumer
     group Group-1 we just have to pass \--consumer option:
 
-    ``` line-numbers
+    ```shell line-numbers
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1 
     ```
 
@@ -2448,7 +2030,7 @@ Following lists all the options that the script supports:
     All the above examples can be executed by using
     **\--bootstrap-server** option. For example:
 
-    ``` line-numbers
+    ```shell line-numbers
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --producer --topic Test-topic
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --list --topic Test-topic
@@ -2524,78 +2106,7 @@ described below.
 In the below table we\'ll list the valid operations on resources that
 are executed by the Kafka API protocols.
 
-  Protocol (API key)                   Operation         Resource          Note
-  ------------------------------------ ----------------- ----------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  PRODUCE (0)                          Write             TransactionalId   An transactional producer which has its transactional.id set requires this privilege.
-  PRODUCE (0)                          IdempotentWrite   Cluster           An idempotent produce action requires this privilege.
-  PRODUCE (0)                          Write             Topic             This applies to a normal produce action.
-  FETCH (1)                            ClusterAction     Cluster           A follower must have ClusterAction on the Cluster resource in order to fetch partition data.
-  FETCH (1)                            Read              Topic             Regular Kafka consumers need READ permission on each partition they are fetching.
-  LIST_OFFSETS (2)                     Describe          Topic             
-  METADATA (3)                         Describe          Topic             
-  METADATA (3)                         Create            Cluster           If topic auto-creation is enabled, then the broker-side API will check for the existence of a Cluster level privilege. If it\'s found then it\'ll allow creating the topic, otherwise it\'ll iterate through the Topic level privileges (see the next one).
-  METADATA (3)                         Create            Topic             This authorizes auto topic creation if enabled but the given user doesn\'t have a cluster level permission (above).
-  LEADER_AND_ISR (4)                   ClusterAction     Cluster           
-  STOP_REPLICA (5)                     ClusterAction     Cluster           
-  UPDATE_METADATA (6)                  ClusterAction     Cluster           
-  CONTROLLED_SHUTDOWN (7)              ClusterAction     Cluster           
-  OFFSET_COMMIT (8)                    Read              Group             An offset can only be committed if it\'s authorized to the given group and the topic too (see below). Group access is checked first, then Topic access.
-  OFFSET_COMMIT (8)                    Read              Topic             Since offset commit is part of the consuming process, it needs privileges for the read action.
-  OFFSET_FETCH (9)                     Describe          Group             Similarly to OFFSET_COMMIT, the application must have privileges on group and topic level too to be able to fetch. However in this case it requires describe access instead of read. Group access is checked first, then Topic access.
-  OFFSET_FETCH (9)                     Describe          Topic             
-  FIND_COORDINATOR (10)                Describe          Group             The FIND_COORDINATOR request can be of \"Group\" type in which case it is looking for consumergroup coordinators. This privilege would represent the Group mode.
-  FIND_COORDINATOR (10)                Describe          TransactionalId   This applies only on transactional producers and checked when a producer tries to find the transaction coordinator.
-  JOIN_GROUP (11)                      Read              Group             
-  HEARTBEAT (12)                       Read              Group             
-  LEAVE_GROUP (13)                     Read              Group             
-  SYNC_GROUP (14)                      Read              Group             
-  DESCRIBE_GROUPS (15)                 Describe          Group             
-  LIST_GROUPS (16)                     Describe          Cluster           When the broker checks to authorize a list_groups request it first checks for this cluster level authorization. If none found then it proceeds to check the groups individually. This operation doesn\'t return CLUSTER_AUTHORIZATION_FAILED.
-  LIST_GROUPS (16)                     Describe          Group             If none of the groups are authorized, then just an empty response will be sent back instead of an error. This operation doesn\'t return CLUSTER_AUTHORIZATION_FAILED. This is applicable from the 2.1 release.
-  SASL_HANDSHAKE (17)                                                      The SASL handshake is part of the authentication process and therefore it\'s not possible to apply any kind of authorization here.
-  API_VERSIONS (18)                                                        The API_VERSIONS request is part of the Kafka protocol handshake and happens on connection and before any authentication. Therefore it\'s not possible to control this with authorization.
-  CREATE_TOPICS (19)                   Create            Cluster           If there is no cluster level authorization then it won\'t return CLUSTER_AUTHORIZATION_FAILED but fall back to use topic level, which is just below. That\'ll throw error if there is a problem.
-  CREATE_TOPICS (19)                   Create            Topic             This is applicable from the 2.0 release.
-  DELETE_TOPICS (20)                   Delete            Topic             
-  DELETE_RECORDS (21)                  Delete            Topic             
-  INIT_PRODUCER_ID (22)                Write             TransactionalId   
-  INIT_PRODUCER_ID (22)                IdempotentWrite   Cluster           
-  OFFSET_FOR_LEADER_EPOCH (23)         ClusterAction     Cluster           If there is no cluster level privilege for this operation, then it\'ll check for topic level one.
-  OFFSET_FOR_LEADER_EPOCH (23)         Describe          Topic             This is applicable from the 2.1 release.
-  ADD_PARTITIONS_TO_TXN (24)           Write             TransactionalId   This API is only applicable to transactional requests. It first checks for the Write action on the TransactionalId resource, then it checks the Topic in subject (below).
-  ADD_PARTITIONS_TO_TXN (24)           Write             Topic             
-  ADD_OFFSETS_TO_TXN (25)              Write             TransactionalId   Similarly to ADD_PARTITIONS_TO_TXN this is only applicable to transactional request. It first checks for Write action on the TransactionalId resource, then it checks whether it can Read on the given group (below).
-  ADD_OFFSETS_TO_TXN (25)              Read              Group             
-  END_TXN (26)                         Write             TransactionalId   
-  WRITE_TXN_MARKERS (27)               ClusterAction     Cluster           
-  TXN_OFFSET_COMMIT (28)               Write             TransactionalId   
-  TXN_OFFSET_COMMIT (28)               Read              Group             
-  TXN_OFFSET_COMMIT (28)               Read              Topic             
-  DESCRIBE_ACLS (29)                   Describe          Cluster           
-  CREATE_ACLS (30)                     Alter             Cluster           
-  DELETE_ACLS (31)                     Alter             Cluster           
-  DESCRIBE_CONFIGS (32)                DescribeConfigs   Cluster           If broker configs are requested, then the broker will check cluster level privileges.
-  DESCRIBE_CONFIGS (32)                DescribeConfigs   Topic             If topic configs are requested, then the broker will check topic level privileges.
-  ALTER_CONFIGS (33)                   AlterConfigs      Cluster           If broker configs are altered, then the broker will check cluster level privileges.
-  ALTER_CONFIGS (33)                   AlterConfigs      Topic             If topic configs are altered, then the broker will check topic level privileges.
-  ALTER_REPLICA_LOG_DIRS (34)          Alter             Cluster           
-  DESCRIBE_LOG_DIRS (35)               Describe          Cluster           An empty response will be returned on authorization failure.
-  SASL_AUTHENTICATE (36)                                                   SASL_AUTHENTICATE is part of the authentication process and therefore it\'s not possible to apply any kind of authorization here.
-  CREATE_PARTITIONS (37)               Alter             Topic             
-  CREATE_DELEGATION_TOKEN (38)                                             Creating delegation tokens has special rules, for this please see the [Authentication using Delegation Tokens](#security_delegation_token){#security_delegation_token_1} section.
-  CREATE_DELEGATION_TOKEN (38)         CreateTokens      User              Allows creating delegation tokens for the User resource.
-  RENEW_DELEGATION_TOKEN (39)                                              Renewing delegation tokens has special rules, for this please see the [Authentication using Delegation Tokens](#security_delegation_token){#security_delegation_token_2} section.
-  EXPIRE_DELEGATION_TOKEN (40)                                             Expiring delegation tokens has special rules, for this please see the [Authentication using Delegation Tokens](#security_delegation_token){#security_delegation_token_3} section.
-  DESCRIBE_DELEGATION_TOKEN (41)       Describe          DelegationToken   Describing delegation tokens has special rules, for this please see the [Authentication using Delegation Tokens](#security_delegation_token){#security_delegation_token_4} section.
-  DESCRIBE_DELEGATION_TOKEN (41)       DescribeTokens    User              Allows describing delegation tokens of the User resource.
-  DELETE_GROUPS (42)                   Delete            Group             
-  ELECT_PREFERRED_LEADERS (43)         ClusterAction     Cluster           
-  INCREMENTAL_ALTER_CONFIGS (44)       AlterConfigs      Cluster           If broker configs are altered, then the broker will check cluster level privileges.
-  INCREMENTAL_ALTER_CONFIGS (44)       AlterConfigs      Topic             If topic configs are altered, then the broker will check topic level privileges.
-  ALTER_PARTITION_REASSIGNMENTS (45)   Alter             Cluster           
-  LIST_PARTITION_REASSIGNMENTS (46)    Describe          Cluster           
-  OFFSET_DELETE (47)                   Delete            Group             
-  OFFSET_DELETE (47)                   Read              Topic             
+{{< protocol-op-resource-table kafka-acl-protocol-op-resource >}}
 
 ## 7.6 Incorporating Security Features in a Running Cluster {#security_rolling_upgrade .anchor-link}
 
@@ -2627,30 +2138,30 @@ As an example, say we wish to encrypt both broker-client and
 broker-broker communication with SSL. In the first incremental bounce,
 an SSL port is opened on each node:
 
-``` line-numbers
+```properties line-numbers
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092
 ```
 
 We then restart the clients, changing their config to point at the newly
 opened, secured port:
 
-``` line-numbers
+```properties line-numbers
 bootstrap.servers = [broker1:9092,...]
 security.protocol = SSL
-...etc
+# ...etc
 ```
 
 In the second incremental server bounce we instruct Kafka to use SSL as
 the broker-broker protocol (which will use the same SSL port):
 
-``` line-numbers
+```properties line-numbers
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092
 security.inter.broker.protocol=SSL
 ```
 
 In the final bounce we secure the cluster by closing the PLAINTEXT port:
 
-``` line-numbers
+```properties line-numbers
 listeners=SSL://broker1:9092
 security.inter.broker.protocol=SSL
 ```
@@ -2662,31 +2173,31 @@ and broker-client communication) but we\'d like to add SASL
 authentication to the broker-client connection also. We would achieve
 this by opening two additional ports during the first bounce:
 
-``` line-numbers
+```properties line-numbers
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092,SASL_SSL://broker1:9093
 ```
 
 We would then restart the clients, changing their config to point at the
 newly opened, SASL & SSL secured port:
 
-``` line-numbers
+```properties line-numbers
 bootstrap.servers = [broker1:9093,...]
 security.protocol = SASL_SSL
-...etc
+# ...etc
 ```
 
 The second server bounce would switch the cluster to use encrypted
 broker-broker communication via the SSL port we previously opened on
 port 9092:
 
-``` line-numbers
+```properties line-numbers
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092,SASL_SSL://broker1:9093
 security.inter.broker.protocol=SSL
 ```
 
 The final bounce secures the cluster by closing the PLAINTEXT port.
 
-``` line-numbers
+```properties line-numbers
 listeners=SSL://broker1:9092,SASL_SSL://broker1:9093
 security.inter.broker.protocol=SSL
 ```
@@ -2776,11 +2287,10 @@ fully-qualified class name of the custom implementation; then set
 `ssl.authProvider=[scheme]` to use it.
 
 Here is a sample (partial) ZooKeeper configuration for enabling TLS
-authentication. These configurations are described in the [ZooKeeper
-Admin
-Guide](https://zookeeper.apache.org/doc/r3.5.7/zookeeperAdmin.html#sc_authOptions).
+authentication. These configurations are described in the 
+[ZooKeeper Admin Guide](https://zookeeper.apache.org/doc/r3.5.7/zookeeperAdmin.html#sc_authOptions).
 
-``` line-numbers
+```properties line-numbers
 secureClientPort=2182
 serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
 authProvider.x509=org.apache.zookeeper.server.auth.X509AuthenticationProvider
@@ -2799,7 +2309,7 @@ Here is a sample (partial) Kafka Broker configuration for connecting to
 ZooKeeper with mTLS authentication. These configurations are described
 above in [Broker Configs](#brokerconfigs).
 
-``` line-numbers
+```properties line-numbers
 # connect to the ZooKeeper port configured for TLS
 zookeeper.connect=zk1:2182,zk2:2182,zk3:2182
 # required to use TLS to ZooKeeper (default is false)
@@ -2831,7 +2341,7 @@ authentication with minimal disruption to your operations:
     mTLS, you would now have both a non-TLS port and a TLS port, like
     this:
 
-    ``` line-numbers
+    ```properties line-numbers
     clientPort=2181
     secureClientPort=2182
     serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
@@ -2885,13 +2395,13 @@ do it, follow these steps:
 
 Here is an example of how to run the migration tool:
 
-``` line-numbers
+```shell line-numbers
 > bin/zookeeper-security-migration.sh --zookeeper.acl=secure --zookeeper.connect=localhost:2181
 ```
 
 Run this to see the full list of parameters:
 
-``` line-numbers
+```shell line-numbers
 > bin/zookeeper-security-migration.sh --help
 ```
 
@@ -2908,8 +2418,8 @@ Please refer to the ZooKeeper documentation for more detail:
 ### 7.7.4 ZooKeeper Quorum Mutual TLS Authentication {#zk_authz_quorum .anchor-link}
 
 It is possible to enable mTLS authentication between the ZooKeeper
-servers themselves. Please refer to the [ZooKeeper
-documentation](https://zookeeper.apache.org/doc/r3.5.7/zookeeperAdmin.html#Quorum+TLS)
+servers themselves. Please refer to the 
+[ZooKeeper documentation](https://zookeeper.apache.org/doc/r3.5.7/zookeeperAdmin.html#Quorum+TLS)
 for more detail.
 
 ## 7.8 ZooKeeper Encryption {#zk_encryption .anchor-link}
@@ -2922,10 +2432,9 @@ default is `need`), and setting this value to `none` in ZooKeeper allows
 clients to connect via a TLS-encrypted connection without presenting
 their own certificate. Here is a sample (partial) Kafka Broker
 configuration for connecting to ZooKeeper with just TLS encryption.
-These configurations are described above in [Broker
-Configs](#brokerconfigs).
+These configurations are described above in [Broker Configs](../configuration#brokerconfigs).
 
-``` line-numbers
+```properties line-numbers
 # connect to the ZooKeeper port configured for TLS
 zookeeper.connect=zk1:2182,zk2:2182,zk3:2182
 # required to use TLS to ZooKeeper (default is false)
