@@ -1,3 +1,4 @@
+# Align with version defined on config.toml
 VERSION := 35
 
 all: build

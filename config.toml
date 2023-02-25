@@ -1,13 +1,13 @@
 baseURL = 'http://kafka.apache.org/34/documentation'
 languageCode = 'en-us'
 title = 'Apache Kafka documentation'
-theme = 'book'
+theme = 'ak-docs-v1'
 pygmentsUseClasses = true
 
 [params]
-akVersion = '34'
-akDotVersion = '3.4'
-akFullDotVersion = '3.4.0'
+akVersion = '35'
+akDotVersion = '3.5'
+akFullDotVersion = '3.5.0'
 scalaVersion = '2.13'
 
 [markup]
