@@ -1,4 +1,3 @@
-<title>Apache Kafka</title>
 <link rel='stylesheet' href='{{.Site.BaseURL}}/css/styles.css?2' type='text/css'>
 <link rel="icon" type="image/gif" href="{{.Site.BaseURL}}/images/apache_feather.gif">
 <meta name="robots" content="index,follow"/>
@@ -16,6 +15,16 @@
 <link href="{{.Site.BaseURL}}/css/fonts.css" rel="stylesheet">
 <script src="{{.Site.BaseURL}}/js/jquery.min.js"></script>
 <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+
+{{- $styles := resources.Get "book.scss" | resources.ExecuteAsTemplate "book.scss" . | resources.ToCSS | resources.Minify | resources.Fingerprint }}
+<link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}">
+
+{{- $searchJSFile := printf "%s.search.js" .Language.Lang }}
+{{- $searchJS := resources.Get "search.js" | resources.ExecuteAsTemplate $searchJSFile . | resources.Minify | resources.Fingerprint }}
+<script defer src="{{ $searchJS.RelPermalink }}" integrity="{{ $searchJS.Data.Integrity }}"></script>
+
+<link rel="stylesheet" href="{{.Site.BaseURL}}/css/prism.min.css"/>
+<script defer src="{{.Site.BaseURL}}/js/prism.min.js"></script>
 
 <script>
 			// DO NOT NEED TO UPDATE

@@ -9,6 +9,9 @@ build:
 test:
 	hugo serve -b http://localhost:1313/${VERSION}/documentation
 
+test-book:
+	hugo serve -b http://localhost:1313/${VERSION}/documentation -t book
+
 site: build
 	rm -rf kafka-site/${VERSION}
 	mkdir kafka-site/${VERSION}
