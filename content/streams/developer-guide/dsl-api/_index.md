@@ -1394,13 +1394,13 @@ user needs to use for proper semantics.
     be imported as implicits and a helper to create custom Serdes.
 
 The library is cross-built with Scala 2.12 and 2.13. To reference the
-library compiled against Scala {{scalaVersion}} include the following in
+library compiled against Scala {{< param scalaVersion >}} include the following in
 your maven `pom.xml` add the following:
 
 ```xml line-numbers
 <dependency>
   <groupId>org.apache.kafka</groupId>
-  <artifactId>kafka-streams-scala_{{scalaVersion}}</artifactId>
+  <artifactId>kafka-streams-scala_{{< param scalaVersion >}}</artifactId>
   <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```

@@ -64,11 +64,11 @@ will subsequently be processed by a Kafka Streams application.
 [Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/{{<param akFullDotVersion>}}/kafka_{{<param scalaVersion>}}-{{<param akFullDotVersion>}}.tgz "Kafka downloads")
 the {{< param akFullDotVersion >}} release and un-tar it. Note that there are
 multiple downloadable Scala versions and we choose to use the
-recommended version ({{scalaVersion}}) here:
+recommended version ({{< param scalaVersion >}}) here:
 
 ```shell line-numbers
-> tar -xzf kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}.tgz
-> cd kafka_{{scalaVersion}}-{{< param akFullDotVersion >}}
+> tar -xzf kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}.tgz
+> cd kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}
 ```
 
 ## Step 2: Start the Kafka server {#quickstart_streams_startserver}

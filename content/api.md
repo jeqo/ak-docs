@@ -87,7 +87,7 @@ use the following maven dependency:
 ``` line-numbers
 <dependency>
     <groupId>org.apache.kafka</groupId>
-    <artifactId>kafka-streams-scala_{{scalaVersion}}</artifactId>
+    <artifactId>kafka-streams-scala_{{< param scalaVersion >}}</artifactId>
     <version>{{< param akFullDotVersion >}}</version>
 </dependency>
 ```
