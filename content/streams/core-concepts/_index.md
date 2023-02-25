@@ -73,7 +73,7 @@ accessed while processing the current record. Therefore the processed
 results can either be streamed back into Kafka or written to an external
 system.
 
-![](../architecture/streams-architecture-topology.jpg)
+![](streams-architecture-topology.jpg)
 
 Kafka Streams offers two ways to define the stream processing topology:
 the [**Kafka Streams DSL**](../developer-guide/dsl-api)
