@@ -39,7 +39,7 @@ stream.filter((k,v) -> !v.equals("invalid_txn"))
 
 Running `Topology#describe()` yields this string:
 
-``` line-numbers
+```
 Topologies:
    Sub-topology: 0
     Source: KSTREAM-SOURCE-0000000000 (topics: [input])
@@ -81,7 +81,7 @@ stream.filter((k,v) -> !v.equals("invalid_txn"), Named.as("filter_out_invalid_tx
       .to("output", Produced.as("Mapped_transactions_output_topic"));
 ```
 
-``` line-numbers
+```
 Topologies:
    Sub-topology: 0
     Source: Customer_transactions_input_topic (topics: [input])
@@ -127,7 +127,7 @@ KStream<String,String> stream = builder.stream("input");
 
 This topology description yields the following:
 
-``` line-numbers
+```
 Topologies:
    Sub-topology: 0
     Source: KSTREAM-SOURCE-0000000000 (topics: [input])
@@ -158,7 +158,7 @@ stream.filter((k,v)-> v !=null && v.length() >= 6 )
 
 And the corresponding topology:
 
-``` line-numbers
+```
 Topologies:
     Sub-topology: 0
      Source: KSTREAM-SOURCE-0000000000 (topics: [input])
@@ -204,7 +204,7 @@ stream.filter((k, v) -> v != null && v.length() >= 6)
 
 And here\'s the topology
 
-``` line-numbers
+```
 Topologies:
    Sub-topology: 0
     Source: KSTREAM-SOURCE-0000000000 (topics: [input])

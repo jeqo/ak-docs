@@ -61,7 +61,7 @@ same topic tool.
 
 To add partitions you can do
 
-```shell
+```shell {linenos=false}
 > bin/kafka-topics.sh --bootstrap-server broker_host:port --alter --topic my_topic_name \
         --partitions 40
 ```
@@ -75,19 +75,19 @@ Kafka will not attempt to automatically redistribute data in any way.
 
 To add configs:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --add-config x=y
 ```
 
 To remove a config:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --bootstrap-server broker_host:port --entity-type topics --entity-name my_topic_name --alter --delete-config x
 ```
 
 And finally deleting a topic:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-topics.sh --bootstrap-server broker_host:port --delete --topic my_topic_name
 ```
 
@@ -150,7 +150,7 @@ auto.leader.rebalance.enable=true
 You can also set this to false, but you will then need to manually
 restore leadership to the restored replicas by running the command:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-leader-election.sh --bootstrap-server broker_host:port --election-type preferred --all-topic-partitions
 ```
 
@@ -200,7 +200,7 @@ well as how far behind the end of the log they are. To run this tool on
 a consumer group named *my-group* consuming a topic named *my-topic*
 would look like this:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
 
   TOPIC                          PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG        CONSUMER-ID                                       HOST                           CLIENT-ID
@@ -217,7 +217,7 @@ automatically when the last committed offset for that group expires.
 Manual deletion works only if the group does not have any active
 members. For example, to list all consumer groups across all topics:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
 
   test-consumer-group
@@ -226,7 +226,7 @@ members. For example, to list all consumer groups across all topics:
 To view offsets, as mentioned earlier, we \"describe\" the consumer
 group like this:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group
 
   TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                    HOST            CLIENT-ID
@@ -244,7 +244,7 @@ to provide more detailed information about a consumer group:
 -   `--members`: This option provides the list of all active members in
     the consumer group.
 
-    ```shell
+    ```shell {linenos=false}
         > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members
 
           CONSUMER-ID                                    HOST            CLIENT-ID       #PARTITIONS
@@ -258,7 +258,7 @@ to provide more detailed information about a consumer group:
     \"\--members\" options above, this option also provides the
     partitions assigned to each member.
 
-    ```shell
+    ```shell {linenos=false}
         > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --members --verbose
 
           CONSUMER-ID                                    HOST            CLIENT-ID       #PARTITIONS     ASSIGNMENT
@@ -273,7 +273,7 @@ to provide more detailed information about a consumer group:
 
 -   `--state`: This option provides useful group-level information.
 
-    ```shell
+    ```shell {linenos=false}
         > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group my-group --state
 
           COORDINATOR (ID)          ASSIGNMENT-STRATEGY       STATE                #MEMBERS
@@ -283,7 +283,7 @@ to provide more detailed information about a consumer group:
 To manually delete one or multiple consumer groups, the \"\--delete\"
 option can be used:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group my-group --group my-other-group
 
   Deletion of requested consumer groups ('my-group', 'my-other-group') was successful.
@@ -323,7 +323,7 @@ is of 15, then, offset at 10 will actually be selected.
 
 For example, to reset offsets of a consumer group to the latest offset:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 --reset-offsets --group consumergroup1 --topic topic1 --to-latest
 
   TOPIC                          PARTITION  NEW-OFFSET
@@ -334,7 +334,7 @@ If you are using the old high-level consumer and storing the group
 metadata in ZooKeeper (i.e. `offsets.storage=zookeeper`), pass
 `--zookeeper` instead of `--bootstrap-server`:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-consumer-groups.sh --zookeeper localhost:2181 --list
 ```
 
@@ -402,7 +402,7 @@ Since the tool accepts the input list of topics as a json file, you
 first need to identify the topics you want to move and create the json
 file as follows:
 
-```shell
+```shell {linenos=false}
 > cat topics-to-move.json
   {"topics": [{"topic": "foo1"},
               {"topic": "foo2"}],
@@ -413,7 +413,7 @@ file as follows:
 Once the json file is ready, use the partition reassignment tool to
 generate a candidate assignment:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --topics-to-move-json-file topics-to-move.json --broker-list "5,6" --generate
   Current partition replica assignment
 
@@ -446,7 +446,7 @@ should be saved in case you want to rollback to it. The new assignment
 should be saved in a json file (e.g. expand-cluster-reassignment.json)
 to be input to the tool with the \--execute option as follows:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --execute
   Current partition replica assignment
 
@@ -469,7 +469,7 @@ status of the partition reassignment. Note that the same
 expand-cluster-reassignment.json (used with the \--execute option)
 should be used with the \--verify option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file expand-cluster-reassignment.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo1,0] is completed
@@ -494,7 +494,7 @@ brokers 5,6 and partition 1 of topic foo2 to brokers 2,3:
 The first step is to hand craft the custom reassignment plan in a json
 file:
 
-```shell
+```shell {linenos=false}
 > cat custom-reassignment.json
   {"version":1,"partitions":[{"topic":"foo1","partition":0,"replicas":[5,6]},{"topic":"foo2","partition":1,"replicas":[2,3]}]}
 ```
@@ -502,7 +502,7 @@ file:
 Then, use the json file with the \--execute option to start the
 reassignment process:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --execute
   Current partition replica assignment
 
@@ -521,7 +521,7 @@ the partition reassignment. Note that the same custom-reassignment.json
 (used with the \--execute option) should be used with the \--verify
 option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file custom-reassignment.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo1,0] is completed
@@ -556,7 +556,7 @@ increasing the replication factor, we will add more replicas on brokers
 The first step is to hand craft the custom reassignment plan in a json
 file:
 
-```shell
+```shell {linenos=false}
 > cat increase-replication-factor.json
   {"version":1,
   "partitions":[{"topic":"foo","partition":0,"replicas":[5,6,7]}]}
@@ -565,7 +565,7 @@ file:
 Then, use the json file with the \--execute option to start the
 reassignment process:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --execute
   Current partition replica assignment
 
@@ -581,7 +581,7 @@ the partition reassignment. Note that the same
 increase-replication-factor.json (used with the \--execute option)
 should be used with the \--verify option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file increase-replication-factor.json --verify
   Status of partition reassignment:
   Reassignment of partition [foo,0] is completed
@@ -590,7 +590,7 @@ should be used with the \--verify option:
 You can also verify the increase in replication factor with the
 kafka-topics tool:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic foo --describe
   Topic:foo PartitionCount:1    ReplicationFactor:3 Configs:
     Topic: foo  Partition: 0    Leader: 5   Replicas: 5,6,7 Isr: 5,6,7
@@ -612,13 +612,13 @@ view and alter the throttle values directly.
 So for example, if you were to execute a rebalance, with the below
 command, it would move partitions at no more than 50MB/s.
 
-```shell
+```shell {linenos=false}
 $ bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --execute --reassignment-json-file bigger-cluster.json --throttle 50000000
 ```
 
 When you execute this script you will see the throttle engage:
 
-```shell
+```shell {linenos=false}
   The inter-broker throttle limit was set to 50000000 B/s
   Successfully started partition reassignment for foo1-0
 ```
@@ -628,7 +628,7 @@ increase the throughput so it completes quicker, you can do this by
 re-running the execute command with the \--additional option passing the
 same reassignment-json-file:
 
-```shell
+```shell {linenos=false}
 $ bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092  --additional --execute --reassignment-json-file bigger-cluster.json --throttle 700000000
   The inter-broker throttle limit was set to 700000000 B/s
 ```
@@ -644,7 +644,7 @@ throttled.
 When the \--verify option is executed, and the reassignment has
 completed, the script will confirm that the throttle was removed:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092  --verify --reassignment-json-file bigger-cluster.json
   Status of partition reassignment:
   Reassignment of partition [my-topic,1] is completed
@@ -660,7 +660,7 @@ manage the throttling process. First pair refers to the throttle value
 itself. This is configured, at a broker level, using the dynamic
 properties:
 
-```shell
+```shell {linenos=false}
     leader.replication.throttled.rate
     follower.replication.throttled.rate
 ```
@@ -668,7 +668,7 @@ properties:
 Then there is the configuration pair of enumerated sets of throttled
 replicas:
 
-```shell
+```shell {linenos=false}
     leader.replication.throttled.replicas
     follower.replication.throttled.replicas
 ```
@@ -680,7 +680,7 @@ kafka-reassign-partitions.sh (discussed below).
 
 To view the throttle limit configuration:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type brokers
   Configs for brokers '2' are leader.replication.throttled.rate=700000000,follower.replication.throttled.rate=700000000
   Configs for brokers '1' are leader.replication.throttled.rate=700000000,follower.replication.throttled.rate=700000000
@@ -692,7 +692,7 @@ throttled throughput value.
 
 To view the list of throttled replicas:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --describe --bootstrap-server localhost:9092 --entity-type topics
   Configs for topic 'my-topic' are leader.replication.throttled.replicas=1:102,0:101,
       follower.replication.throttled.replicas=1:101,0:102
@@ -751,21 +751,21 @@ custom quotas for each (user, client-id), user or client-id group.
 
 Configure custom quota for (user=user1, client-id=clientA):
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
   Updated config for entity: user-principal 'user1', client-id 'clientA'.
 ```
 
 Configure custom quota for user=user1:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1
   Updated config for entity: user-principal 'user1'.
 ```
 
 Configure custom quota for client-id=clientA:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-name clientA
   Updated config for entity: client-id 'clientA'.
 ```
@@ -776,42 +776,42 @@ client-id group by specifying *\--entity-default* option instead of
 
 Configure default client-id quota for user=userA:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-name user1 --entity-type clients --entity-default
   Updated config for entity: user-principal 'user1', default client-id.
 ```
 
 Configure default quota for user:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type users --entity-default
   Updated config for entity: default user-principal.
 ```
 
 Configure default quota for client-id:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --alter --add-config 'producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200' --entity-type clients --entity-default
   Updated config for entity: default client-id.
 ```
 
 Here\'s how to describe the quota for a given (user, client-id):
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1 --entity-type clients --entity-name clientA
   Configs for user-principal 'user1', client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 Describe quota for a given user:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-name user1
   Configs for user-principal 'user1' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
 
 Describe quota for a given client-id:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type clients --entity-name clientA
   Configs for client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
 ```
@@ -819,7 +819,7 @@ Describe quota for a given client-id:
 If entity name is not specified, all entities of the specified type are
 described. For example, describe all users:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users
   Configs for user-principal 'user1' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
   Configs for default user-principal are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
@@ -827,7 +827,7 @@ described. For example, describe all users:
 
 Similarly for (user, client):
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh  --bootstrap-server localhost:9092 --describe --entity-type users --entity-type clients
   Configs for user-principal 'user1', default client-id are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
   Configs for user-principal 'user1', client-id 'clientA' are producer_byte_rate=1024,consumer_byte_rate=2048,request_percentage=200
@@ -1124,7 +1124,7 @@ The most important settings are:
 
 Example:
 
-```shell
+```shell {linenos=false}
 # Custom top-level defaults that apply to all replication flows
 topics = .*
 groups = consumer-group1, consumer-group2
@@ -1240,7 +1240,7 @@ cluster.
 
 For example, the following two MirrorMaker processes would be racy:
 
-```shell
+```shell {linenos=false}
 # Configuration of process 1
 A->B.enabled = true
 A->B.topics = foo
@@ -1282,7 +1282,7 @@ the target clusters, and explicitly set these \"local\" clusters in the
 `--clusters` command line parameter (blank-separated list of cluster
 aliases):
 
-```shell
+```shell {linenos=false}
 # Run in secondary's data center, reading from the remote `primary` cluster
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties --clusters secondary
 ```
@@ -1298,7 +1298,7 @@ a primary to a secondary Kafka environment, but not from the secondary
 back to the primary. Please be aware that most production setups will
 need further configuration, such as security settings.
 
-```shell
+```shell {linenos=false}
 # Unidirectional flow (one-way) from primary to secondary cluster
 primary.bootstrap.servers = broker1-primary:9092
 secondary.bootstrap.servers = broker2-secondary:9092
@@ -1315,7 +1315,7 @@ The following example shows the basic settings to replicate topics
 between two clusters in both ways. Please be aware that most production
 setups will need further configuration, such as security settings.
 
-```shell
+```shell {linenos=false}
 # Bidirectional flow (two-way) between us-west and us-east clusters
 clusters = us-west, us-east
 us-west.bootstrap.servers = broker1-west:9092,broker2-west:9092
@@ -1344,7 +1344,7 @@ as well as (2) for Cross Data Center Replication (XDCR).
 First, define the source and target clusters along with their
 replication flows in the configuration:
 
-```shell
+```shell {linenos=false}
 # Basic settings
 clusters: west-1, west-2, east-1, east-2, north-1, north-2
 west-1.bootstrap.servers = ...
@@ -1377,7 +1377,7 @@ north-1->east-1.enabled = true
 
 Then, in each data center, launch one or more MirrorMaker as follows:
 
-```shell
+```shell {linenos=false}
 # In West DC:
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties --clusters west-1 west-2
 
@@ -1411,7 +1411,7 @@ parallel.
 
 To start a MirrorMaker process, run the command:
 
-```shell
+```shell {linenos=false}
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties
 ```
 
@@ -1422,7 +1422,7 @@ Optionally, as described previously, you can set the parameter
 `--clusters` to ensure that the MirrorMaker process produces data to
 nearby clusters only.
 
-```shell
+```shell {linenos=false}
 # Note: The cluster alias us-west must be defined in the configuration file
 $ ./bin/connect-mirror-maker.sh connect-mirror-maker.properties \
             --clusters us-west
@@ -1442,7 +1442,7 @@ update the configuration again once you completed your testing.
 You can stop a running MirrorMaker process by sending a SIGTERM signal
 with the command:
 
-```shell
+```shell {linenos=false}
 $ kill <MirrorMaker pid>
 ```
 
@@ -1651,7 +1651,7 @@ corporation\'s InfoSec team---is granted write permissions to all topics
 whose names start with \"acme.infosec.\", such as
 \"acme.infosec.telemetry.logins\" and \"acme.infosec.syslogs.events\".
 
-```shell
+```shell {linenos=false}
 # Grant permissions to user Alice
 $ bin/kafka-acls.sh \
     --bootstrap-server broker1:9092 \
@@ -1945,7 +1945,7 @@ writes to slow down the accumulation of data.
 
 You can see the current state of OS memory usage by doing
 
-```shell
+```shell {linenos=false}
  > cat /proc/meminfo 
 ```
 
@@ -2055,7 +2055,7 @@ controllers have all of the committed data. To determine if the majority
 of the controllers have the committed data, run the
 `kafka-metadata-quorum.sh` tool to describe the replication status:
 
-```shell
+```shell {linenos=false}
  > bin/kafka-metadata-quorum.sh --bootstrap-server broker_host:port describe --replication
  NodeId  LogEndOffset    Lag     LastFetchTimestamp      LastCaughtUpTimestamp   Status
  1       25806           0       1662500992757           1662500992757           Leader
@@ -2072,7 +2072,7 @@ close to each other for the majority of the controllers. At this point
 it is safer to format the controller\'s metadata log directory. This can
 be done by running the `kafka-storage.sh` command.
 
-```shell
+```shell {linenos=false}
  > bin/kafka-storage.sh format --cluster-id uuid --config server_properties
 ```
 
@@ -2085,7 +2085,7 @@ case, can you run the `kafka-storage.sh format` command with the
 
 Start the KRaft controller after formatting the log directories.
 
-```shell
+```shell {linenos=false}
  > /bin/kafka-server-start.sh server_properties
 ```
 
@@ -2483,7 +2483,7 @@ The `kafka-metadata-quorum` tool can be used to describe the runtime
 state of the cluster metadata partition. For example, the following
 command displays a summary of the metadata quorum:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-metadata-quorum.sh --bootstrap-server  broker_host:port describe --status
 ClusterId:              fMCL8kv1SWm87L_Md-I2hg
 LeaderId:               3002
@@ -2502,14 +2502,14 @@ snapshots for the cluster metadata directory. The tool will scan the
 provided files and decode the metadata records. For example, this
 command decodes and prints the records in the first log segment:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
 ```
 
 This command decodes and prints the recrods in the a cluster metadata
 snapshot:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-dump-log.sh --cluster-metadata-decoder --files metadata_log_dir/__cluster_metadata-0/00000000000000000100-0000000001.checkpoint
 ```
 
@@ -2518,7 +2518,7 @@ snapshot:
 The `kafka-metadata-shell` tool can be used to interactively inspect the
 state of the cluster metadata partition:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-metadata-shell.sh  --snapshot metadata_log_dir/__cluster_metadata-0/00000000000000000000.log
 > ls /
 brokers  local  metadataQuorum  topicIds  topics

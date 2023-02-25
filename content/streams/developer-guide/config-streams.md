@@ -675,7 +675,7 @@ configuration for RocksDB, you can implement
 
 Here is an example that adjusts the memory size consumed by RocksDB.
 
-``` line-numbers
+```
 public static class CustomRocksDBConfig implements RocksDBConfigSetter {
     // This object should be a member variable so it can be closed in RocksDBConfigSetter#close.
     private org.rocksdb.Cache cache = new org.rocksdb.LRUCache(16 * 1024L * 1024L);

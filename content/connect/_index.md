@@ -50,7 +50,7 @@ files), but it does not benefit from some of the features of Kafka
 Connect such as fault tolerance. You can start a standalone process with
 the following command:
 
-```shell {.brush: .bash;}
+```shell {linenos=false} {.brush: .bash;}
 > bin/connect-standalone.sh config/connect-standalone.properties [connector1.properties connector2.properties ...]
 ```
 
@@ -121,7 +121,7 @@ scale up (or down) dynamically, and offers fault tolerance both in the
 active tasks and for configuration and offset commit data. Execution is
 very similar to standalone mode:
 
-```shell {.brush: .bash;}
+```shell {linenos=false} {.brush: .bash;}
 > bin/connect-distributed.sh config/connect-distributed.properties
 ```
 
@@ -413,7 +413,7 @@ list of listeners in the following format:
 `protocol://host:port,protocol2://host2:port2`. Currently supported
 protocols are `http` and `https`. For example:
 
-```shell {.brush: .text;}
+```shell {linenos=false} {.brush: .text;}
 listeners=http://localhost:8080,https://localhost:8443
 ```
 

@@ -2,7 +2,7 @@
 bookToc: false
 ---
 
-# Kafka {{< param akDotVersion>}} Documentation
+# Kafka {{< param akDotVersion >}} Documentation
 
 Prior releases: [0.7.x](/07/documentation.html),
 [0.8.0](/08/documentation.html), [0.8.1.X](/081/documentation.html),

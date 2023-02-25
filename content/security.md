@@ -201,7 +201,7 @@ format as of Java version 9, to ensure this format is being used
 regardless of the Java version in use all following commands
 explicitly specify the PKCS12 format.
 
-```shell
+```shell {linenos=false}
 > keytool -keystore {keystorefile} -alias localhost -validity {validity} -genkey -keyalg RSA -storetype pkcs12
 ```
 
@@ -229,7 +229,7 @@ used for authentication purposes.\
 To generate certificate signing requests run the following command
 for all server keystores created so far.
 
-```shell
+```shell {linenos=false}
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -255,7 +255,7 @@ Server host name verification may be disabled by setting
 For dynamically configured broker listeners, hostname verification
 may be disabled using `kafka-configs.sh`:\
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --bootstrap-server localhost:9093 --entity-type brokers --entity-name 0 --alter --add-config "listener.name.internal.ssl.endpoint.identification.algorithm="
 ```
 
@@ -292,7 +292,7 @@ into the signing request.\
 To add a SAN field append the following argument
 `-ext SAN=DNS:{FQDN},IP:{IPADDRESS}` to the keytool command:
 
-```shell
+```shell {linenos=false}
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -421,7 +421,7 @@ keep track of which certificates were signed with this CA. Both of
 these are simply text files that reside in the same directory as
 your CA keys.
 
-```shell
+```shell {linenos=false}
 > echo 01 > serial.txt
 > touch index.txt
 ```
@@ -429,7 +429,7 @@ your CA keys.
 With these steps done you are now ready to generate your CA that
 will be used to sign certificates later.
 
-```shell
+```shell {linenos=false}
 > openssl req -x509 -config openssl-ca.cnf -newkey rsa:4096 -sha256 -nodes -out cacert.pem -outform PEM
 ```
 
@@ -442,7 +442,7 @@ anybody when connecting to any service that trusts this CA.\
 The next step is to add the generated CA to the \*\*clients\'
 truststore\*\* so that the clients can trust this CA:
 
-```shell
+```shell {linenos=false}
 > keytool -keystore client.truststore.jks -alias CARoot -import -file ca-cert
 ```
 
@@ -473,14 +473,14 @@ can authenticate all other machines.
 
 Then sign it with the CA:
 
-```shell
+```shell {linenos=false}
 > openssl ca -config openssl-ca.cnf -policy signing_policy -extensions signing_req -out {server certificate} -infiles {certificate signing request}
 ```
 
 Finally, you need to import both the certificate of the CA and the
 signed certificate into the keystore:
 
-```shell
+```shell {linenos=false}
 > keytool -keystore {keystore} -alias CARoot -import -file {CA certificate}
 > keytool -keystore {keystore} -alias localhost -import -file cert-signed
 ```
@@ -591,7 +591,7 @@ cause issues when trying to use these certificates with Kafka.
     certificate details to the console, which should be compared
     with what was originally requested:
 
-    ```shell
+    ```shell {linenos=false}
     > openssl x509 -in certificate.crt -text -noout
     ```
 
@@ -676,7 +676,7 @@ with addresses: PLAINTEXT -> EndPoint(192.168.64.1,9092,PLAINTEXT),SSL -> EndPoi
 To check quickly if the server keystore and truststore are setup
 properly you can run the following command
 
-```shell
+```shell {linenos=false}
 > openssl s_client -debug -connect localhost:9093 -tls1
 ```
 
@@ -737,7 +737,7 @@ our requirements and the broker configuration:
 
 Examples using console-producer and console-consumer:
 
-```shell
+```shell {linenos=false}
 > kafka-console-producer.sh --bootstrap-server localhost:9093 --topic test --producer.config client-ssl.properties
 > kafka-console-consumer.sh --bootstrap-server localhost:9093 --topic test --consumer.config client-ssl.properties
 ```
@@ -955,7 +955,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
     create these principals yourself using the following
     commands:
 
-    ```shell
+    ```shell {linenos=false}
     > sudo /usr/sbin/kadmin.local -q 'addprinc -randkey kafka/{hostname}@{REALM}'
     > sudo /usr/sbin/kadmin.local -q "ktadd -k /etc/security/keytabs/{keytabname}.keytab kafka/{hostname}@{REALM}"
     ```
@@ -1237,7 +1237,7 @@ will be used to authenticate new connections.
 Create SCRAM credentials for user *alice* with password
 *alice-secret*:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[iterations=8192,password=alice-secret],SCRAM-SHA-512=[password=alice-secret]' --entity-type users --entity-name alice
 ```
 
@@ -1251,21 +1251,21 @@ identity and the individual fields.
 The following examples also require a user *admin* for
 inter-broker communication which can be created using:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[password=admin-secret],SCRAM-SHA-512=[password=admin-secret]' --entity-type users --entity-name admin
 ```
 
 Existing credentials may be listed using the *\--describe*
 option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --describe --entity-type users --entity-name alice
 ```
 
 Credentials may be deleted for one or more SCRAM mechanisms
 using the *\--alter \--delete-config* option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name alice
 ```
 
@@ -1669,31 +1669,31 @@ examples are given below.
 
 Create a delegation token:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1
 ```
 
 Create a delegation token for a different owner:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1 --owner-principal User:owner1
 ```
 
 Renew a delegation token:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --renew    --renew-time-period -1 --command-config client.properties --hmac ABCDEFGHIJK
 ```
 
 Expire a delegation token:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --expire   --expiry-time-period -1   --command-config client.properties  --hmac ABCDEFGHIJK
 ```
 
 Existing tokens can be described using the \--describe option:
 
-```shell
+```shell {linenos=false}
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --describe --command-config client.properties  --owner-principal User:user1
 ```
 
@@ -1911,7 +1911,7 @@ Following lists all the options that the script supports:
     from IP 198.51.100.0 and IP 198.51.100.1\". You can do that by
     executing the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic
     ```
 
@@ -1923,7 +1923,7 @@ Following lists all the options that the script supports:
     Read from Test-topic but only deny User:BadBob from IP 198.51.100.3
     we can do so using following commands:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:'*' --allow-host '*' --deny-principal User:BadBob --deny-host 198.51.100.3 --operation Read --topic Test-topic
     ```
 
@@ -1937,7 +1937,7 @@ Following lists all the options that the script supports:
     Topic from IP 198.51.200.0\" You can do that by using the wildcard
     resource \'\*\', e.g. by executing the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Peter --allow-host 198.51.200.1 --producer --topic '*'
     ```
 
@@ -1946,7 +1946,7 @@ Following lists all the options that the script supports:
     any Topic whose name starts with \'Test-\' from any host\". You can
     do that by executing the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Jane --producer --topic Test- --resource-pattern-type prefixed
     ```
 
@@ -1960,14 +1960,14 @@ Following lists all the options that the script supports:
     option. To remove the acls added by the first example above we can
     execute the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic 
     ```
 
     If you want to remove the acl added to the prefixed resource pattern
     above we can execute the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Jane --producer --topic Test- --resource-pattern-type Prefixed
     ```
 
@@ -1976,7 +1976,7 @@ Following lists all the options that the script supports:
     with the resource. To list all acls on the literal resource pattern
     Test-topic, we can execute the CLI with following options:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic
     ```
 
@@ -1986,7 +1986,7 @@ Following lists all the options that the script supports:
     on prefixed resource patterns. Acls on the wildcard resource pattern
     can be queried explicitly:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic '*'
     ```
 
@@ -1995,7 +1995,7 @@ Following lists all the options that the script supports:
     such patterns may not be known. We can list *all* acls affecting
     Test-topic by using \'\--resource-pattern-type match\', e.g.
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic --resource-pattern-type match
     ```
 
@@ -2008,14 +2008,14 @@ Following lists all the options that the script supports:
     handle these cases. In order to add User:Bob as a producer of
     Test-topic we can execute the following command:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --producer --topic Test-topic
     ```
 
     Similarly to add Alice as a consumer of Test-topic with consumer
     group Group-1 we just have to pass \--consumer option:
 
-    ```shell
+    ```shell {linenos=false}
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1 
     ```
 
@@ -2030,7 +2030,7 @@ Following lists all the options that the script supports:
     All the above examples can be executed by using
     **\--bootstrap-server** option. For example:
 
-    ```shell
+    ```shell {linenos=false}
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --producer --topic Test-topic
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --list --topic Test-topic
@@ -2395,13 +2395,13 @@ do it, follow these steps:
 
 Here is an example of how to run the migration tool:
 
-```shell
+```shell {linenos=false}
 > bin/zookeeper-security-migration.sh --zookeeper.acl=secure --zookeeper.connect=localhost:2181
 ```
 
 Run this to see the full list of parameters:
 
-```shell
+```shell {linenos=false}
 > bin/zookeeper-security-migration.sh --help
 ```
 

@@ -20,7 +20,7 @@ in [the monitoring guide](../../../operations#kafka_streams_monitoring).
 You can package your Java application as a fat JAR file and then start
 the application like this:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 # Start the application in class `com.example.MyStreamsApp`
 # from the fat JAR named `path-to-app-fatjar.jar`.
 $ java -cp path-to-app-fatjar.jar com.example.MyStreamsApp

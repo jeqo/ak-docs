@@ -12,7 +12,7 @@ you have not done so.
 We are going to use a Kafka Streams Maven Archetype for creating a
 Streams project structure with the following commands:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 mvn archetype:generate \
     -DarchetypeGroupId=org.apache.kafka \
     -DarchetypeArtifactId=streams-quickstart-java \
@@ -27,7 +27,7 @@ You can use a different value for `groupId`, `artifactId` and `package`
 parameters if you like. Assuming the above parameter values are used,
 this command will create a project structure that looks like this:
 
-``` line-numbers
+```shell
 > tree streams.examples
     streams-quickstart
     |-- pom.xml
@@ -50,7 +50,7 @@ There are already several example programs written with Streams library
 under `src/main/java`. Since we are going to start writing such programs
 from scratch, we can now delete these examples:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > cd streams-quickstart
 > rm src/main/java/myapps/*.java
 ```
@@ -155,7 +155,7 @@ System.out.println(topology.describe());
 If we just stop here, compile and run the program, it will output the
 following information:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.Pipe
 Sub-topologies:
@@ -276,7 +276,7 @@ and the topics `streams-plaintext-input` and `streams-pipe-output`
 created on that broker, you can run this code in your IDE or on the
 command line, using Maven:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.Pipe
 ```
@@ -294,7 +294,7 @@ add some real processing logic by augmenting the current topology. We
 can first create another program by first copy the existing `Pipe.java`
 class:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > cp src/main/java/myapps/Pipe.java src/main/java/myapps/LineSplit.java
 ```
 
@@ -352,7 +352,7 @@ source.flatMapValues(value -> Arrays.asList(value.split("\\W+")))
 If we now describe this augmented topology as
 `System.out.println(topology.describe())`, we will get the following:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.LineSplit
 Sub-topologies:
@@ -510,7 +510,7 @@ source.flatMapValues(value -> Arrays.asList(value.toLowerCase(Locale.getDefault(
 If we again describe this augmented topology as
 `System.out.println(topology.describe())`, we will get the following:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 > mvn clean package
 > mvn exec:java -Dexec.mainClass=myapps.WordCount
 Sub-topologies:

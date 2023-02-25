@@ -181,7 +181,7 @@ change the memory allocator to `jemalloc`, you need to set the
 environment variable `LD_PRELOAD` before you start your Kafka Streams
 application:
 
-```shell line-numbers
+```shell {linenos=false} line-numbers
 # example: install jemalloc (on Debian)
 $ apt install -y libjemalloc-dev
 # set LD_PRELOAD before you start your Kafka Streams application

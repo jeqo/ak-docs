@@ -76,13 +76,13 @@ Invoke the application reset tool from the command line
 Warning! This tool makes irreversible changes to your application. It is
 strongly recommended that you run this once with `--dry-run` to preview your changes before making them.
 
-``` line-numbers
-<path-to-kafka>/bin/kafka-streams-application-reset
+```shell
+$ bin/kafka-streams-application-reset
 ```
 
 The tool accepts the following parameters:
 
-``` line-numbers
+```
 Option (* = required)                 Description
 ---------------------                 -----------
 * --application-id <String: id>       The Kafka Streams application ID

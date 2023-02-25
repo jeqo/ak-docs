@@ -39,7 +39,7 @@ own headers. The format of each is described below.
 
 The following is the on-disk format of a RecordBatch.
 
-``` line-numbers
+```
 baseOffset: int64
 batchLength: int32
 partitionLeaderEpoch: int32
@@ -107,7 +107,7 @@ are used by consumers to filter out aborted transactional messages.
 
 The key of a control record conforms to the following schema:
 
-``` line-numbers
+```
 version: int16 (current version is 0)
 type: int16 (0 indicates an abort marker, 1 indicates a commit)
 ```
@@ -120,7 +120,7 @@ The value is opaque to clients.
 Record level headers were introduced in Kafka 0.11.0. The on-disk format
 of a record with Headers is delineated below.
 
-``` line-numbers
+```
 length: varint
 attributes: int8
     bit 0~7: unused
@@ -135,7 +135,7 @@ Headers => [Header]
 
 #### 5.3.2.1 Record Header {#recordheader .anchor-link}
 
-``` line-numbers
+```
 headerKeyLength: varint
 headerKey: String
 headerValueLength: varint
@@ -154,9 +154,9 @@ sets*. In a message set, each message has its own metadata. Note that
 although message sets are represented as an array, they are not preceded
 by an int32 array size like other array elements in the protocol.
 
-**Message Set:**\
+**Message Set:**
 
-``` line-numbers
+```
 MessageSet (Version: 0) => [offset message_size message]
 offset => INT64
 message_size => INT32
@@ -173,7 +173,7 @@ message => crc magic_byte attributes key value
     value => BYTES
 ```
 
-``` line-numbers
+```
 MessageSet (Version: 1) => [offset message_size message]
 offset => INT64
 message_size => INT32
@@ -309,7 +309,7 @@ can either reset itself or fail as appropriate to the use case.
 
 The following is the format of the results sent to the consumer.
 
-``` line-numbers
+```
 MessageSetSend (fetch result)
 
 total length     : 4 bytes
@@ -319,7 +319,7 @@ message 1        : x bytes
 message n        : x bytes
 ```
 
-``` line-numbers
+```
 MultiMessageSetSend (multiFetch result)
 
 total length       : 4 bytes
@@ -424,7 +424,7 @@ znode /hello containing the value \"world\".
 
 ### Broker Node Registry {#impl_zkbroker .anchor-link}
 
-``` line-numbers
+```
 /brokers/ids/[0...N] --> {"jmx_port":...,"timestamp":...,"endpoints":[...],"host":...,"version":...,"port":...} (ephemeral node)
 ```
 
@@ -443,7 +443,7 @@ shutdown or dies (thus notifying consumers it is no longer available).
 
 ### Broker Topic Registry {#impl_zktopic .anchor-link}
 
-``` line-numbers
+```
 /brokers/topics/[topic]/partitions/[0...N]/state --> {"controller_epoch":...,"leader":...,"version":...,"leader_epoch":...,"isr":[...]} (ephemeral node)
 ```
 

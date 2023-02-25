@@ -913,7 +913,7 @@ primary key. Now say we send the following messages over some time
 period for a user with id 123, each message corresponding to a change in
 email address (messages for other ids are omitted):
 
-``` line-numbers
+```
 123 => bill@microsoft.com
         .
         .

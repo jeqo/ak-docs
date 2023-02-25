@@ -145,7 +145,7 @@ if you enter an incorrect password for the
 message similar to this would be logged and then the application would
 terminate:
 
-``` line-numbers
+```
 # Misconfigured ssl.keystore.password
 Exception in thread "main" org.apache.kafka.common.KafkaException: Failed to construct kafka producer
 [...snip...]

@@ -268,7 +268,7 @@ To make this store queryable you must:
 
 Here is how to implement `QueryableStoreType`:
 
-``` line-numbers
+```
 public class MyCustomStoreType<K,V> implements QueryableStoreType<MyReadableCustomStore<K,V>> {
 
   // Only accept StateStores that are of type MyCustomStore
