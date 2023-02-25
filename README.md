@@ -57,6 +57,13 @@ So, for Kafka documentation, there are 2 alternatives:
     - [Data set](data/config/admin_client_config.json)
     - [Template](layouts/shortcodes/config.html)
 
+### Kafka Streams docs
+
+Kafka Streams docs have been moved to the same structure as the main docs.
+These to simplify the migration to Markdown.
+
+As a side effect, most dynamic behavior and navigation is now under the main menu.
+
 ### Template
 
 To make the transition as low-friction as possible, the same template has been copied from `kafka-site` to keep the same user-experience, though it can be improved later using Hugo templates.
