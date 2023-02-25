@@ -14,19 +14,17 @@ which is a graph of stream processors (nodes) and streams (edges).
 
 You can define the processor topology with the Kafka Streams APIs:
 
-[Kafka Streams DSL](dsl-api.html#streams-developer-guide-dsl)
+[Kafka Streams DSL](../dsl-api#streams-developer-guide-dsl)
 :   A high-level API that provides the most common data transformation
-    operations such as [`map`{.docutils .literal}]{.pre},
-    [`filter`{.docutils .literal}]{.pre}, [`join`{.docutils
-    .literal}]{.pre}, and [`aggregations`{.docutils .literal}]{.pre} out
+    operations such as `map`, `filter`, `join`, and `aggregations` out
     of the box. The DSL is the recommended starting point for developers
     new to Kafka Streams, and should cover many use cases and stream
     processing needs. If you\'re writing a Scala application then you
-    can use the [[Kafka Streams DSL for Scala]{.std .std-ref}](dsl-api.html#scala-dsl) library which removes much of the
+    can use the [Kafka Streams DSL for Scala](../dsl-api#scala-dsl) library which removes much of the
     Java/Scala interoperability boilerplate as opposed to working
     directly with the Java DSL.
 
-[Processor API](processor-api.html#streams-developer-guide-processor-api)
+[Processor API](../processor-api#streams-developer-guide-processor-api)
 :   A low-level API that lets you add and connect processors as well as
     interact directly with state stores. The Processor API provides you
     with even more flexibility than the DSL but at the expense of
@@ -41,40 +39,20 @@ available for writing your Kafka Streams applications.
 You can define dependencies on the following libraries for your Kafka
 Streams applications.
 
-//TODO fix table
-
-```
---------------------------------------------------------------------------------------------------------------------------------------------
-Group ID                        Artifact ID                        Version                           Description
-------------------------------- ---------------------------------- --------------------------------- ---------------------------------------
-[`org.apache.kafka`{.docutils   [`kafka-streams`{.docutils         [`{{< param akFullDotVersion >}}`{.docutils   (Required) Base library for Kafka
-.literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  Streams.
-
-[`org.apache.kafka`{.docutils   [`kafka-clients`{.docutils         [`{{< param akFullDotVersion >}}`{.docutils   (Required) Kafka client library.
-.literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  Contains built-in
-                                                                                                     serializers/deserializers.
-
-[`org.apache.kafka`{.docutils   [`kafka-streams-scala`{.docutils   [`{{< param akFullDotVersion >}}`{.docutils   (Optional) Kafka Streams DSL for Scala
-.literal}]{.pre}                .literal}]{.pre}                   .literal}]{.pre}                  library to write Scala Kafka Streams
-                                                                                                     applications. When not using SBT you
-                                                                                                     will need to suffix the artifact ID
-                                                                                                     with the correct version of Scala your
-                                                                                                     application is using (
-                                                                                                     
-                                                                                                     [\_2.12]{.pre},
-                                                                                                     
-                                                                                                     [\_2.13]{.pre})
---------------------------------------------------------------------------------------------------------------------------------------------
-```
+| Group ID         | ArtifactID          | Version            | Description           |
+|------------------|---------------------|--------------------|-----------------------|
+| org.apache.kafka | kafka-streams       | {{<param akFullDotVersion>}} | (Required) Base library for Kafka Streams.                                                                                                                                                                                       |
+| org.apache.kafka | kafka-clients       | {{<param akFullDotVersion>}} | (Required) Kafka client library.  Contains built-in serializers/deserializers.                                                                                                                                                   |
+| org.apache.kafka | kafka-streams-scala | {{<param akFullDotVersion>}} | (Optional) Kafka Streams DSL for Scala library to write Scala Kafka Streams applications.  When not using SBT you will need to suffix the artifact ID with the correct version of Scala your application is using (_2.12, _2.13) |
 
 **Tip**
 
-See the section [Data Types and Serialization](datatypes.html#streams-developer-guide-serdes) 
+See the section [Data Types and Serialization](../../datatypes#streams-developer-guide-serdes) 
 for more information about Serializers/Deserializers.
 
 Example `pom.xml` snippet when using Maven:
 
-``` line-numbers
+```xml line-numbers
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams</artifactId>
@@ -104,15 +82,15 @@ First, you must create an instance of `KafkaStreams`.
 
 -   The first argument of the `KafkaStreams`
     constructor takes a topology (either `StreamsBuilder#build()` for the
-    [DSL](dsl-api.html#streams-developer-guide-dsl) or `Topology` for the
-    [Processor API](processor-api.html#streams-developer-guide-processor-api) that is used to define a topology.
+    [DSL](../dsl-api#streams-developer-guide-dsl) or `Topology` for the
+    [Processor API](../processor-api#streams-developer-guide-processor-api) that is used to define a topology.
 -   The second argument is an instance of
     `java.util.Properties`, which defines
     the configuration for this specific topology.
 
 Code example:
 
-``` line-numbers
+```java line-numbers
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.kstream.StreamsBuilder;
 import org.apache.kafka.streams.processor.Topology;
@@ -141,7 +119,7 @@ At this point, internal structures are initialized, but the processing
 is not started yet. You have to explicitly start the Kafka Streams
 thread by calling the `KafkaStreams#start()` method:
 
-``` line-numbers
+```java line-numbers
 // Start the Kafka Streams threads
 streams.start();
 ```
@@ -150,15 +128,15 @@ If there are other instances of this stream processing application
 running elsewhere (e.g., on another machine), Kafka Streams
 transparently re-assigns tasks from the existing instances to the new
 instance that you just started. For more information, see 
-[Stream Partitions and Tasks](../architecture.html#streams_architecture_tasks)
-and [Threading Model](../architecture.html#streams_architecture_threads).
+[Stream Partitions and Tasks](../../architecture#streams_architecture_tasks)
+and [Threading Model](../../architecture#streams_architecture_threads).
 
 To catch any unexpected exceptions, you can set an
 `java.lang.Thread.UncaughtExceptionHandler`
 before you start the application. This handler is called whenever a
 stream thread is terminated by an unexpected exception:
 
-``` line-numbers
+```java line-numbers
 // Java 8+, using lambda expressions
 streams.setUncaughtExceptionHandler((Thread thread, Throwable throwable) -> {
   // here you should examine the throwable/exception and perform an appropriate action!
@@ -175,7 +153,7 @@ streams.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
 To stop the application instance, call the `KafkaStreams#close()` method:
 
-``` line-numbers
+```java line-numbers
 // Stop the Kafka Streams threads
 streams.close();
 ```
@@ -186,7 +164,7 @@ it is recommended that you add a shutdown hook and call
 
 -   Here is a shutdown hook example in Java 8+:
 
-    ``` line-numbers
+    ```java line-numbers
     // Add shutdown hook to stop the Kafka Streams threads.
     // You can optionally provide a timeout to `close`.
     Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
@@ -194,7 +172,7 @@ it is recommended that you add a shutdown hook and call
 
 -   Here is a shutdown hook example in Java 7:
 
-    ``` line-numbers
+    ```java line-numbers
     // Add shutdown hook to stop the Kafka Streams threads.
     // You can optionally provide a timeout to `close`.
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -210,5 +188,4 @@ that had been running in this instance to available remaining instances.
 
 ## Testing a Streams application {#testing-a-streams-app}
 
-Kafka Streams comes with a `test-utils` module to help you test your
-application [here](testing.html).
+Kafka Streams comes with a `test-utils` module to help you test your application [here](../testing).

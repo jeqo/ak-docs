@@ -237,7 +237,7 @@ event. To do this, we use two transformations:
 After adding the transformations, `connect-file-source.properties` file
 looks as following:
 
-```properties {.brush: .text;}
+```java-properties {.brush: .text;}
 name=local-file-source
 connector.class=FileStreamSource
 tasks.max=1
@@ -357,7 +357,7 @@ expression. TopicNameMatches\'s only configuration property is `pattern`
 which is a Java regular expression for matching against the topic name.
 The configuration would look like this:
 
-```properties {.brush: .text;}
+```java-properties {.brush: .text;}
 transforms=Filter
 transforms.Filter.type=org.apache.kafka.connect.transforms.Filter
 transforms.Filter.predicate=IsFoo
@@ -375,7 +375,7 @@ topic names which do *not* match. The transformation\'s implicit
 a predicate matches. Adding the configuration for this to the previous
 example we arrive at:
 
-```properties {.brush: .text;}
+```java-properties {.brush: .text;}
 transforms=Filter,Extract
 transforms.Filter.type=org.apache.kafka.connect.transforms.Filter
 transforms.Filter.predicate=IsFoo
@@ -560,7 +560,7 @@ error or exception. This is equivalent to adding the following
 configuration properties with their defaults to a connector
 configuration:
 
-```properties {.brush: .text;}
+```java-properties {.brush: .text;}
 # disable retries on failure
 errors.retry.timeout=0
 
@@ -581,7 +581,7 @@ setup error handling with multiple retries, logging to the application
 logs and the `my-connector-errors` Kafka topic, and tolerating all
 errors by reporting them rather than failing the connector task:
 
-```properties {.brush: .text;}
+```java-properties {.brush: .text;}
 # retry for at most 10 minutes times waiting up to 30 seconds between consecutive failures
 errors.retry.timeout=600000
 errors.retry.delay.max.ms=30000

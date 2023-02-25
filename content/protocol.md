@@ -296,7 +296,7 @@ sub-parts are indented.
 All requests and responses originate from the following grammar which
 will be incrementally describe through the rest of this document:
 
-``` line-numbers
+```
 RequestOrResponse => Size (RequestMessage | ResponseMessage)
   Size => int32
 ```

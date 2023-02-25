@@ -31,7 +31,7 @@ Examples showing how to use the producer are given in the
 
 To use the producer, you can use the following maven dependency:
 
-``` line-numbers
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
@@ -49,7 +49,7 @@ Examples showing how to use the consumer are given in the
 
 To use the consumer, you can use the following maven dependency:
 
-``` line-numbers
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>
@@ -69,7 +69,7 @@ Additional documentation on using the Streams API is available [here](../streams
 
 To use Kafka Streams you can use the following maven dependency:
 
-``` line-numbers
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams</artifactId>
@@ -84,7 +84,7 @@ Scala is available [in the developer guide](../streams/developer-guide/dsl-api#s
 To use Kafka Streams DSL for Scala {{< param scalaVersion >}} you can
 use the following maven dependency:
 
-``` line-numbers
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-streams-scala_{{< param scalaVersion >}}</artifactId>
@@ -112,7 +112,7 @@ and other Kafka objects.
 
 To use the Admin API, add the following Maven dependency:
 
-``` line-numbers
+```xml
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-clients</artifactId>

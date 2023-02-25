@@ -5,7 +5,7 @@
 [Download](https://www.apache.org/dyn/closer.cgi?path=/kafka/{{< param akFullDotVersion >}}/kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}.tgz)
 the latest Kafka release and extract it:
 
-```shell line-numbers
+```shell
 $ tar -xzf kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}.tgz
 $ cd kafka_{{< param scalaVersion >}}-{{< param akFullDotVersion >}}
 ```
@@ -22,14 +22,14 @@ with either configuration follow one the sections below but not both.
 Run the following commands in order to start all services in the correct
 order:
 
-```shell line-numbers
+```shell
 # Start the ZooKeeper service
 $ bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
 Open another terminal session and run:
 
-```shell line-numbers
+```shell
 # Start the Kafka broker service
 $ bin/kafka-server-start.sh config/server.properties
 ```
@@ -41,19 +41,19 @@ Kafka environment running and ready to use.
 
 Generate a Cluster UUID
 
-```shell line-numbers
+```shell
 $ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
 ```
 
 Format Log Directories
 
-```shell line-numbers
+```shell
 $ bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
 ```
 
 Start the Kafka Server
 
-```shell line-numbers
+```shell
 $ bin/kafka-server-start.sh config/kraft/server.properties
 ```
 
@@ -76,7 +76,7 @@ files in that folder.
 So before you can write your first events, you must create a topic. Open
 another terminal session and run:
 
-```shell line-numbers
+```shell
 $ bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
 ```
 
@@ -85,7 +85,7 @@ All of Kafka\'s command line tools have additional options: run the
 information. For example, it can also show you 
 [details such as the partition count](../intro#intro_concepts_and_terms) of the new topic:
 
-```shell line-numbers
+```shell
 $ bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
 Topic: quickstart-events        TopicId: NPmZHyhbR9y00wMglMH2sg PartitionCount: 1       ReplicationFactor: 1    Configs:
     Topic: quickstart-events Partition: 0    Leader: 0   Replicas: 0 Isr: 0
@@ -102,7 +102,7 @@ Run the console producer client to write a few events into your topic.
 By default, each line you enter will result in a separate event being
 written to the topic.
 
-```shell line-numbers
+```shell
 $ bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
 This is my first event
 This is my second event
@@ -115,7 +115,7 @@ You can stop the producer client with `Ctrl-C` at any time.
 Open another terminal session and run the console consumer client to
 read the events you just created:
 
-```shell line-numbers
+```shell
 $ bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
 This is my first event
 This is my second event
@@ -164,19 +164,19 @@ Edit the `config/connect-standalone.properties` file,
 add or change the `plugin.path` configuration property match the
 following, and save the file:
 
-```shell {.brush: .bash;}
+```shell
 > echo "plugin.path=libs/connect-file-{{< param akFullDotVersion >}}.jar"
 ```
 
 Then, start by creating some seed data to test with:
 
-```shell {.brush: .bash;}
+```shell
 > echo -e "foo\nbar" > test.txt
 ```
 
 Or on Windows:
 
-```shell {.brush: .bash;}
+```shell
 > echo foo> test.txt
 > echo bar>> test.txt
 ```
@@ -190,8 +190,11 @@ The remaining configuration files each specify a connector to create.
 These files include a unique connector name, the connector class to
 instantiate, and any other configuration required by the connector.
 
-```shell {.brush: .bash;}
-> bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties config/connect-file-sink.properties
+```shell
+bin/connect-standalone.sh \
+  config/connect-standalone.properties \
+  config/connect-file-source.properties \
+  config/connect-file-sink.properties
 ```
 
 These sample configuration files, included with Kafka, use the default
@@ -210,7 +213,7 @@ and the sink connector should start reading messages from the topic
 the data has been delivered through the entire pipeline by examining the
 contents of the output file:
 
-```shell {.brush: .bash;}
+```shell
 > more test.sink.txt
 foo
 bar
@@ -220,8 +223,11 @@ Note that the data is being stored in the Kafka topic `connect-test`, so
 we can also run a console consumer to see the data in the topic (or use
 custom consumer code to process it):
 
-```shell {.brush: .bash;}
-> bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic connect-test --from-beginning
+```shell
+bin/kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 \
+  --topic connect-test \
+  --from-beginning
 {"schema":{"type":"string","optional":false},"payload":"foo"}
 {"schema":{"type":"string","optional":false},"payload":"bar"}
 ...
@@ -230,7 +236,7 @@ custom consumer code to process it):
 The connectors continue to process data, so we can add data to the file
 and see it move through the pipeline:
 
-```shell {.brush: .bash;}
+```shell
 > echo Another line>> test.txt
 ```
 
@@ -254,7 +260,7 @@ event-time, and much more.
 To give you a first taste, here\'s how one would implement the popular
 `WordCount` algorithm:
 
-```java line-numbers
+```java
 KStream<String, String> textLines = builder.stream("quickstart-events");
 
 KTable<String, Long> wordCounts = textLines
@@ -283,7 +289,7 @@ the Kafka environment---or continue playing around.
 If you also want to delete any data of your local Kafka environment
 including any events you have created along the way, run the command:
 
-```shell line-numbers
+```shell
 $ rm -rf /tmp/kafka-logs /tmp/zookeeper /tmp/kraft-combined-logs
 ```
 

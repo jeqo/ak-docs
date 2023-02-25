@@ -34,13 +34,13 @@ broker config.
 To alter the current broker configs for broker id 0 (for example, the
 number of log cleaner threads):
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type brokers --entity-name 0 --alter --add-config log.cleaner.threads=2
 ```
 
 To describe the current dynamic broker configs for broker id 0:
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type brokers --entity-name 0 --describe
 ```
 
@@ -48,7 +48,7 @@ To delete a config override and revert to the statically configured or
 default value for broker id 0 (for example, the number of log cleaner
 threads):
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type brokers --entity-name 0 --alter --delete-config log.cleaner.threads
 ```
 
@@ -57,14 +57,14 @@ consistent values across the whole cluster. All brokers in the cluster
 will process the cluster default update. For example, to update log
 cleaner threads on all brokers:
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type brokers --entity-default --alter --add-config log.cleaner.threads=2
 ```
 
 To describe the currently configured dynamic cluster-wide default
 configs:
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type brokers --entity-default --describe
 ```
 
@@ -109,7 +109,7 @@ command. Additional encryption parameters may also be specified.
 Password encoder configs will not be persisted in ZooKeeper. For
 example, to store SSL key password for listener `INTERNAL` on broker 0:
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --entity-type brokers --entity-name 0 --alter --add-config
     'listener.name.internal.ssl.key.password=key-password,password.encoder.secret=secret,password.encoder.iterations=8192'
 ```
@@ -203,7 +203,7 @@ version 1.1.x, changes to `unclean.leader.election.enable` take effect
 only when a new controller is elected. Controller re-election may be
 forced by running:
 
-``` line-numbers
+```
 > bin/zookeeper-shell.sh localhost
   rmr /controller
 ```
@@ -280,7 +280,7 @@ server default is used. The override can be set at topic creation time
 by giving one or more `--config` options. This example creates a topic
 named *my-topic* with a custom max message size and flush rate:
 
-``` line-numbers
+```
 > bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic my-topic --partitions 1 \
   --replication-factor 1 --config max.message.bytes=64000 --config flush.messages=1
 ```
@@ -288,20 +288,20 @@ named *my-topic* with a custom max message size and flush rate:
 Overrides can also be changed or set later using the alter configs
 command. This example updates the max message size for *my-topic*:
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type topics --entity-name my-topic
   --alter --add-config max.message.bytes=128000
 ```
 
 To check overrides set on the topic you can do
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type topics --entity-name my-topic --describe
 ```
 
 To remove an override you can do
 
-``` line-numbers
+```
 > bin/kafka-configs.sh --bootstrap-server localhost:9092  --entity-type topics --entity-name my-topic
   --alter --delete-config max.message.bytes
 ```

@@ -100,7 +100,7 @@ The snippet below shows the settings to enable client authentication and
 SSL encryption for data-in-transit between your Kafka Streams
 application and the Kafka cluster it is reading and writing from:
 
-```properties line-numbers
+```java-properties line-numbers
 # Essential security settings to enable client authentication and SSL encryption
 bootstrap.servers=kafka.example.com:9093
 security.protocol=SSL

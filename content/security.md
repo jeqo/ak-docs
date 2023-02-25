@@ -44,7 +44,7 @@ configuration, which accepts a comma-separated list of the listeners to
 enable. At least one listener must be defined on each server. The format
 of each listener defined in `listeners` is given below:
 
-``` line-numbers
+```
 {LISTENER_NAME}://{hostname}:{port}
 ```
 
@@ -61,7 +61,7 @@ comma-separated list of each listener mapped to its security protocol.
 For example, the follow value configuration specifies that the `CLIENT`
 listener will use SSL while the `BROKER` listener will use plaintext.
 
-``` line-numbers
+```
 listener.security.protocol.map=CLIENT:SSL,BROKER:PLAINTEXT
 ```
 
@@ -81,7 +81,7 @@ possible to use the security protocol name as the listener name in
 `listeners`. Using the example above, we could skip the definition of
 the `CLIENT` and `BROKER` listeners using the following definition:
 
-``` line-numbers
+```
 listeners=SSL://localhost:9092,PLAINTEXT://localhost:9093
 ```
 
@@ -124,7 +124,7 @@ define the controller listener along with any security properties that
 are needed to configure it. For example, we might use the following
 configuration on a standalone broker:
 
-```properties line-numbers
+```java-properties
 process.roles=broker
 listeners=BROKER://localhost:9092
 inter.broker.listener.name=BROKER
@@ -144,7 +144,7 @@ For KRaft servers which have both the broker and controller role
 enabled, the configuration is similar. The only difference is that the
 controller listener must be included in `listeners`:
 
-```properties line-numbers
+```java-properties
 process.roles=broker,controller
 listeners=BROKER://localhost:9092,CONTROLLER://localhost:9093
 inter.broker.listener.name=BROKER
@@ -201,7 +201,7 @@ format as of Java version 9, to ensure this format is being used
 regardless of the Java version in use all following commands
 explicitly specify the PKCS12 format.
 
-```shell line-numbers
+```shell
 > keytool -keystore {keystorefile} -alias localhost -validity {validity} -genkey -keyalg RSA -storetype pkcs12
 ```
 
@@ -229,7 +229,7 @@ used for authentication purposes.\
 To generate certificate signing requests run the following command
 for all server keystores created so far.
 
-```shell line-numbers
+```shell
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -255,7 +255,7 @@ Server host name verification may be disabled by setting
 For dynamically configured broker listeners, hostname verification
 may be disabled using `kafka-configs.sh`:\
 
-```shell line-numbers
+```shell
 > bin/kafka-configs.sh --bootstrap-server localhost:9093 --entity-type brokers --entity-name 0 --alter --add-config "listener.name.internal.ssl.endpoint.identification.algorithm="
 ```
 
@@ -292,7 +292,7 @@ into the signing request.\
 To add a SAN field append the following argument
 `-ext SAN=DNS:{FQDN},IP:{IPADDRESS}` to the keytool command:
 
-```shell line-numbers
+```shell
 > keytool -keystore server.keystore.jks -alias localhost -validity {validity} -genkey -keyalg RSA -destkeystoretype pkcs12 -ext SAN=DNS:{FQDN},IP:{IPADDRESS1}
 ```
 
@@ -332,7 +332,7 @@ keypair.\
 Save the following listing into a file called openssl-ca.cnf and
 adjust the values for validity and common attributes as necessary.
 
-``` line-numbers
+```
 HOME            = .
 RANDFILE        = $ENV::HOME/.rnd
 
@@ -421,7 +421,7 @@ keep track of which certificates were signed with this CA. Both of
 these are simply text files that reside in the same directory as
 your CA keys.
 
-```shell line-numbers
+```shell
 > echo 01 > serial.txt
 > touch index.txt
 ```
@@ -429,7 +429,7 @@ your CA keys.
 With these steps done you are now ready to generate your CA that
 will be used to sign certificates later.
 
-```shell line-numbers
+```shell
 > openssl req -x509 -config openssl-ca.cnf -newkey rsa:4096 -sha256 -nodes -out cacert.pem -outform PEM
 ```
 
@@ -442,7 +442,7 @@ anybody when connecting to any service that trusts this CA.\
 The next step is to add the generated CA to the \*\*clients\'
 truststore\*\* so that the clients can trust this CA:
 
-```shell line-numbers
+```shell
 > keytool -keystore client.truststore.jks -alias CARoot -import -file ca-cert
 ```
 
@@ -453,7 +453,7 @@ must provide a truststore for the Kafka brokers as well and it
 should have all the CA certificates that clients\' keys were signed
 by.
 
-``` line-numbers
+```
 > keytool -keystore server.truststore.jks -alias CARoot -import -file ca-cert
 ```
 
@@ -473,14 +473,14 @@ can authenticate all other machines.
 
 Then sign it with the CA:
 
-```shell line-numbers
+```shell
 > openssl ca -config openssl-ca.cnf -policy signing_policy -extensions signing_req -out {server certificate} -infiles {certificate signing request}
 ```
 
 Finally, you need to import both the certificate of the CA and the
 signed certificate into the keystore:
 
-```shell line-numbers
+```shell
 > keytool -keystore {keystore} -alias CARoot -import -file {CA certificate}
 > keytool -keystore {keystore} -alias localhost -import -file cert-signed
 ```
@@ -591,7 +591,7 @@ cause issues when trying to use these certificates with Kafka.
     certificate details to the console, which should be compared
     with what was originally requested:
 
-    ```shell line-numbers
+    ```shell
     > openssl x509 -in certificate.crt -text -noout
     ```
 
@@ -600,13 +600,13 @@ cause issues when trying to use these certificates with Kafka.
 If SSL is not enabled for inter-broker communication (see below for
 how to enable it), both PLAINTEXT and SSL ports will be necessary.
 
-```properties line-numbers
+```java-properties
 listeners=PLAINTEXT://host.name:port,SSL://host.name:port
 ```
 
 Following SSL configs are needed on the broker side
 
-```properties line-numbers
+```java-properties
 ssl.keystore.location=/var/private/ssl/server.keystore.jks
 ssl.keystore.password=test1234
 ssl.key.password=test1234
@@ -641,7 +641,7 @@ settings that are worth considering:
 If you want to enable SSL for inter-broker communication, add the
 following to the server.properties file (it defaults to PLAINTEXT)
 
-```properties line-numbers
+```java-properties
 security.inter.broker.protocol=SSL
 ```
 
@@ -669,21 +669,21 @@ traffic, per-broker).
 Once you start the broker you should be able to see in the
 server.log
 
-``` line-numbers
+```
 with addresses: PLAINTEXT -> EndPoint(192.168.64.1,9092,PLAINTEXT),SSL -> EndPoint(192.168.64.1,9093,SSL)
 ```
 
 To check quickly if the server keystore and truststore are setup
 properly you can run the following command
 
-```shell line-numbers
+```shell
 > openssl s_client -debug -connect localhost:9093 -tls1
 ```
 
 (Note: TLSv1 should be listed under ssl.enabled.protocols)\
 In the output of this command you should see server\'s certificate:
 
-``` line-numbers
+```
 -----BEGIN CERTIFICATE-----
 {variable sized random bytes}
 -----END CERTIFICATE-----
@@ -702,7 +702,7 @@ both producer and consumer.\
 If client authentication is not required in the broker, then the
 following is a minimal configuration example:
 
-```properties line-numbers
+```java-properties
 security.protocol=SSL
 ssl.truststore.location=/var/private/ssl/client.truststore.jks
 ssl.truststore.password=test1234
@@ -714,7 +714,7 @@ still available, but integrity checking is disabled. If client
 authentication is required, then a keystore must be created like in
 step 1 and the following must also be configured:
 
-```properties line-numbers
+```java-properties
 ssl.keystore.location=/var/private/ssl/client.keystore.jks
 ssl.keystore.password=test1234
 ssl.key.password=test1234
@@ -737,7 +737,7 @@ our requirements and the broker configuration:
 
 Examples using console-producer and console-consumer:
 
-```shell line-numbers
+```shell
 > kafka-console-producer.sh --bootstrap-server localhost:9093 --topic test --producer.config client-ssl.properties
 > kafka-console-consumer.sh --bootstrap-server localhost:9093 --topic test --consumer.config client-ssl.properties
 ```
@@ -783,7 +783,7 @@ multiple mechanisms are configured on a listener, configs must
 be provided for each mechanism using the listener and mechanism
 prefix. For example,
 
-```properties line-numbers
+```java-properties
 listener.name.sasl_ssl.scram-sha-256.sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
     username="admin" \
     password="admin-secret";
@@ -854,7 +854,7 @@ JAAS config file:
     [GSSAPI](#security_sasl_gssapi_clientconfig) credentials
     may be configured as:
 
-    ``` line-numbers
+    ```
     KafkaClient {
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
@@ -867,7 +867,7 @@ JAAS config file:
 2.  Pass the JAAS config file location as JVM parameter to
     each client JVM. For example:
 
-    ``` line-numbers
+    ```
     -Djava.security.auth.login.config=/etc/kafka/kafka_client_jaas.conf
     ```
 
@@ -894,7 +894,7 @@ Kafka supports the following SASL mechanisms:
     parameter, which contains one or more comma-separated
     values:
 
-    ```properties text
+    ```java-properties text
     listeners=SASL_PLAINTEXT://host.name:port
     ```
 
@@ -903,7 +903,7 @@ Kafka supports the following SASL mechanisms:
     make sure you set the same SASL protocol for inter-broker
     communication:
 
-    ```properties text
+    ```java-properties text
     security.inter.broker.protocol=SASL_PLAINTEXT (or SASL_SSL)
     ```
 
@@ -955,7 +955,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
     create these principals yourself using the following
     commands:
 
-    ```shell line-numbers
+    ```shell
     > sudo /usr/sbin/kadmin.local -q 'addprinc -randkey kafka/{hostname}@{REALM}'
     > sudo /usr/sbin/kadmin.local -q "ktadd -k /etc/security/keytabs/{keytabname}.keytab kafka/{hostname}@{REALM}"
     ```
@@ -971,7 +971,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    kafka_server_jaas.conf for this example (note that each
    broker should have its own keytab):
 
-   ``` line-numbers
+   ```
    KafkaServer {
        com.sun.security.auth.module.Krb5LoginModule required
        useKeyTab=true
@@ -1002,7 +1002,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    [here](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jgss/tutorials/KerberosReq.html)
    for more details):
 
-   ``` line-numbers
+   ```
    -Djava.security.krb5.conf=/etc/kafka/krb5.conf
    -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
    ```
@@ -1015,7 +1015,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    as described [here](#security_sasl_brokerconfig). For
    example:
 
-   ```properties line-numbers
+   ```java-properties
    listeners=SASL_PLAINTEXT://host.name:port
    security.inter.broker.protocol=SASL_PLAINTEXT
    sasl.mechanism.inter.broker.protocol=GSSAPI
@@ -1027,7 +1027,7 @@ used, for both the client\'s `bootstrap.servers` and a broker\'s
    the kafka brokers. In the above example, principal is
    \"kafka/kafka1.hostname.com@EXAMPLE.com\", so:
 
-   ```properties line-numbers
+   ```java-properties
    sasl.kerberos.service.name=kafka
    ```
 
@@ -1048,7 +1048,7 @@ To configure SASL authentication on the clients:
    an example configuration for a client using a keytab
    (recommended for long-running processes):
 
-   ```properties line-numbers
+   ```java-properties
    sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required \
        useKeyTab=true \
        storeKey=true  \
@@ -1060,7 +1060,7 @@ To configure SASL authentication on the clients:
    kafka-console-producer, kinit can be used along with
    \"useTicketCache=true\" as in:
 
-   ```properties line-numbers
+   ```java-properties
    sasl.jaas.config=com.sun.security.auth.module.Krb5LoginModule required \
        useTicketCache=true;
    ```
@@ -1080,14 +1080,14 @@ To configure SASL authentication on the clients:
    [here](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jgss/tutorials/KerberosReq.html)
    for more details):
 
-   ``` line-numbers
+   ```
    -Djava.security.krb5.conf=/etc/kafka/krb5.conf
    ```
 
 4.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ```properties line-numbers
+    ```java-properties
     security.protocol=SASL_PLAINTEXT (or SASL_SSL)
     sasl.mechanism=GSSAPI
     sasl.kerberos.service.name=kafka
@@ -1111,7 +1111,7 @@ of ACLs etc.
     to each Kafka broker\'s config directory, let\'s call it
     kafka_server_jaas.conf for this example:
 
-    ``` line-numbers
+    ```
     KafkaServer {
         org.apache.kafka.common.security.plain.PlainLoginModule required
         username="admin"
@@ -1134,7 +1134,7 @@ of ACLs etc.
 2.  Pass the JAAS config file location as JVM parameter to each
     Kafka broker:
 
-    ``` line-numbers
+    ```
     -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
     ```
 
@@ -1142,7 +1142,7 @@ of ACLs etc.
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ```properties line-numbers
+    ```java-properties
     listeners=SASL_SSL://host.name:port
     security.inter.broker.protocol=SASL_SSL
     sasl.mechanism.inter.broker.protocol=PLAIN
@@ -1159,7 +1159,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the PLAIN mechanism:
 
-    ```properties line-numbers
+    ```java-properties
     sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
         username="alice" \
         password="alice-secret";
@@ -1181,7 +1181,7 @@ To configure SASL authentication on the clients:
 2.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ```properties line-numbers
+    ```java-properties
     security.protocol=SASL_SSL
     sasl.mechanism=PLAIN
     ```
@@ -1237,7 +1237,7 @@ will be used to authenticate new connections.
 Create SCRAM credentials for user *alice* with password
 *alice-secret*:
 
-```shell line-numbers
+```shell
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[iterations=8192,password=alice-secret],SCRAM-SHA-512=[password=alice-secret]' --entity-type users --entity-name alice
 ```
 
@@ -1251,21 +1251,21 @@ identity and the individual fields.
 The following examples also require a user *admin* for
 inter-broker communication which can be created using:
 
-```shell line-numbers
+```shell
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --add-config 'SCRAM-SHA-256=[password=admin-secret],SCRAM-SHA-512=[password=admin-secret]' --entity-type users --entity-name admin
 ```
 
 Existing credentials may be listed using the *\--describe*
 option:
 
-```shell line-numbers
+```shell
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --describe --entity-type users --entity-name alice
 ```
 
 Credentials may be deleted for one or more SCRAM mechanisms
 using the *\--alter \--delete-config* option:
 
-```shell line-numbers
+```shell
 > bin/kafka-configs.sh --zookeeper localhost:2182 --zk-tls-config-file zk_tls_config.properties --alter --delete-config 'SCRAM-SHA-512' --entity-type users --entity-name alice
 ```
 
@@ -1275,7 +1275,7 @@ using the *\--alter \--delete-config* option:
     to each Kafka broker\'s config directory, let\'s call it
     kafka_server_jaas.conf for this example:
 
-    ``` line-numbers
+    ```
     KafkaServer {
         org.apache.kafka.common.security.scram.ScramLoginModule required
         username="admin"
@@ -1291,7 +1291,7 @@ using the *\--alter \--delete-config* option:
 2.  Pass the JAAS config file location as JVM parameter to each
     Kafka broker:
 
-    ``` line-numbers
+    ```
     -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
     ```
 
@@ -1299,7 +1299,7 @@ using the *\--alter \--delete-config* option:
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ```properties line-numbers
+    ```java-properties
     listeners=SASL_SSL://host.name:port
     security.inter.broker.protocol=SASL_SSL
     sasl.mechanism.inter.broker.protocol=SCRAM-SHA-256 (or SCRAM-SHA-512)
@@ -1316,7 +1316,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the SCRAM mechanisms:
 
-    ```properties line-numbers
+    ```java-properties
     sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
         username="alice" \
         password="alice-secret";
@@ -1338,7 +1338,7 @@ To configure SASL authentication on the clients:
 2.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ``` line-numbers
+    ```
     security.protocol=SASL_SSL
     sasl.mechanism=SCRAM-SHA-256 (or SCRAM-SHA-512)
     ```
@@ -1390,7 +1390,7 @@ principalName of OAuthBearerToken is used as the authenticated
     to each Kafka broker\'s config directory, let\'s call it
     kafka_server_jaas.conf for this example:
 
-    ``` line-numbers
+    ```
     KafkaServer {
         org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required
         unsecuredLoginStringClaim_sub="admin";
@@ -1406,7 +1406,7 @@ principalName of OAuthBearerToken is used as the authenticated
 2.  Pass the JAAS config file location as JVM parameter to each
     Kafka broker:
 
-    ``` line-numbers
+    ```
     -Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf
     ```
 
@@ -1414,7 +1414,7 @@ principalName of OAuthBearerToken is used as the authenticated
     as described [here](#security_sasl_brokerconfig). For
     example:
 
-    ```properties line-numbers
+    ```java-properties
     listeners=SASL_SSL://host.name:port (or SASL_PLAINTEXT if non-production)
     security.inter.broker.protocol=SASL_SSL (or SASL_PLAINTEXT if non-production)
     sasl.mechanism.inter.broker.protocol=OAUTHBEARER
@@ -1431,7 +1431,7 @@ To configure SASL authentication on the clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the OAUTHBEARER mechanisms:
 
-    ```properties line-numbers
+    ```java-properties
     sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required \
         unsecuredLoginStringClaim_sub="alice";
     ```
@@ -1453,7 +1453,7 @@ To configure SASL authentication on the clients:
 2.  Configure the following properties in producer.properties or
     consumer.properties:
 
-    ```properties line-numbers
+    ```java-properties
     security.protocol=SASL_SSL (or SASL_PLAINTEXT if non-production)
     sasl.mechanism=OAUTHBEARER
     ```
@@ -1546,7 +1546,7 @@ broker configuration option.
     mechanisms in the `KafkaServer` section of the JAAS config file.
     For example:
 
-    ``` line-numbers
+    ```
     KafkaServer {
         com.sun.security.auth.module.Krb5LoginModule required
         useKeyTab=true
@@ -1564,14 +1564,14 @@ broker configuration option.
 
 2.  Enable the SASL mechanisms in server.properties:
 
-    ```properties line-numbers
+    ```java-properties
     sasl.enabled.mechanisms=GSSAPI,PLAIN,SCRAM-SHA-256,SCRAM-SHA-512,OAUTHBEARER
     ```
 
 3.  Specify the SASL security protocol and mechanism for
     inter-broker communication in server.properties if required:
 
-    ```properties line-numbers
+    ```java-properties
     security.inter.broker.protocol=SASL_PLAINTEXT (or SASL_SSL)
     sasl.mechanism.inter.broker.protocol=GSSAPI (or one of the other enabled mechanisms)
     ```
@@ -1669,31 +1669,31 @@ examples are given below.
 
 Create a delegation token:
 
-```shell line-numbers
+```shell
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1
 ```
 
 Create a delegation token for a different owner:
 
-```shell line-numbers
+```shell
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --create   --max-life-time-period -1 --command-config client.properties --renewer-principal User:user1 --owner-principal User:owner1
 ```
 
 Renew a delegation token:
 
-```shell line-numbers
+```shell
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --renew    --renew-time-period -1 --command-config client.properties --hmac ABCDEFGHIJK
 ```
 
 Expire a delegation token:
 
-```shell line-numbers
+```shell
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --expire   --expiry-time-period -1   --command-config client.properties  --hmac ABCDEFGHIJK
 ```
 
 Existing tokens can be described using the \--describe option:
 
-```shell line-numbers
+```shell
 > bin/kafka-delegation-tokens.sh --bootstrap-server localhost:9092 --describe --command-config client.properties  --owner-principal User:user1
 ```
 
@@ -1712,7 +1712,7 @@ Configuring Kafka Clients:
     connect to the Kafka Broker. The following is an example
     configuration for a client for the token authentication:
 
-    ``` line-numbers
+    ```
     sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required \
         username="tokenID123" \
         password="lAYYSFmLs4bTjf+lTZ1LCHR/ZZFNA==" \
@@ -1756,14 +1756,14 @@ implementations which store ACLs in the cluster metadata (either
 Zookeeper or the KRaft metadata log). For Zookeeper-based clusters, the
 provided implementation is configured as follows:
 
-```properties line-numbers
+```java-properties
 authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 ```
 
 For KRaft clusters, use the following configuration on all nodes
 (brokers, controllers, or combined broker/controller nodes):
 
-```properties line-numbers
+```java-properties
 authorizer.class.name=org.apache.kafka.metadata.authorizer.StandardAuthorizer
 ```
 
@@ -1780,7 +1780,7 @@ Resource R, then R has no associated ACLs, and therefore no one other
 than super users is allowed to access R. If you want to change that
 behavior, you can include the following in server.properties.
 
-```properties line-numbers
+```java-properties
 allow.everyone.if.no.acl.found=true
 ```
 
@@ -1788,7 +1788,7 @@ One can also add super users in server.properties like the following
 (note that the delimiter is semicolon since SSL user names may contain
 comma). Default PrincipalType string \"User\" is case sensitive.
 
-```properties line-numbers
+```java-properties
 super.users=User:Bob;User:Alice
 ```
 
@@ -1838,14 +1838,14 @@ also supports lowercase/uppercase options, to force the translated
 result to be all lower/uppercase case. This is done by adding a \"/L\"
 or \"/U\' to the end of the rule.
 
-``` line-numbers
+```
 RULE:pattern/replacement/
 RULE:pattern/replacement/[LU]
 ```
 
 Example `ssl.principal.mapping.rules` values are:
 
-``` line-numbers
+```
 RULE:^CN=(.*?),OU=ServiceUsers.*$/$1/,
 RULE:^CN=(.*?),OU=(.*?),O=(.*?),L=(.*?),ST=(.*?),C=(.*?)$/$1@$2/L,
 RULE:^.*[Cc][Nn]=([a-zA-Z0-9.]*).*$/$1/L,
@@ -1860,7 +1860,7 @@ to \"serviceuser\" and
 For advanced use cases, one can customize the name by setting a
 customized PrincipalBuilder in server.properties like the following.
 
-```properties line-numbers
+```java-properties
 principal.builder.class=CustomizedPrincipalBuilderClass
 ```
 
@@ -1879,7 +1879,7 @@ a \"/L\" or \"/U\" to the end of the rule. check below formats for
 syntax. Each rules starts with RULE: and contains an expression as the
 following formats. See the kerberos documentation for more details.
 
-``` line-numbers
+```
 RULE:[n:string](regexp)s/pattern/replacement/
 RULE:[n:string](regexp)s/pattern/replacement/g
 RULE:[n:string](regexp)s/pattern/replacement//L
@@ -1891,7 +1891,7 @@ RULE:[n:string](regexp)s/pattern/replacement/g/U
 An example of adding a rule to properly translate user@MYDOMAIN.COM to
 user while also keeping the default rule in place is:
 
-```properties line-numbers
+```java-properties
 sasl.kerberos.principal.to.local.rules=RULE:[1:$1@$0](.*@MYDOMAIN.COM)s/@.*//,DEFAULT
 ```
 
@@ -1911,7 +1911,7 @@ Following lists all the options that the script supports:
     from IP 198.51.100.0 and IP 198.51.100.1\". You can do that by
     executing the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic
     ```
 
@@ -1923,7 +1923,7 @@ Following lists all the options that the script supports:
     Read from Test-topic but only deny User:BadBob from IP 198.51.100.3
     we can do so using following commands:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:'*' --allow-host '*' --deny-principal User:BadBob --deny-host 198.51.100.3 --operation Read --topic Test-topic
     ```
 
@@ -1937,7 +1937,7 @@ Following lists all the options that the script supports:
     Topic from IP 198.51.200.0\" You can do that by using the wildcard
     resource \'\*\', e.g. by executing the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Peter --allow-host 198.51.200.1 --producer --topic '*'
     ```
 
@@ -1946,7 +1946,7 @@ Following lists all the options that the script supports:
     any Topic whose name starts with \'Test-\' from any host\". You can
     do that by executing the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Jane --producer --topic Test- --resource-pattern-type prefixed
     ```
 
@@ -1960,14 +1960,14 @@ Following lists all the options that the script supports:
     option. To remove the acls added by the first example above we can
     execute the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Bob --allow-principal User:Alice --allow-host 198.51.100.0 --allow-host 198.51.100.1 --operation Read --operation Write --topic Test-topic 
     ```
 
     If you want to remove the acl added to the prefixed resource pattern
     above we can execute the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --remove --allow-principal User:Jane --producer --topic Test- --resource-pattern-type Prefixed
     ```
 
@@ -1976,7 +1976,7 @@ Following lists all the options that the script supports:
     with the resource. To list all acls on the literal resource pattern
     Test-topic, we can execute the CLI with following options:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic
     ```
 
@@ -1986,7 +1986,7 @@ Following lists all the options that the script supports:
     on prefixed resource patterns. Acls on the wildcard resource pattern
     can be queried explicitly:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic '*'
     ```
 
@@ -1995,7 +1995,7 @@ Following lists all the options that the script supports:
     such patterns may not be known. We can list *all* acls affecting
     Test-topic by using \'\--resource-pattern-type match\', e.g.
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --list --topic Test-topic --resource-pattern-type match
     ```
 
@@ -2008,14 +2008,14 @@ Following lists all the options that the script supports:
     handle these cases. In order to add User:Bob as a producer of
     Test-topic we can execute the following command:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --producer --topic Test-topic
     ```
 
     Similarly to add Alice as a consumer of Test-topic with consumer
     group Group-1 we just have to pass \--consumer option:
 
-    ```shell line-numbers
+    ```shell
     > bin/kafka-acls.sh --bootstrap-server localhost:9092 --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1 
     ```
 
@@ -2030,7 +2030,7 @@ Following lists all the options that the script supports:
     All the above examples can be executed by using
     **\--bootstrap-server** option. For example:
 
-    ```shell line-numbers
+    ```shell
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --producer --topic Test-topic
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --add --allow-principal User:Bob --consumer --topic Test-topic --group Group-1
     bin/kafka-acls.sh --bootstrap-server localhost:9092 --command-config /tmp/adminclient-configs.conf --list --topic Test-topic
@@ -2138,14 +2138,14 @@ As an example, say we wish to encrypt both broker-client and
 broker-broker communication with SSL. In the first incremental bounce,
 an SSL port is opened on each node:
 
-```properties line-numbers
+```java-properties
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092
 ```
 
 We then restart the clients, changing their config to point at the newly
 opened, secured port:
 
-```properties line-numbers
+```java-properties
 bootstrap.servers = [broker1:9092,...]
 security.protocol = SSL
 # ...etc
@@ -2154,14 +2154,14 @@ security.protocol = SSL
 In the second incremental server bounce we instruct Kafka to use SSL as
 the broker-broker protocol (which will use the same SSL port):
 
-```properties line-numbers
+```java-properties
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092
 security.inter.broker.protocol=SSL
 ```
 
 In the final bounce we secure the cluster by closing the PLAINTEXT port:
 
-```properties line-numbers
+```java-properties
 listeners=SSL://broker1:9092
 security.inter.broker.protocol=SSL
 ```
@@ -2173,14 +2173,14 @@ and broker-client communication) but we\'d like to add SASL
 authentication to the broker-client connection also. We would achieve
 this by opening two additional ports during the first bounce:
 
-```properties line-numbers
+```java-properties
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092,SASL_SSL://broker1:9093
 ```
 
 We would then restart the clients, changing their config to point at the
 newly opened, SASL & SSL secured port:
 
-```properties line-numbers
+```java-properties
 bootstrap.servers = [broker1:9093,...]
 security.protocol = SASL_SSL
 # ...etc
@@ -2190,14 +2190,14 @@ The second server bounce would switch the cluster to use encrypted
 broker-broker communication via the SSL port we previously opened on
 port 9092:
 
-```properties line-numbers
+```java-properties
 listeners=PLAINTEXT://broker1:9091,SSL://broker1:9092,SASL_SSL://broker1:9093
 security.inter.broker.protocol=SSL
 ```
 
 The final bounce secures the cluster by closing the PLAINTEXT port.
 
-```properties line-numbers
+```java-properties
 listeners=SSL://broker1:9092,SASL_SSL://broker1:9093
 security.inter.broker.protocol=SSL
 ```
@@ -2290,7 +2290,7 @@ Here is a sample (partial) ZooKeeper configuration for enabling TLS
 authentication. These configurations are described in the 
 [ZooKeeper Admin Guide](https://zookeeper.apache.org/doc/r3.5.7/zookeeperAdmin.html#sc_authOptions).
 
-```properties line-numbers
+```java-properties
 secureClientPort=2182
 serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
 authProvider.x509=org.apache.zookeeper.server.auth.X509AuthenticationProvider
@@ -2309,7 +2309,7 @@ Here is a sample (partial) Kafka Broker configuration for connecting to
 ZooKeeper with mTLS authentication. These configurations are described
 above in [Broker Configs](#brokerconfigs).
 
-```properties line-numbers
+```java-properties
 # connect to the ZooKeeper port configured for TLS
 zookeeper.connect=zk1:2182,zk2:2182,zk3:2182
 # required to use TLS to ZooKeeper (default is false)
@@ -2341,7 +2341,7 @@ authentication with minimal disruption to your operations:
     mTLS, you would now have both a non-TLS port and a TLS port, like
     this:
 
-    ```properties line-numbers
+    ```java-properties
     clientPort=2181
     secureClientPort=2182
     serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory
@@ -2395,13 +2395,13 @@ do it, follow these steps:
 
 Here is an example of how to run the migration tool:
 
-```shell line-numbers
+```shell
 > bin/zookeeper-security-migration.sh --zookeeper.acl=secure --zookeeper.connect=localhost:2181
 ```
 
 Run this to see the full list of parameters:
 
-```shell line-numbers
+```shell
 > bin/zookeeper-security-migration.sh --help
 ```
 
@@ -2434,7 +2434,7 @@ their own certificate. Here is a sample (partial) Kafka Broker
 configuration for connecting to ZooKeeper with just TLS encryption.
 These configurations are described above in [Broker Configs](../configuration#brokerconfigs).
 
-```properties line-numbers
+```java-properties
 # connect to the ZooKeeper port configured for TLS
 zookeeper.connect=zk1:2182,zk2:2182,zk3:2182
 # required to use TLS to ZooKeeper (default is false)
