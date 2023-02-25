@@ -68,9 +68,17 @@ As a side effect, most dynamic behavior and navigation is now under the main men
 
 To make the transition as low-friction as possible, the same template has been copied from `kafka-site` to keep the same user-experience, though it can be improved later using Hugo templates.
 
+```shell
+make site
+```
+
 ![](images/ak-docs-v1.png)
 
 Though, a version using the same theme as Flink as baseline is also an alternative:
+
+```shell
+make site-book
+```
 
 ![](images/book.png)
 
