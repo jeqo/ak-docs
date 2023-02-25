@@ -83,7 +83,31 @@ To make the transition as low-friction as possible, the same template has been c
   
 - `static/`: Keeps kafka-site static assets for same templating as current one.
 - `themes/`:
-  - `book`: copied from Flink docs site.
+  - `book`: copied from Flink docs site, but adapted to kafka docs.
   - `ak-docs-v1/`: Initial template, cleaned up version of book. Together with `../static/` make the docs theme. Has some assets from book to eventually use some of its features (e.g. search, right menu for section navigation)
     - `layouts/partials/toc.html`: Contains previous toc.html adapted to new structure
     - `layouts/_default/baseof.html`: Contains previous index.html adapted to new structure, using Hugo partials.
+  
+## How to run
+
+- Run Hugo site in development mode:
+  ```shell
+  make test
+  # or to test with book theme
+  make test-book
+  ```
+- Build site and run Apache with kafka-site:
+  ```shell
+  make site run
+  ```
+  Make sure to update kafka-site `documentation/index.html` to load latest version (e.g. 35):
+  ```html
+  <!--#include virtual="../35/documentation/index.html" -->
+  ```
+
+## Tools
+
+- Pandoc: to transform HTML into Markdown files
+- Convert tools to turn HTML tables into Markdown and JSON files:
+  - https://www.convertjson.com/html-table-to-json.htm
+  - https://tableconvert.com/html-to-markdown

@@ -4,7 +4,7 @@ VERSION := 35
 all: build
 
 build:
-	hugo -b http://localhost:8080/${VERSION}/documentation
+	hugo -b http://localhost:8080/${VERSION}/documentation -t book
 
 test:
 	hugo serve -b http://localhost:1313/${VERSION}/documentation
