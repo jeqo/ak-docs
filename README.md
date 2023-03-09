@@ -34,6 +34,12 @@ and as the single page is getting quite long and harder to navigate,
 I'm migrating sections into its own page.
 So, instead of `documentation#intro`, Introduction section will be located at `documentation/intro`.
 
+Inevitably, some old links to `/documentation` will be broken, e.g. redirecting `/documentation#brokerconfigs_bootstrap.servers` to `/documentation/configuration#brokerconfigs_bootstrap.servers` may be too complicated.
+
+To alleviate this, the index page can keep some main headers to redirect to the proper section: 
+
+![](index_redirects.png)
+
 ### Moving images closer to the content where it's used
 
 As sections will have their own page, Hugo supports either having a markdown file or a directory with `_index.md` with the content.

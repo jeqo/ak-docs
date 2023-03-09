@@ -18,3 +18,45 @@ Prior releases: [0.7.x](/07/documentation.html),
 [2.7.X](/27/documentation.html), [2.8.X](/28/documentation.html),
 [3.0.X](/30/documentation.html), [3.1.X](/31/documentation.html),
 [3.2.X](/32/documentation.html), [3.3.X](/33/documentation.html).
+
+## Getting Started {#gettingStarted}
+
+Everything you need to know about Kafka in 10 minutes
+
+[![](what_is_kafka.png)](https://youtube.com/watch?v=FKgi3n-FyNU&rel=0&showinfo=0&end=602)
+
+### Introduction {#introduction}
+
+Go to [section](intro)
+
+### APIs {#api}
+
+Go to [section](api)
+
+### Configuration {#configuration}
+
+Go to [section](configuration)
+
+### Design {#design}
+
+Go to [section](design)
+
+### Implementation
+
+Go to [section](implementation)
+
+### Operations
+
+Go to [section](operations)
+
+### Security
+
+Go to [section](security)
+
+### Kafka Connect {#connect}
+
+Go to [section](connect)
+
+### Kafka Streams {#streams}
+
+Go to [section](streams)
